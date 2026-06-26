@@ -1,56 +1,33 @@
-# ProKicks Play · Sprint 1.1 Registro
+# ProKicks Play · Sprint 1.2
 
-Base para GitHub + Supabase + Vercel con:
+Incluye correcciones urgentes para revisión con cliente:
 
-- Portada de acceso como primera pantalla.
-- Login con Supabase Auth.
-- Registro por pasos.
-- Fecha de nacimiento con cálculo de edad.
-- Tratamiento especial para menores.
-- Tutor para menores de 18.
-- Nickname y avatar.
-- Estado + municipio/alcaldía.
-- Consentimientos separados.
-- Modo invitado.
-- Tablas aisladas con prefijo `prokicks_` para convivir dentro de `smsoluciones-os`.
+- Portada/access con hero compacto y foto del producto integrada.
+- Login por correo electrónico.
+- Recuperación de contraseña: `/recuperar` y `/reset-password`.
+- Callback de auth: `/auth/callback`.
+- Registro por pasos con fecha de nacimiento, menores, tutor, ubicación, nickname, avatar y consentimientos separados.
+- Links legales provisionales: `/legal/terms`, `/legal/privacy`, `/legal/image-release`, `/legal/marketing`, `/legal/minor-consent`.
+- 32 estados de México + alcaldías CDMX y municipios base por estado.
+- Torneos demo sin costo: `/torneos`.
+- Registro a torneos sin pago: `/torneos/[id]/registro`.
+- Admin con exportación CSV / Excel / PDF: `/admin/export`.
 
 ## Supabase
 
-Si ya tienes las tablas base, ejecuta solo:
+Ejecutar en SQL Editor:
 
-```sql
-supabase/registration_migration.sql
-```
-
-Si instalas desde cero, ejecuta:
-
-```sql
-supabase/schema.sql
-supabase/seed.sql
-```
+1. `supabase/registration_migration.sql` si no se ha corrido.
+2. `supabase/tournaments_migration.sql` para torneos y registros.
 
 ## Variables Vercel
 
-```bash
+```env
 NEXT_PUBLIC_SUPABASE_URL=https://bljqlibgwvpflrtwgsef.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=TU_PUBLISHABLE_KEY
+NEXT_PUBLIC_SUPABASE_ANON_KEY=...
 NEXT_PUBLIC_APP_URL=https://prokicks-play.vercel.app
 ```
 
-## Rutas principales
-
-- `/` Portada / acceso.
-- `/login` Portada / acceso.
-- `/registro` Registro por pasos.
-- `/registro/pendiente` Cuenta de menor pendiente de tutor.
-- `/guest` Recorrido invitado.
-- `/play` Home funcional.
-- `/scan` QR manual.
-- `/spots` Spots.
-- `/retas` Retas.
-- `/ranking` Ranking.
-- `/perfil` Perfil.
-
 ## Nota legal
 
-Los textos finales de Términos, Aviso de Privacidad, autorización de menores y uso de imagen deben revisarse con abogado mexicano especializado en privacidad digital antes de lanzamiento.
+Los textos legales son placeholders operativos para demo. Antes del lanzamiento deben ser revisados por abogado mexicano especializado en privacidad digital, especialmente por cuentas de menores y consentimiento parental.

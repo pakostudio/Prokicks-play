@@ -11,10 +11,10 @@ export default function HomePage() {
       <section className="hero section">
         <div className="kicker">ProKicks Play · MVP</div>
         <h1 className="h1">Juega. Conecta. Compite.</h1>
-        <p className="p">Encuentra spots, escanea el QR, crea retas y sube en el ranking.</p>
+        <p className="p">Encuentra spots, entra a torneos demo, escanea QR y sube en el ranking.</p>
         <div className="grid-2 section">
           <Link className="btn btn-primary" href="/scan"><QrCode size={18}/> Escanear QR</Link>
-          <Link className="btn btn-warm" href="/retas/nueva"><Swords size={18}/> Crear reta</Link>
+          <Link className="btn btn-warm" href="/torneos"><Trophy size={18}/> Torneos</Link>
         </div>
       </section>
 

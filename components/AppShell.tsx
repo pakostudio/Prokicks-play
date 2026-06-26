@@ -1,13 +1,13 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { Home, Map, QrCode, Swords, User } from 'lucide-react';
+import { Home, Map, QrCode, Trophy, User } from 'lucide-react';
 
 export function AppShell({ children, active = 'home' }: { children: React.ReactNode; active?: string }) {
   const nav = [
     { key: 'home', href: '/play', label: 'Inicio', icon: Home },
     { key: 'map', href: '/spots', label: 'Mapa', icon: Map },
     { key: 'scan', href: '/scan', label: 'QR', icon: QrCode, scan: true },
-    { key: 'retas', href: '/retas', label: 'Retas', icon: Swords },
+    { key: 'torneos', href: '/torneos', label: 'Torneos', icon: Trophy },
     { key: 'perfil', href: '/perfil', label: 'Perfil', icon: User }
   ];
 

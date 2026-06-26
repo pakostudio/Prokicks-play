@@ -56,14 +56,14 @@ export default function LoginPage() {
 
         <section className="login-card">
           <h2>¿Ya estás registrado?</h2>
-          <p>Ingresa con tu usuario y contraseña</p>
+          <p>Ingresa con tu correo y contraseña</p>
 
           <label className="field-control">
             <UserRound size={22} />
             <input
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Usuario o correo"
+              placeholder="Correo electrónico"
               type="email"
               autoComplete="email"
             />
