@@ -192,3 +192,94 @@ html,body{background:var(--bg);color:var(--text);font-family:Arial, Helvetica, s
   .approved-access-title p{font-size:15px;margin-bottom:20px;}
   .approved-login-card h2{font-size:22px;}
 }
+
+/* Sprint 1.5 · PWA + ajuste móvil seguro
+   No toca Supabase, torneos, admin ni dependencias. */
+html{
+  width:100%;
+  min-height:100%;
+  background:#F4F6F8;
+  -webkit-text-size-adjust:100%;
+}
+body{
+  width:100%;
+  min-height:100dvh;
+  overflow-x:hidden;
+  background:#F4F6F8;
+}
+.access-screen,
+.register-screen,
+.guest-screen{
+  width:100%;
+  max-width:480px;
+  min-height:100dvh;
+}
+.approved-access-screen{
+  width:100%;
+  max-width:480px;
+  margin:0 auto;
+}
+@media(max-width:520px){
+  .approved-access-screen,
+  .access-screen,
+  .register-screen,
+  .guest-screen{
+    max-width:none;
+    width:100vw;
+    border-left:0;
+    border-right:0;
+    box-shadow:none;
+  }
+  .approved-hero{
+    height:46vh;
+    min-height:292px;
+    max-height:360px;
+  }
+  .approved-access-content{
+    padding-left:24px;
+    padding-right:24px;
+    padding-bottom:42px;
+  }
+  .approved-access-title h1{
+    font-size:34px;
+  }
+  .approved-login-card{
+    padding:24px 18px 24px;
+  }
+  .approved-register-block{
+    margin:24px 0 18px;
+  }
+  .approved-guest-card{
+    margin-bottom:22px;
+  }
+}
+@media(max-width:380px){
+  .approved-hero{
+    height:42vh;
+    min-height:270px;
+  }
+  .approved-access-content{
+    padding-left:18px;
+    padding-right:18px;
+  }
+  .approved-login-card{
+    padding:22px 16px;
+  }
+  .approved-field-control{
+    min-height:56px;
+  }
+  .approved-btn-login,
+  .approved-btn-register{
+    min-height:54px;
+  }
+}
+@media(display-mode: standalone){
+  body{
+    overscroll-behavior-y:none;
+  }
+  .approved-access-screen,
+  .app-shell{
+    padding-top:max(0px, env(safe-area-inset-top));
+    padding-bottom:max(24px, env(safe-area-inset-bottom));
+  }
+}
