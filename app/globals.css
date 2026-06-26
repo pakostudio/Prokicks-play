@@ -283,3 +283,50 @@ body{
     padding-bottom:max(24px, env(safe-area-inset-bottom));
   }
 }
+
+/* Sprint 1.6 · Registro a Torneos */
+.field-label {
+  display: block;
+  margin: 4px 0 -6px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #173b63;
+}
+
+.check-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  background: #f8fafc;
+  color: #1f2937;
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.check-row input {
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+  flex: 0 0 auto;
+}
+
+.mini-stack {
+  display: grid;
+  gap: 12px;
+  width: 100%;
+}
+
+.alert.warn {
+  border-color: rgba(245, 158, 11, 0.28);
+  background: rgba(245, 158, 11, 0.12);
+  color: #92400e;
+}
+
+.admin-table small {
+  color: #64748b;
+  font-size: 12px;
+}
