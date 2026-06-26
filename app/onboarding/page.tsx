@@ -14,7 +14,7 @@ export default function OnboardingPage() {
     const { data } = await supabase.auth.getUser();
     const user = data.user;
     if(!user){ setMsg('Primero inicia sesión.'); return; }
-    const { error } = await supabase.from('profiles').upsert({ id:user.id, display_name:displayName, alias, city, level });
+    const { error } = await supabase.from('prokicks_profiles').upsert({ id:user.id, display_name:displayName, alias, city, level });
     if(error) setMsg(error.message); else window.location.href='/';
   }
 

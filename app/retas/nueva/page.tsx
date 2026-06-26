@@ -12,7 +12,7 @@ export default function NewChallenge(){
   const [msg,setMsg]=useState('');
   async function create(){
     const { data:userData } = await supabase.auth.getUser();
-    const { data, error } = await supabase.from('challenges').insert({ title, spot_id:spot, type, level, status:'open', creator_id:userData.user?.id || null, scheduled_at:new Date().toISOString() }).select().single();
+    const { data, error } = await supabase.from('prokicks_challenges').insert({ title, spot_id:spot, type, level, status:'open', creator_id:userData.user?.id || null, scheduled_at:new Date().toISOString() }).select().single();
     if(error){ setMsg(error.message); return; }
     window.location.href = `/retas/${data.id}`;
   }

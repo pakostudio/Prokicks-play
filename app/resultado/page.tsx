@@ -10,7 +10,7 @@ export default function ResultPage(){
   async function save(){
     const params = new URLSearchParams(window.location.search);
     const challenge_id = params.get('challenge');
-    const { error } = await supabase.from('results').insert({ challenge_id, team_a_score:scoreA, team_b_score:scoreB, winner_team: scoreA >= scoreB ? 'A':'B' });
+    const { error } = await supabase.from('prokicks_results').insert({ challenge_id, team_a_score:scoreA, team_b_score:scoreB, winner_team: scoreA >= scoreB ? 'A':'B' });
     if(error){ setMsg(error.message); return; }
     setMsg('Resultado registrado. Ranking básico listo para siguiente cálculo real.');
   }

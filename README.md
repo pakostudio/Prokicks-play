@@ -1,74 +1,56 @@
-# ProKicks Play · Sprint 1 Core Play Loop
+# ProKicks Play · Sprint 1.1 Registro
 
-Base inicial para GitHub + Supabase + Vercel.
+Base para GitHub + Supabase + Vercel con:
 
-## 1. Instalar
+- Portada de acceso como primera pantalla.
+- Login con Supabase Auth.
+- Registro por pasos.
+- Fecha de nacimiento con cálculo de edad.
+- Tratamiento especial para menores.
+- Tutor para menores de 18.
+- Nickname y avatar.
+- Estado + municipio/alcaldía.
+- Consentimientos separados.
+- Modo invitado.
+- Tablas aisladas con prefijo `prokicks_` para convivir dentro de `smsoluciones-os`.
 
-```bash
-npm install
-cp .env.example .env.local
-npm run dev
+## Supabase
+
+Si ya tienes las tablas base, ejecuta solo:
+
+```sql
+supabase/registration_migration.sql
 ```
 
-## 2. Supabase
+Si instalas desde cero, ejecuta:
 
-En Supabase:
-
-1. Crear proyecto.
-2. Ir a **Project Settings > API**.
-3. Copiar Project URL y anon public key.
-4. Pegarlas en `.env.local`:
-
-```bash
-NEXT_PUBLIC_SUPABASE_URL=https://TU-PROYECTO.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=TU_ANON_KEY
-NEXT_PUBLIC_APP_URL=http://localhost:3000
+```sql
+supabase/schema.sql
+supabase/seed.sql
 ```
 
-5. Ir a **SQL Editor**.
-6. Ejecutar `supabase/schema.sql`.
-7. Ejecutar `supabase/seed.sql`.
-8. En **Authentication > Providers > Email**, activar Email.
-9. Para pruebas rápidas, desactivar temporalmente Confirm email.
-
-## 3. GitHub
+## Variables Vercel
 
 ```bash
-git init
-git add .
-git commit -m "Sprint 1 Core Play Loop"
-git branch -M main
-git remote add origin URL_DE_TU_REPO
-git push -u origin main
+NEXT_PUBLIC_SUPABASE_URL=https://bljqlibgwvpflrtwgsef.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=TU_PUBLISHABLE_KEY
+NEXT_PUBLIC_APP_URL=https://prokicks-play.vercel.app
 ```
 
-## 4. Vercel
+## Rutas principales
 
-1. Importar repo desde GitHub.
-2. Agregar variables de entorno:
-   - NEXT_PUBLIC_SUPABASE_URL
-   - NEXT_PUBLIC_SUPABASE_ANON_KEY
-   - NEXT_PUBLIC_APP_URL
-3. Deploy.
+- `/` Portada / acceso.
+- `/login` Portada / acceso.
+- `/registro` Registro por pasos.
+- `/registro/pendiente` Cuenta de menor pendiente de tutor.
+- `/guest` Recorrido invitado.
+- `/play` Home funcional.
+- `/scan` QR manual.
+- `/spots` Spots.
+- `/retas` Retas.
+- `/ranking` Ranking.
+- `/perfil` Perfil.
 
-## Rutas listas
+## Nota legal
 
-- `/` Home
-- `/login` Supabase Auth
-- `/onboarding` Perfil
-- `/spots` Mapa/lista spots
-- `/spots/[id]` Detalle spot
-- `/scan` QR manual
-- `/retas` Retas
-- `/retas/nueva` Crear reta
-- `/retas/[id]` Detalle reta
-- `/resultado` Registrar resultado
-- `/ranking` Ranking demo
-- `/perfil` Perfil
-- `/admin` Admin básico
-- `/admin/spots` Spots/QR admin
-- `/admin/retas` Retas admin
-
-## Regla visual
-
-No fondos oscuros. Base blanca/gris claro, texto negro/gris carbón, acentos cyan/azul/morado/amarillo/naranja.
+Los textos finales de Términos, Aviso de Privacidad, autorización de menores y uso de imagen deben revisarse con abogado mexicano especializado en privacidad digital antes de lanzamiento.

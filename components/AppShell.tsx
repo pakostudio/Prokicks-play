@@ -4,7 +4,7 @@ import { Home, Map, QrCode, Swords, User } from 'lucide-react';
 
 export function AppShell({ children, active = 'home' }: { children: React.ReactNode; active?: string }) {
   const nav = [
-    { key: 'home', href: '/', label: 'Inicio', icon: Home },
+    { key: 'home', href: '/play', label: 'Inicio', icon: Home },
     { key: 'map', href: '/spots', label: 'Mapa', icon: Map },
     { key: 'scan', href: '/scan', label: 'QR', icon: QrCode, scan: true },
     { key: 'retas', href: '/retas', label: 'Retas', icon: Swords },
@@ -14,7 +14,7 @@ export function AppShell({ children, active = 'home' }: { children: React.ReactN
   return (
     <main className="app-shell">
       <div className="topbar">
-        <Link href="/" className="brand-pill">
+        <Link href="/play" className="brand-pill">
           <Image src="/logo-negro.png" alt="ProKicks" width={132} height={42} className="logo" priority />
         </Link>
         <Link href="/perfil" className="avatar">PK</Link>

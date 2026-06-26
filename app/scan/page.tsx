@@ -8,7 +8,7 @@ export default function ScanPage(){
   const [msg,setMsg]=useState('');
   async function lookup(){
     setMsg('');
-    const { data, error } = await supabase.from('devices').select('*, spots(*)').eq('qr_code', code).maybeSingle();
+    const { data, error } = await supabase.from('prokicks_devices').select('*, prokicks_spots(*)').eq('qr_code', code).maybeSingle();
     if(error || !data){ setMsg('QR no encontrado. Usa datos demo o carga seed.sql.'); return; }
     window.location.href = `/spots/${data.spot_id}`;
   }
