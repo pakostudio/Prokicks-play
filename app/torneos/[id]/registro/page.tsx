@@ -10,7 +10,7 @@ import { supabase } from '@/lib/supabase';
 export default function TournamentRegistration(){
   const params = useParams<{ id:string }>();
   const tournamentId = params.id;
-  const [form,setForm]=useState({ name:'', email:'', nickname:'', notes:'' });
+  const [form,setForm]=useState({ name:'', email:'', nickname:'' });
   const [message,setMessage]=useState('');
   const [loading,setLoading]=useState(false);
   function update(k:string,v:string){ setForm(prev=>({...prev,[k]:v})); }
@@ -18,12 +18,11 @@ export default function TournamentRegistration(){
     setLoading(true); setMessage('');
     const { error } = await supabase.from('prokicks_tournament_registrations').insert({
       tournament_id: tournamentId?.startsWith('demo-') ? null : tournamentId,
-      participant_name: form.name,
-      participant_email: form.email,
+      user_id: null,
+      player_name: form.name,
+      player_email: form.email,
       nickname: form.nickname,
-      notes: form.notes,
-      status: 'registered',
-      cost: 0
+      status: 'registered'
     });
     setLoading(false);
     setMessage(error ? error.message : 'Registro recibido. Esta primera etapa no tiene costo.');
@@ -36,7 +35,6 @@ export default function TournamentRegistration(){
       <input className="input" placeholder="Nombre completo" value={form.name} onChange={(e)=>update('name',e.target.value)} />
       <input className="input" type="email" placeholder="Email" value={form.email} onChange={(e)=>update('email',e.target.value)} />
       <input className="input" placeholder="Nickname ProKicks" value={form.nickname} onChange={(e)=>update('nickname',e.target.value)} />
-      <textarea className="input" placeholder="Notas opcionales" value={form.notes} onChange={(e)=>update('notes',e.target.value)} />
       {message && <div className="alert ok">{message}</div>}
       <button className="btn btn-primary" disabled={loading || !form.name || !form.email} onClick={submit}>{loading?'Registrando...':'Confirmar registro sin costo'}</button>
     </section>

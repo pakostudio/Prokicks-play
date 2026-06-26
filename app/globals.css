@@ -46,3 +46,16 @@ html,body{background:var(--bg);color:var(--text);font-family:Arial, Helvetica, s
 .hero-line{right:-120px;top:-90px;width:360px;height:220px;border-width:4px;opacity:.55}
 .hero-copyline{left:34px;bottom:42px;font-size:17px}
 .access-content{margin-top:0;padding:0 32px 28px}.access-title h1{font-size:32px}.access-title p{font-size:15px;margin-bottom:20px}.login-card{padding:22px 20px;gap:12px}.login-card h2{font-size:22px}.field-control{min-height:52px}.btn-login{min-height:54px}.register-block{margin:18px 0 16px}.btn-register{height:50px}.or-divider{margin:14px 0}.guest-card{min-height:66px}.guest-card strong{font-size:16px}.guest-card p{font-size:13px}.consent-link{color:var(--action);font-weight:800;margin-left:4px;white-space:nowrap}.legal-page{min-height:100vh;max-width:780px;margin:0 auto;background:var(--bg);padding:28px 20px}.legal-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:26px;box-shadow:var(--shadow)}.legal-card h1{margin:8px 0 16px;color:#0f172a;font-size:32px;letter-spacing:-.035em}.legal-card p{color:var(--muted);line-height:1.55}.auth-card{margin-top:22vh}.tournament-card{display:grid;gap:12px}.tournament-icon{width:44px;height:44px;border-radius:14px;background:#eef4ff;color:var(--navy);display:grid;place-items:center}.tournament-meta{display:grid;gap:7px;color:var(--muted);font-size:14px}.tournament-meta span{display:flex;align-items:center;gap:8px}.tournament-hero .btn{margin-bottom:0}.app-shell textarea.input{min-height:94px;padding-top:14px;resize:vertical}.grid .btn-soft,.grid .btn-primary{position:relative;z-index:1}@media(max-width:390px){.product-hero-img{width:240px;right:4px}.access-hero{height:236px}.login-card{gap:10px}.register-block{margin-top:14px}.guest-card{grid-template-columns:38px 1fr 18px}}
+
+/* Sprint 1.3 admin tournament management */
+.tight{gap:10px}
+.textarea{min-height:96px;resize:vertical}
+.compact-list{gap:10px}
+.admin-row{width:100%;text-align:left;border:1px solid var(--line);background:#fff;border-radius:14px;padding:14px;display:grid;gap:5px;color:var(--ink);cursor:pointer}
+.admin-row strong{font-size:15px}
+.admin-row span,.admin-row small{color:var(--muted);font-size:12px;display:flex;align-items:center;gap:6px}
+.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:14px;background:#fff}
+.admin-table{width:100%;border-collapse:collapse;font-size:13px;min-width:720px}
+.admin-table th,.admin-table td{padding:12px;border-bottom:1px solid var(--line);text-align:left}
+.admin-table th{color:var(--navy);background:#F8FAFC}
+.admin-table td{color:var(--ink)}

@@ -1,4 +1,4 @@
-# ProKicks Play · Sprint 1.2
+# ProKicks Play · Sprint 1.3
 
 Incluye correcciones urgentes para revisión con cliente:
 
