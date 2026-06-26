@@ -28,49 +28,43 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="access-screen">
+    <main className="access-screen approved-access-screen">
       <SupabaseNotice />
 
-      <section className="access-hero">
-        <div className="hero-bg-players" aria-hidden="true">
-          <span className="player player-left" />
-          <span className="player player-right" />
-        </div>
-        <div className="hero-line" />
-        <div className="hero-copyline">Donde empieza<br />el juego</div>
+      <section className="approved-hero" aria-label="Portada ProKicks">
         <Image
-          src="/prokicks-hero.jpeg"
-          alt="Mesa ProKicks"
-          width={900}
-          height={600}
+          src="/prokicks-approved-hero.jpeg"
+          alt="ProKicks: donde empieza el juego"
+          fill
           priority
-          className="product-hero-img"
+          sizes="(max-width: 520px) 100vw, 480px"
+          className="approved-hero-image"
         />
       </section>
 
-      <section className="access-content">
-        <div className="access-title">
+      <section className="access-content approved-access-content">
+        <div className="access-title approved-access-title">
           <h1>Bienvenido</h1>
           <p>Conecta, juega y forma parte de la comunidad ProKicks.</p>
         </div>
 
-        <section className="login-card">
+        <section className="login-card approved-login-card">
           <h2>¿Ya estás registrado?</h2>
-          <p>Ingresa con tu correo y contraseña</p>
+          <p>Ingresa con tu usuario y contraseña</p>
 
-          <label className="field-control">
-            <UserRound size={22} />
+          <label className="field-control approved-field-control">
+            <UserRound size={24} />
             <input
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Correo electrónico"
+              placeholder="Usuario o correo"
               type="email"
               autoComplete="email"
             />
           </label>
 
-          <label className="field-control">
-            <Lock size={22} />
+          <label className="field-control approved-field-control">
+            <Lock size={24} />
             <input
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -78,24 +72,24 @@ export default function LoginPage() {
               type="password"
               autoComplete="current-password"
             />
-            <Eye size={22} className="field-extra" />
+            <Eye size={24} className="field-extra" />
           </label>
 
           <Link className="forgot-link" href="/recuperar">¿Olvidaste tu contraseña?</Link>
           {message && <div className="alert error">{message}</div>}
-          <button className="btn-login" onClick={submit} disabled={loading}>
+          <button className="btn-login approved-btn-login" onClick={submit} disabled={loading}>
             {loading ? 'Entrando...' : 'Iniciar sesión'}
           </button>
         </section>
 
-        <div className="register-block">
+        <div className="register-block approved-register-block">
           <p>¿Aún no tienes cuenta?</p>
-          <Link className="btn-register" href="/registro">Regístrate</Link>
+          <Link className="btn-register approved-btn-register" href="/registro">Regístrate</Link>
         </div>
 
-        <div className="or-divider"><span />o<span /></div>
+        <div className="or-divider approved-or-divider"><span />o<span /></div>
 
-        <Link className="guest-card" href="/guest">
+        <Link className="guest-card approved-guest-card" href="/guest">
           <Users size={25} />
           <div>
             <strong>Entrar como invitado</strong>

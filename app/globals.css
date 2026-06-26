@@ -59,3 +59,136 @@ html,body{background:var(--bg);color:var(--text);font-family:Arial, Helvetica, s
 .admin-table th,.admin-table td{padding:12px;border-bottom:1px solid var(--line);text-align:left}
 .admin-table th{color:var(--navy);background:#F8FAFC}
 .admin-table td{color:var(--ink)}
+
+/* Sprint 1.4 · Portada aprobada ProKicks
+   Parche visual mínimo: solo portada/login. No toca torneos, admin, Supabase ni dependencias. */
+.approved-access-screen{
+  background:linear-gradient(180deg,#F4F6F8 0%,#EEF2F7 58%,#F8FAFC 100%);
+  box-shadow:0 24px 70px rgba(15,23,42,.08);
+}
+.approved-hero{
+  position:relative;
+  height:375px;
+  overflow:hidden;
+  border-bottom-left-radius:0;
+  border-bottom-right-radius:0;
+  background:#F4F6F8;
+}
+.approved-hero:after{
+  content:"";
+  position:absolute;
+  inset:auto 0 0 0;
+  height:96px;
+  background:linear-gradient(180deg,rgba(244,246,248,0) 0%,#F4F6F8 86%);
+  pointer-events:none;
+  z-index:2;
+}
+.approved-hero-image{
+  object-fit:cover;
+  object-position:top center;
+  filter:saturate(.98) contrast(1.01);
+}
+.approved-access-content{
+  margin-top:-6px;
+  padding:0 36px 34px;
+  position:relative;
+  z-index:3;
+}
+.approved-access-title h1{
+  color:#0F172A;
+  font-size:38px;
+  line-height:.98;
+  letter-spacing:-.045em;
+  margin:0 0 14px;
+  font-weight:900;
+}
+.approved-access-title p{
+  color:#5E6F8C;
+  font-size:17px;
+  line-height:1.35;
+  margin:0 0 30px;
+}
+.approved-login-card{
+  border-radius:16px;
+  border:1px solid rgba(203,213,225,.92);
+  padding:34px 32px 30px;
+  box-shadow:0 18px 42px rgba(15,23,42,.12);
+  gap:18px;
+}
+.approved-login-card h2{
+  font-size:26px;
+  letter-spacing:-.04em;
+}
+.approved-login-card p{
+  font-size:16px;
+  color:#64748B;
+}
+.approved-field-control{
+  min-height:64px;
+  border-radius:12px;
+  grid-template-columns:34px 1fr 30px;
+  padding:0 18px;
+  color:#66789A;
+  border-color:#CBD5E1;
+}
+.approved-field-control input{
+  font-size:17px;
+}
+.approved-field-control input::placeholder{
+  color:#74839B;
+}
+.approved-btn-login{
+  min-height:61px;
+  border-radius:10px;
+  font-size:19px;
+  background:#2563EB;
+  box-shadow:0 16px 30px rgba(37,99,235,.22);
+}
+.approved-btn-login:after{
+  border-width:0 0 25px 25px;
+  border-color:transparent transparent #F97316 transparent;
+}
+.approved-register-block{
+  margin:30px 0 22px;
+}
+.approved-register-block p{
+  margin-bottom:14px;
+  color:#1F2937;
+}
+.approved-btn-register{
+  height:58px;
+  border-radius:10px;
+  border-width:1.5px;
+  background:rgba(255,255,255,.72);
+  font-size:20px;
+}
+.approved-or-divider{
+  margin:22px 0;
+}
+.approved-guest-card{
+  min-height:80px;
+  border-radius:12px;
+  background:rgba(255,255,255,.82);
+  box-shadow:0 10px 24px rgba(15,23,42,.05);
+}
+.approved-guest-card strong{
+  font-size:18px;
+}
+.approved-guest-card p{
+  font-size:14px;
+}
+@media(max-width:430px){
+  .approved-hero{height:350px;}
+  .approved-access-content{padding-left:28px;padding-right:28px;}
+  .approved-access-title h1{font-size:34px;}
+  .approved-login-card{padding:26px 20px;gap:14px;}
+  .approved-field-control{min-height:58px;}
+  .approved-btn-login{min-height:56px;}
+}
+@media(max-width:380px){
+  .approved-hero{height:315px;}
+  .approved-access-content{padding-left:22px;padding-right:22px;}
+  .approved-access-title h1{font-size:31px;}
+  .approved-access-title p{font-size:15px;margin-bottom:20px;}
+  .approved-login-card h2{font-size:22px;}
+}
