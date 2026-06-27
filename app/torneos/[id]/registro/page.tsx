@@ -107,17 +107,23 @@ export default function TournamentRegistration() {
     });
 
     if (!tournamentId || tournamentId.startsWith('demo-')) return;
-    supabase
-      .from('prokicks_tournaments')
-      .select('*')
-      .eq('id', tournamentId)
-      .maybeSingle()
-      .then(({ data }) => {
+
+    async function loadTournament() {
+      try {
+        const { data, error } = await supabase
+          .from('prokicks_tournaments')
+          .select('*')
+          .eq('id', tournamentId)
+          .maybeSingle();
+
+        if (error) throw error;
         if (data) setTournament(data as Tournament);
-      })
-      .catch((error) => {
+      } catch (error) {
         captureError(error, { area: 'tournament-registration-select', tournamentId });
-      });
+      }
+    }
+
+    loadTournament();
   }, [tournamentId]);
 
   const participants = useMemo(() => {
@@ -189,6 +195,7 @@ export default function TournamentRegistration() {
   async function submit() {
     setMessage('');
     setEmailMessage('');
+
     if (!canSubmit) {
       setMessage('Revisa los campos marcados antes de confirmar.');
       trackEvent('Tournament Registration Error', {
@@ -198,6 +205,7 @@ export default function TournamentRegistration() {
       });
       return;
     }
+
     if (loading) return;
     setLoading(true);
 
@@ -323,10 +331,12 @@ export default function TournamentRegistration() {
       paid: isPaidTournament,
       email_sent: Boolean(emailResponse?.ok),
     });
+
     setMessage(isPaidTournament
       ? 'Tu pre-registro fue recibido. Te contactaremos para confirmar el pago.'
       : 'Registro recibido. Guardamos tu lugar y tus aceptaciones de reglamento e imagen.'
     );
+
     setEmailMessage(emailResponse?.ok ? 'También enviamos la confirmación por correo.' : 'Registro recibido. El correo de confirmación quedó pendiente.');
     setForm(initialForm);
   }
@@ -456,6 +466,7 @@ export default function TournamentRegistration() {
           </span>
         </label>
         {errorText('acceptedRules')}
+
         <label className={errors.acceptedImageRelease ? 'check-row check-error' : 'check-row'}>
           <input type="checkbox" checked={form.acceptedImageRelease} onChange={(e) => update('acceptedImageRelease', e.target.checked)} />
           <span>
@@ -466,6 +477,7 @@ export default function TournamentRegistration() {
         {errorText('acceptedImageRelease')}
 
         {hasMinor && <div className="alert warn">Detectamos categoría o edad de menor. Se requiere autorización de madre, padre o tutor.</div>}
+
         {hasMinor && (
           <div className="mini-stack">
             <input className={errors.guardianName ? 'input input-error' : 'input'} placeholder="Nombre del tutor" value={form.guardianName} onChange={(e) => update('guardianName', e.target.value)} />
@@ -483,9 +495,11 @@ export default function TournamentRegistration() {
         )}
 
         {message && <div className={message.includes('recibido') || message.includes('Pre-registro') ? 'alert ok' : 'alert warn'}>{message}</div>}
+
         <button className="btn btn-primary btn-full" disabled={loading || !canSubmit} onClick={submit}>
           {loading ? 'Registrando...' : isPaidTournament ? 'Confirmar pre-registro' : 'Confirmar registro'}
         </button>
+
         {!canSubmit && <p className="helper-text">Completa todos los campos obligatorios y acepta reglamento/imagen para continuar.</p>}
       </section>
     </AppShell>
