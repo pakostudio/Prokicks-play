@@ -6,6 +6,8 @@ import { useParams } from 'next/navigation';
 import { ChevronLeft, ShieldCheck, Trophy, UserRound, UsersRound } from 'lucide-react';
 import { AppShell } from '@/components/AppShell';
 import { supabase } from '@/lib/supabase';
+import { trackEvent } from '@/lib/analytics';
+import { captureError } from '@/lib/monitoring';
 
 type Participant = {
   name: string;
@@ -37,6 +39,8 @@ type Tournament = {
   cost?: number | null;
   currency?: string | null;
   payment_url?: string | null;
+  starts_at?: string | null;
+  venue?: string | null;
 };
 
 const initialForm: RegistrationForm = {
@@ -98,6 +102,10 @@ export default function TournamentRegistration() {
   const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
+    trackEvent('Tournament Registration Started', {
+      tournament_id: tournamentId,
+    });
+
     if (!tournamentId || tournamentId.startsWith('demo-')) return;
     supabase
       .from('prokicks_tournaments')
@@ -106,6 +114,9 @@ export default function TournamentRegistration() {
       .maybeSingle()
       .then(({ data }) => {
         if (data) setTournament(data as Tournament);
+      })
+      .catch((error) => {
+        captureError(error, { area: 'tournament-registration-select', tournamentId });
       });
   }, [tournamentId]);
 
@@ -151,7 +162,8 @@ export default function TournamentRegistration() {
       if (!form.guardianName.trim()) next.guardianName = 'Nombre del tutor obligatorio.';
       if (!form.guardianWhatsapp.trim()) next.guardianWhatsapp = 'WhatsApp del tutor obligatorio.';
       else if (!isValidWhatsapp(form.guardianWhatsapp)) next.guardianWhatsapp = 'WhatsApp del tutor inválido.';
-      if (form.guardianEmail.trim() && !isValidEmail(form.guardianEmail)) next.guardianEmail = 'Email del tutor inválido.';
+      if (!form.guardianEmail.trim()) next.guardianEmail = 'Email del tutor obligatorio.';
+      else if (!isValidEmail(form.guardianEmail)) next.guardianEmail = 'Email del tutor inválido.';
       if (!form.guardianAccepted) next.guardianAccepted = 'Debes confirmar autorización del tutor.';
     }
 
@@ -179,6 +191,11 @@ export default function TournamentRegistration() {
     setEmailMessage('');
     if (!canSubmit) {
       setMessage('Revisa los campos marcados antes de confirmar.');
+      trackEvent('Tournament Registration Error', {
+        tournament_id: tournamentId,
+        reason: 'validation',
+        modality: form.modality,
+      });
       return;
     }
     if (loading) return;
@@ -192,7 +209,7 @@ export default function TournamentRegistration() {
     }));
 
     const paymentStatus = isPaidTournament ? 'pago_pendiente' : 'sin_costo';
-    const registrationStatus = isPaidTournament ? 'pre_registro' : 'confirmado';
+    const registrationStatus = isPaidTournament ? 'pendiente' : 'confirmado';
 
     const payload = {
       tournament_id: tournamentId?.startsWith('demo-') ? null : tournamentId,
@@ -221,7 +238,7 @@ export default function TournamentRegistration() {
       guardian_required: hasMinor,
       guardian_name: hasMinor ? form.guardianName.trim() : null,
       guardian_whatsapp: hasMinor ? normalizeWhatsapp(form.guardianWhatsapp) : null,
-      guardian_email: hasMinor && form.guardianEmail ? form.guardianEmail.trim().toLowerCase() : null,
+      guardian_email: hasMinor ? form.guardianEmail.trim().toLowerCase() : null,
       guardian_accepted: hasMinor ? form.guardianAccepted : false,
       registration_payload: {
         source: 'Registro a Torneos',
@@ -245,10 +262,23 @@ export default function TournamentRegistration() {
       payment_method: isPaidTournament ? 'pendiente_configurar' : 'sin_costo',
     };
 
+    trackEvent('Tournament Registration Submitted', {
+      tournament_id: tournamentId,
+      modality: form.modality,
+      branch: form.branch,
+      paid: isPaidTournament,
+    });
+
     const { error } = await supabase.from('prokicks_tournament_registrations').insert(payload);
     setLoading(false);
 
     if (error) {
+      captureError(error, { area: 'tournament-registration-insert', tournamentId, modality: form.modality });
+      trackEvent('Tournament Registration Error', {
+        tournament_id: tournamentId,
+        reason: 'supabase_insert',
+        modality: form.modality,
+      });
       setMessage(error.message);
       return;
     }
@@ -261,6 +291,8 @@ export default function TournamentRegistration() {
         name: form.participant1.name.trim(),
         whatsapp: normalizeWhatsapp(form.participant1.whatsapp),
         tournamentTitle: tournament?.title || 'Torneo ProKicks',
+        tournamentDate: tournament?.starts_at || null,
+        venue: tournament?.venue || 'Por confirmar',
         modality: form.modality,
         branch: form.branch,
         ageCategory: hasMinor ? 'menor con tutor' : '18+',
@@ -268,15 +300,34 @@ export default function TournamentRegistration() {
         currency,
         paymentStatus,
         registrationStatus,
+        participants: cleanParticipants,
+        acceptedRules: form.acceptedRules,
+        acceptedImageRelease: form.acceptedImageRelease,
+        guardian: hasMinor ? {
+          name: form.guardianName.trim(),
+          whatsapp: normalizeWhatsapp(form.guardianWhatsapp),
+          email: form.guardianEmail.trim().toLowerCase(),
+          accepted: form.guardianAccepted,
+        } : null,
       }),
-    }).then((r) => r.json()).catch(() => ({ ok: false }));
+    }).then((r) => r.json()).catch((error) => {
+      captureError(error, { area: 'tournament-registration-email', tournamentId });
+      return { ok: false };
+    });
 
     setSubmitted(true);
+    trackEvent('Tournament Registration Completed', {
+      tournament_id: tournamentId,
+      modality: form.modality,
+      branch: form.branch,
+      paid: isPaidTournament,
+      email_sent: Boolean(emailResponse?.ok),
+    });
     setMessage(isPaidTournament
-      ? 'Pre-registro recibido. Tu lugar queda pendiente hasta confirmar pago.'
+      ? 'Tu pre-registro fue recibido. Te contactaremos para confirmar el pago.'
       : 'Registro recibido. Guardamos tu lugar y tus aceptaciones de reglamento e imagen.'
     );
-    setEmailMessage(emailResponse?.ok ? 'También enviamos la confirmación por correo.' : 'Registro guardado. El correo de confirmación quedó pendiente de revisión.');
+    setEmailMessage(emailResponse?.ok ? 'También enviamos la confirmación por correo.' : 'Registro recibido. El correo de confirmación quedó pendiente.');
     setForm(initialForm);
   }
 
@@ -401,7 +452,7 @@ export default function TournamentRegistration() {
           <input type="checkbox" checked={form.acceptedRules} onChange={(e) => update('acceptedRules', e.target.checked)} />
           <span>
             Declaro que leí y acepto el Reglamento Oficial de Competencia ProKicks.
-            <Link href="/reglamento" className="inline-link">Ver reglamento</Link>
+            <Link href="/legal/reglamento" className="inline-link" onClick={() => trackEvent('Rules Link Clicked', { tournament_id: tournamentId })}>Ver reglamento</Link>
           </span>
         </label>
         {errorText('acceptedRules')}
@@ -409,7 +460,7 @@ export default function TournamentRegistration() {
           <input type="checkbox" checked={form.acceptedImageRelease} onChange={(e) => update('acceptedImageRelease', e.target.checked)} />
           <span>
             Autorizo el uso de mi imagen para material del evento ProKicks.
-            <Link href="/legal/uso-de-imagen" className="inline-link">Ver autorización</Link>
+            <Link href="/legal/uso-de-imagen" className="inline-link" onClick={() => trackEvent('Image Consent Link Clicked', { tournament_id: tournamentId })}>Ver autorización</Link>
           </span>
         </label>
         {errorText('acceptedImageRelease')}
@@ -421,7 +472,7 @@ export default function TournamentRegistration() {
             {errorText('guardianName')}
             <input className={errors.guardianWhatsapp ? 'input input-error' : 'input'} inputMode="tel" placeholder="WhatsApp del tutor · 10 dígitos" value={form.guardianWhatsapp} onChange={(e) => update('guardianWhatsapp', e.target.value)} />
             {errorText('guardianWhatsapp')}
-            <input className={errors.guardianEmail ? 'input input-error' : 'input'} type="email" placeholder="Email del tutor opcional" value={form.guardianEmail} onChange={(e) => update('guardianEmail', e.target.value)} />
+            <input className={errors.guardianEmail ? 'input input-error' : 'input'} type="email" placeholder="Email del tutor" value={form.guardianEmail} onChange={(e) => update('guardianEmail', e.target.value)} />
             {errorText('guardianEmail')}
             <label className={errors.guardianAccepted ? 'check-row check-error' : 'check-row'}>
               <input type="checkbox" checked={form.guardianAccepted} onChange={(e) => update('guardianAccepted', e.target.checked)} />

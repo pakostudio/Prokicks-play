@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { Download } from 'lucide-react';
 import { AppShell } from '@/components/AppShell';
 import { supabase } from '@/lib/supabase';
+import { trackEvent } from '@/lib/analytics';
+import { captureError } from '@/lib/monitoring';
 
 type Registration = {
   id: string;
@@ -32,9 +34,12 @@ type Registration = {
   guardian_required?: boolean | null;
   guardian_name?: string | null;
   guardian_whatsapp?: string | null;
+  guardian_email?: string | null;
+  guardian_accepted?: boolean | null;
   cost?: number | null;
   currency?: string | null;
   payment_status?: string | null;
+  payment_method?: string | null;
   registration_status?: string | null;
   status: string;
   created_at: string;
@@ -96,6 +101,8 @@ export default function AdminRegistrosTorneosPage() {
     requiere_tutor: r.guardian_required ? 'Sí' : 'No',
     tutor: r.guardian_name || '',
     whatsapp_tutor: r.guardian_whatsapp || '',
+    email_tutor: r.guardian_email || '',
+    autorizacion_tutor: r.guardian_accepted ? 'Sí' : 'No',
     fecha: r.created_at,
   })), [rows]);
 
@@ -106,12 +113,18 @@ export default function AdminRegistrosTorneosPage() {
       .from('prokicks_tournament_registrations')
       .select('*, tournament:prokicks_tournaments(title)')
       .order('created_at', { ascending: false });
-    if (error) setMsg(error.message);
+    if (error) {
+      captureError(error, { area: 'admin-registrations-select' });
+      setMsg(error.message);
+    }
     setRows((data || []) as Registration[]);
     setLoading(false);
   }
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => {
+    trackEvent('Admin Registrations Viewed');
+    load();
+  }, []);
 
   return (
     <AppShell active="perfil">
@@ -154,8 +167,8 @@ export default function AdminRegistrosTorneosPage() {
                   <td>{r.participante_2 || '-'}<br /><small>{r.whatsapp_2}</small></td>
                   <td>{r.email_contacto}<br /><small>{r.whatsapp_contacto}</small></td>
                   <td>{r.costo}<br /><small>{r.payment_status}</small></td>
-                  <td>Reglas: {r.reglamento_aceptado}<br />Imagen: {r.imagen_aceptada}</td>
-                  <td>{r.registration_status}</td>
+                  <td>Reglas: {r.reglamento_aceptado}<br />Imagen: {r.imagen_aceptada}<br /><small>Tutor: {r.requiere_tutor} {r.tutor ? `· ${r.tutor}` : ''}</small></td>
+                  <td>{r.registration_status}<br /><small>{new Date(r.fecha).toLocaleString('es-MX')}</small></td>
                 </tr>
               ))}
             </tbody>

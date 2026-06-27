@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { CalendarDays, Plus, Save, Trash2 } from 'lucide-react';
 import { AppShell } from '@/components/AppShell';
 import { supabase } from '@/lib/supabase';
+import { captureError } from '@/lib/monitoring';
 
 type Tournament = {
   id?: string;
@@ -23,12 +24,14 @@ type Tournament = {
   currency: string;
   payment_method: string;
   payment_url: string;
+  payment_instructions: string;
   rules: string;
 };
 
 const empty:Tournament = {
   title:'', description:'', city:'CDMX', state:'Ciudad de México', format:'1v1', level:'abierto', status:'open',
   starts_at:'', ends_at:'', capacity:32, is_free:true, cost:0, currency:'MXN', payment_method:'pendiente_configurar', payment_url:'',
+  payment_instructions:'',
   rules:'Registro sujeto a disponibilidad. El participante debe aceptar reglamento y autorización de uso de imagen.'
 };
 
@@ -56,7 +59,7 @@ export default function AdminTorneosPage(){
   async function load(){
     setLoading(true);
     const { data, error } = await supabase.from('prokicks_tournaments').select('*').order('starts_at', { ascending:true });
-    if(error) setMsg(error.message);
+    if(error){ captureError(error, { area:'admin-tournaments-select' }); setMsg(error.message); }
     setItems((data || []) as Tournament[]);
     setLoading(false);
   }
@@ -84,13 +87,14 @@ export default function AdminTorneosPage(){
       currency: form.currency || 'MXN',
       payment_method: form.is_free ? 'sin_costo' : (form.payment_method || 'pendiente_configurar'),
       payment_url: form.payment_url || null,
+      payment_instructions: form.payment_instructions || null,
       rules: form.rules,
       updated_at: new Date().toISOString()
     };
     const result = editing
       ? await supabase.from('prokicks_tournaments').update(payload).eq('id', form.id)
       : await supabase.from('prokicks_tournaments').insert(payload);
-    if(result.error){ setMsg(result.error.message); return; }
+    if(result.error){ captureError(result.error, { area:'admin-tournaments-save', editing }); setMsg(result.error.message); return; }
     setMsg(editing ? 'Torneo actualizado.' : 'Torneo creado.');
     setForm(empty);
     load();
@@ -101,7 +105,7 @@ export default function AdminTorneosPage(){
     const ok = window.confirm('¿Eliminar este torneo?');
     if(!ok) return;
     const { error } = await supabase.from('prokicks_tournaments').delete().eq('id', id);
-    if(error){ setMsg(error.message); return; }
+    if(error){ captureError(error, { area:'admin-tournaments-delete', id }); setMsg(error.message); return; }
     setMsg('Torneo eliminado.');
     setForm(empty);
     load();
@@ -142,6 +146,7 @@ export default function AdminTorneosPage(){
             <select className="input" value={form.currency} onChange={e=>update('currency', e.target.value)}><option value="MXN">MXN</option><option value="USD">USD</option></select>
             <select className="input" value={form.payment_method} onChange={e=>update('payment_method', e.target.value)}><option value="pendiente_configurar">Pago futuro / pendiente</option><option value="mercado_pago">Mercado Pago futuro</option><option value="stripe">Stripe futuro</option><option value="transferencia">Transferencia</option><option value="whatsapp">Confirmar por WhatsApp</option></select>
             <input className="input" placeholder="URL de pago futura opcional" value={form.payment_url} onChange={e=>update('payment_url', e.target.value)} />
+            <textarea className="input textarea" placeholder="Instrucciones de pago futuras" value={form.payment_instructions} onChange={e=>update('payment_instructions', e.target.value)} />
           </div>}
         </div>
 
@@ -154,7 +159,7 @@ export default function AdminTorneosPage(){
       <div className="card form">
         <div className="row"><h2 className="card-title">Torneos existentes</h2><button className="btn btn-soft" onClick={load}>{loading?'Cargando...':'Actualizar'}</button></div>
         <div className="list compact-list">
-          {sorted.map(t=><button key={t.id} className="admin-row" onClick={()=>setForm({...empty, ...t, starts_at:t.starts_at || '', ends_at:t.ends_at || '', cost:Number(t.cost || 0), currency:t.currency || 'MXN', payment_method:t.payment_method || 'pendiente_configurar', payment_url:t.payment_url || ''})}>
+          {sorted.map(t=><button key={t.id} className="admin-row" onClick={()=>setForm({...empty, ...t, starts_at:t.starts_at || '', ends_at:t.ends_at || '', cost:Number(t.cost || 0), currency:t.currency || 'MXN', payment_method:t.payment_method || 'pendiente_configurar', payment_url:t.payment_url || '', payment_instructions:t.payment_instructions || ''})}>
             <strong>{t.title}</strong><span>{t.format} · {t.level} · {t.status}</span><small><CalendarDays size={13}/>{t.starts_at ? new Date(t.starts_at).toLocaleString('es-MX') : 'Sin fecha'} · {t.is_free === false ? money(Number(t.cost || 0), t.currency || 'MXN') : 'Sin costo'}</small>
           </button>)}
           {!sorted.length && <p className="p">No hay torneos todavía.</p>}
