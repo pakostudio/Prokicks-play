@@ -54,7 +54,22 @@ async function enqueueEmailAttempt(payload: Record<string, unknown>) {
 
   try {
     const client = createClient(supabaseUrl, supabaseAnonKey);
-    await client.from('prokicks_email_queue').insert(payload);
+    const { error } = await client.from('prokicks_email_queue').insert(payload);
+
+    if (!error) return;
+
+    const legacyPayload = {
+      recipient_email: payload.recipient || payload.recipient_email || null,
+      subject: payload.subject || 'ProKicks Play',
+      template: 'tournament_registration',
+      payload: payload.payload || payload,
+      status: payload.status || 'pending',
+      provider: payload.provider || 'resend',
+      error_message: payload.error || null,
+      recipient_type: 'user',
+    };
+
+    await client.from('prokicks_email_queue').insert(legacyPayload);
   } catch (error) {
     captureError(error, { area: 'email-queue' });
   }
