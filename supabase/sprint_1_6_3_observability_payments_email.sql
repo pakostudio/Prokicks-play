@@ -4,6 +4,17 @@
 
 create extension if not exists "uuid-ossp";
 
+create table if not exists public.prokicks_tournaments (
+  id uuid primary key default uuid_generate_v4(),
+  title text not null default 'Torneo ProKicks',
+  created_at timestamptz default now()
+);
+
+create table if not exists public.prokicks_tournament_registrations (
+  id uuid primary key default uuid_generate_v4(),
+  created_at timestamptz default now()
+);
+
 alter table public.prokicks_tournaments
   add column if not exists state text default 'Ciudad de México',
   add column if not exists start_date date,
@@ -23,6 +34,8 @@ alter table public.prokicks_tournaments
   add column if not exists updated_at timestamptz default now();
 
 alter table public.prokicks_tournament_registrations
+  add column if not exists tournament_id uuid,
+  add column if not exists user_id uuid,
   add column if not exists participant_name text,
   add column if not exists participant_email text,
   add column if not exists player_name text,
@@ -50,6 +63,9 @@ alter table public.prokicks_tournament_registrations
   add column if not exists guardian_email text,
   add column if not exists guardian_accepted boolean default false,
   add column if not exists registration_payload jsonb default '{}'::jsonb,
+  add column if not exists notes text,
+  add column if not exists cost numeric default 0,
+  add column if not exists currency text default 'MXN',
   add column if not exists payment_status text default 'sin_costo',
   add column if not exists payment_method text default 'sin_costo',
   add column if not exists payment_url text,
@@ -58,33 +74,6 @@ alter table public.prokicks_tournament_registrations
   add column if not exists registration_status text default 'confirmado',
   add column if not exists status text default 'confirmado',
   add column if not exists updated_at timestamptz default now();
-
-update public.prokicks_tournaments
-set
-  starts_at = coalesce(starts_at, start_date::timestamptz),
-  capacity = coalesce(capacity, max_players),
-  is_free = coalesce(is_free, coalesce(cost, 0) = 0),
-  currency = coalesce(currency, 'MXN'),
-  payment_method = coalesce(payment_method, case when coalesce(cost, 0) = 0 then 'sin_costo' else 'pendiente_configurar' end)
-where true;
-
-update public.prokicks_tournament_registrations
-set
-  participant_name = coalesce(participant_name, player_name, participant_1_name),
-  participant_email = coalesce(participant_email, player_email, contact_email),
-  player_name = coalesce(player_name, participant_name, participant_1_name),
-  player_email = coalesce(player_email, participant_email, contact_email),
-  contact_email = coalesce(contact_email, participant_email, player_email),
-  participant_1_name = coalesce(participant_1_name, participant_name, player_name),
-  payment_status = coalesce(payment_status, case when coalesce(cost, 0) = 0 then 'sin_costo' else 'pago_pendiente' end),
-  payment_method = coalesce(payment_method, case when coalesce(cost, 0) = 0 then 'sin_costo' else 'pendiente_configurar' end),
-  registration_status = coalesce(registration_status, case when coalesce(cost, 0) = 0 then 'confirmado' else 'pendiente' end),
-  status = case
-    when status in ('registered', 'waitlist', 'checked_in') then 'confirmado'
-    when status is null then coalesce(registration_status, 'confirmado')
-    else status
-  end
-where true;
 
 do $$
 begin
@@ -124,6 +113,33 @@ begin
       drop constraint prokicks_tournament_registrations_payment_status_check;
   end if;
 end $$;
+
+update public.prokicks_tournaments
+set
+  starts_at = coalesce(starts_at, start_date::timestamptz),
+  capacity = coalesce(capacity, max_players),
+  is_free = coalesce(is_free, coalesce(cost, 0) = 0),
+  currency = coalesce(currency, 'MXN'),
+  payment_method = coalesce(payment_method, case when coalesce(cost, 0) = 0 then 'sin_costo' else 'pendiente_configurar' end)
+where true;
+
+update public.prokicks_tournament_registrations
+set
+  participant_name = coalesce(participant_name, player_name, participant_1_name),
+  participant_email = coalesce(participant_email, player_email, contact_email),
+  player_name = coalesce(player_name, participant_name, participant_1_name),
+  player_email = coalesce(player_email, participant_email, contact_email),
+  contact_email = coalesce(contact_email, participant_email, player_email),
+  participant_1_name = coalesce(participant_1_name, participant_name, player_name),
+  payment_status = coalesce(payment_status, case when coalesce(cost, 0) = 0 then 'sin_costo' else 'pago_pendiente' end),
+  payment_method = coalesce(payment_method, case when coalesce(cost, 0) = 0 then 'sin_costo' else 'pendiente_configurar' end),
+  registration_status = coalesce(registration_status, case when coalesce(cost, 0) = 0 then 'confirmado' else 'pendiente' end),
+  status = case
+    when status in ('registered', 'waitlist', 'checked_in') then 'confirmado'
+    when status is null then coalesce(registration_status, 'confirmado')
+    else status
+  end
+where true;
 
 do $$
 begin

@@ -106,27 +106,18 @@ export default function TournamentRegistration() {
       tournament_id: tournamentId,
     });
 
-    async function loadTournament() {
-      if (!tournamentId || tournamentId.startsWith('demo-')) return;
-
-      try {
-        const { data, error } = await supabase
-          .from('prokicks_tournaments')
-          .select('*')
-          .eq('id', tournamentId)
-          .maybeSingle();
-
-        if (error) throw error;
+    if (!tournamentId || tournamentId.startsWith('demo-')) return;
+    supabase
+      .from('prokicks_tournaments')
+      .select('*')
+      .eq('id', tournamentId)
+      .maybeSingle()
+      .then(({ data }) => {
         if (data) setTournament(data as Tournament);
-      } catch (error) {
-        captureError(error, {
-          area: 'tournament-registration-select',
-          tournamentId,
-        });
-      }
-    }
-
-    loadTournament();
+      })
+      .catch((error) => {
+        captureError(error, { area: 'tournament-registration-select', tournamentId });
+      });
   }, [tournamentId]);
 
   const participants = useMemo(() => {
@@ -198,7 +189,6 @@ export default function TournamentRegistration() {
   async function submit() {
     setMessage('');
     setEmailMessage('');
-
     if (!canSubmit) {
       setMessage('Revisa los campos marcados antes de confirmar.');
       trackEvent('Tournament Registration Error', {
@@ -208,7 +198,6 @@ export default function TournamentRegistration() {
       });
       return;
     }
-
     if (loading) return;
     setLoading(true);
 
@@ -294,45 +283,37 @@ export default function TournamentRegistration() {
       return;
     }
 
-    let emailResponse: { ok?: boolean } = { ok: false };
-
-    try {
-      const response = await fetch('/api/tournament-registration-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: form.contactEmail.trim().toLowerCase(),
-          name: form.participant1.name.trim(),
-          whatsapp: normalizeWhatsapp(form.participant1.whatsapp),
-          tournamentTitle: tournament?.title || 'Torneo ProKicks',
-          tournamentDate: tournament?.starts_at || null,
-          venue: tournament?.venue || 'Por confirmar',
-          modality: form.modality,
-          branch: form.branch,
-          ageCategory: hasMinor ? 'menor con tutor' : '18+',
-          cost: tournamentCost,
-          currency,
-          paymentStatus,
-          registrationStatus,
-          participants: cleanParticipants,
-          acceptedRules: form.acceptedRules,
-          acceptedImageRelease: form.acceptedImageRelease,
-          guardian: hasMinor
-            ? {
-                name: form.guardianName.trim(),
-                whatsapp: normalizeWhatsapp(form.guardianWhatsapp),
-                email: form.guardianEmail.trim().toLowerCase(),
-                accepted: form.guardianAccepted,
-              }
-            : null,
-        }),
-      });
-
-      emailResponse = await response.json();
-    } catch (error) {
+    const emailResponse = await fetch('/api/tournament-registration-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: form.contactEmail.trim().toLowerCase(),
+        name: form.participant1.name.trim(),
+        whatsapp: normalizeWhatsapp(form.participant1.whatsapp),
+        tournamentTitle: tournament?.title || 'Torneo ProKicks',
+        tournamentDate: tournament?.starts_at || null,
+        venue: tournament?.venue || 'Por confirmar',
+        modality: form.modality,
+        branch: form.branch,
+        ageCategory: hasMinor ? 'menor con tutor' : '18+',
+        cost: tournamentCost,
+        currency,
+        paymentStatus,
+        registrationStatus,
+        participants: cleanParticipants,
+        acceptedRules: form.acceptedRules,
+        acceptedImageRelease: form.acceptedImageRelease,
+        guardian: hasMinor ? {
+          name: form.guardianName.trim(),
+          whatsapp: normalizeWhatsapp(form.guardianWhatsapp),
+          email: form.guardianEmail.trim().toLowerCase(),
+          accepted: form.guardianAccepted,
+        } : null,
+      }),
+    }).then((r) => r.json()).catch((error) => {
       captureError(error, { area: 'tournament-registration-email', tournamentId });
-      emailResponse = { ok: false };
-    }
+      return { ok: false };
+    });
 
     setSubmitted(true);
     trackEvent('Tournament Registration Completed', {
@@ -342,17 +323,15 @@ export default function TournamentRegistration() {
       paid: isPaidTournament,
       email_sent: Boolean(emailResponse?.ok),
     });
-
-    setMessage(
-      isPaidTournament
-        ? 'Tu pre-registro fue recibido. Te contactaremos para confirmar el pago.'
-        : 'Registro recibido. Guardamos tu lugar y tus aceptaciones de reglamento e imagen.'
+    setMessage(isPaidTournament
+      ? 'Tu pre-registro fue recibido. Te contactaremos para confirmar el pago.'
+      : 'Registro recibido. Guardamos tu lugar y tus aceptaciones de reglamento e imagen.'
     );
     setEmailMessage(emailResponse?.ok ? 'También enviamos la confirmación por correo.' : 'Registro recibido. El correo de confirmación quedó pendiente.');
     setForm(initialForm);
   }
 
-  const errorText = (key: keyof typeof errors) => (errors[key] ? <p className="field-error">{errors[key]}</p> : null);
+  const errorText = (key: keyof typeof errors) => errors[key] ? <p className="field-error">{errors[key]}</p> : null;
 
   if (submitted) {
     return (
@@ -363,19 +342,8 @@ export default function TournamentRegistration() {
           <p className="p">{message}</p>
           {emailMessage && <div className={emailMessage.includes('También') ? 'alert ok' : 'alert warn'}>{emailMessage}</div>}
           <div className="confirmation-actions">
-            <Link className="btn btn-primary btn-full" href="/torneos">
-              Volver a torneos
-            </Link>
-            <button
-              className="btn btn-secondary btn-full"
-              onClick={() => {
-                setSubmitted(false);
-                setMessage('');
-                setEmailMessage('');
-              }}
-            >
-              Hacer otro registro
-            </button>
+            <Link className="btn btn-primary btn-full" href="/torneos">Volver a torneos</Link>
+            <button className="btn btn-secondary btn-full" onClick={() => { setSubmitted(false); setMessage(''); setEmailMessage(''); }}>Hacer otro registro</button>
           </div>
         </section>
       </AppShell>
@@ -384,16 +352,12 @@ export default function TournamentRegistration() {
 
   return (
     <AppShell active="torneos">
-      <Link href={`/torneos/${tournamentId}`} className="back-link">
-        <ChevronLeft size={18} /> Volver
-      </Link>
+      <Link href={`/torneos/${tournamentId}`} className="back-link"><ChevronLeft size={18} /> Volver</Link>
 
       <section className="hero section">
         <div className="kicker">Registro a Torneos</div>
         <h1 className="h1">Aparta tu lugar</h1>
-        <p className="p">
-          Completa participantes, modalidad y consentimientos. {isPaidTournament ? 'Este torneo tiene costo.' : 'Primera etapa sin costo.'}
-        </p>
+        <p className="p">Completa participantes, modalidad y consentimientos. {isPaidTournament ? 'Este torneo tiene costo.' : 'Primera etapa sin costo.'}</p>
       </section>
 
       <section className="card form section">
@@ -488,26 +452,20 @@ export default function TournamentRegistration() {
           <input type="checkbox" checked={form.acceptedRules} onChange={(e) => update('acceptedRules', e.target.checked)} />
           <span>
             Declaro que leí y acepto el Reglamento Oficial de Competencia ProKicks.
-            <Link href="/legal/reglamento" className="inline-link" onClick={() => trackEvent('Rules Link Clicked', { tournament_id: tournamentId })}>
-              Ver reglamento
-            </Link>
+            <Link href="/legal/reglamento" className="inline-link" onClick={() => trackEvent('Rules Link Clicked', { tournament_id: tournamentId })}>Ver reglamento</Link>
           </span>
         </label>
         {errorText('acceptedRules')}
-
         <label className={errors.acceptedImageRelease ? 'check-row check-error' : 'check-row'}>
           <input type="checkbox" checked={form.acceptedImageRelease} onChange={(e) => update('acceptedImageRelease', e.target.checked)} />
           <span>
             Autorizo el uso de mi imagen para material del evento ProKicks.
-            <Link href="/legal/uso-de-imagen" className="inline-link" onClick={() => trackEvent('Image Consent Link Clicked', { tournament_id: tournamentId })}>
-              Ver autorización
-            </Link>
+            <Link href="/legal/uso-de-imagen" className="inline-link" onClick={() => trackEvent('Image Consent Link Clicked', { tournament_id: tournamentId })}>Ver autorización</Link>
           </span>
         </label>
         {errorText('acceptedImageRelease')}
 
         {hasMinor && <div className="alert warn">Detectamos categoría o edad de menor. Se requiere autorización de madre, padre o tutor.</div>}
-
         {hasMinor && (
           <div className="mini-stack">
             <input className={errors.guardianName ? 'input input-error' : 'input'} placeholder="Nombre del tutor" value={form.guardianName} onChange={(e) => update('guardianName', e.target.value)} />
