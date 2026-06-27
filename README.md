@@ -1,33 +1,29 @@
-# ProKicks Play · Sprint 1.3
+# ProKicks Play · Sprint 1.6.2
 
-Incluye correcciones urgentes para revisión con cliente:
+Corrección Registro a Torneos + correo real + favicon balón.
 
-- Portada/access con hero compacto y foto del producto integrada.
-- Login por correo electrónico.
-- Recuperación de contraseña: `/recuperar` y `/reset-password`.
-- Callback de auth: `/auth/callback`.
-- Registro por pasos con fecha de nacimiento, menores, tutor, ubicación, nickname, avatar y consentimientos separados.
-- Links legales provisionales: `/legal/terms`, `/legal/privacy`, `/legal/image-release`, `/legal/marketing`, `/legal/minor-consent`.
-- 32 estados de México + alcaldías CDMX y municipios base por estado.
-- Torneos demo sin costo: `/torneos`.
-- Registro a torneos sin pago: `/torneos/[id]/registro`.
-- Admin con exportación CSV / Excel / PDF: `/admin/export`.
+## Subir a GitHub
+Subir únicamente:
 
-## Supabase
+- `app/`
+- `public/`
 
-Ejecutar en SQL Editor:
+## Incluye
 
-1. `supabase/registration_migration.sql` si no se ha corrido.
-2. `supabase/tournaments_migration.sql` para torneos y registros.
+- Quita WhatsApp duplicado en Registro a Torneos.
+- Usa WhatsApp del Participante 1 como contacto principal.
+- Mantiene validación de email, WhatsApp, campos obligatorios, reglamento e imagen.
+- Agrega pantalla de confirmación después del registro.
+- Evita que el mensaje verde anterior quede pegado en el formulario.
+- Corrige espacio inferior para que el menú no tape campos.
+- Envía correo al usuario y al admin usando Resend.
+- Cambia favicon / iconos PWA a balón de fútbol de alto contraste.
 
-## Variables Vercel
+## Variables necesarias en Vercel
 
-```env
-NEXT_PUBLIC_SUPABASE_URL=https://bljqlibgwvpflrtwgsef.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=...
-NEXT_PUBLIC_APP_URL=https://prokicks-play.vercel.app
-```
+- `RESEND_API_KEY`
+- `PROKICKS_EMAIL_FROM`
+- `PROKICKS_ADMIN_EMAIL`
 
-## Nota legal
-
-Los textos legales son placeholders operativos para demo. Antes del lanzamiento deben ser revisados por abogado mexicano especializado en privacidad digital, especialmente por cuentas de menores y consentimiento parental.
+## Nota Resend
+Si se usa `onboarding@resend.dev`, Resend puede limitar destinatarios. Para uso real verificar dominio `prokicks.shop` y cambiar `PROKICKS_EMAIL_FROM` a `ProKicks <registro@prokicks.shop>`.

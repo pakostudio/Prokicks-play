@@ -32,6 +32,10 @@ type Registration = {
   guardian_required?: boolean | null;
   guardian_name?: string | null;
   guardian_whatsapp?: string | null;
+  cost?: number | null;
+  currency?: string | null;
+  payment_status?: string | null;
+  registration_status?: string | null;
   status: string;
   created_at: string;
   tournament?: { title: string } | null;
@@ -59,6 +63,11 @@ function label(value?: string | null) {
   return value.replace(/_/g, ' ');
 }
 
+function money(value?: number | null, currency = 'MXN') {
+  if (!value) return 'Sin costo';
+  return new Intl.NumberFormat('es-MX', { style: 'currency', currency }).format(Number(value));
+}
+
 export default function AdminRegistrosTorneosPage() {
   const [rows, setRows] = useState<Registration[]>([]);
   const [loading, setLoading] = useState(false);
@@ -79,12 +88,14 @@ export default function AdminRegistrosTorneosPage() {
     whatsapp_2: r.participant_2_whatsapp || '',
     email_contacto: r.contact_email || r.participant_email || r.player_email || '',
     whatsapp_contacto: r.contact_whatsapp || '',
+    costo: money(r.cost, r.currency || 'MXN'),
+    payment_status: label(r.payment_status),
+    registration_status: label(r.registration_status || r.status),
     reglamento_aceptado: r.accepted_rules ? 'Sí' : 'No',
     imagen_aceptada: r.accepted_image_release ? 'Sí' : 'No',
     requiere_tutor: r.guardian_required ? 'Sí' : 'No',
     tutor: r.guardian_name || '',
     whatsapp_tutor: r.guardian_whatsapp || '',
-    status: r.status,
     fecha: r.created_at,
   })), [rows]);
 
@@ -107,7 +118,7 @@ export default function AdminRegistrosTorneosPage() {
       <section className="hero section">
         <div className="kicker">Admin · Registros</div>
         <h1 className="h1">Registros a Torneos</h1>
-        <p className="p">Consulta participantes, modalidad, rama y consentimientos.</p>
+        <p className="p">Consulta participantes, modalidad, rama, costo, pago y consentimientos.</p>
       </section>
 
       <section className="card form section">
@@ -126,10 +137,10 @@ export default function AdminRegistrosTorneosPage() {
               <tr>
                 <th>Torneo</th>
                 <th>Modalidad</th>
-                <th>Rama</th>
                 <th>Participante 1</th>
                 <th>Participante 2</th>
                 <th>Contacto</th>
+                <th>Costo / pago</th>
                 <th>Legal</th>
                 <th>Estatus</th>
               </tr>
@@ -138,13 +149,13 @@ export default function AdminRegistrosTorneosPage() {
               {flat.map((r) => (
                 <tr key={r.id}>
                   <td>{r.torneo}</td>
-                  <td>{r.modalidad}</td>
-                  <td>{r.rama}</td>
+                  <td>{r.modalidad}<br /><small>{r.rama}</small></td>
                   <td>{r.participante_1}<br /><small>{r.whatsapp_1}</small></td>
                   <td>{r.participante_2 || '-'}<br /><small>{r.whatsapp_2}</small></td>
                   <td>{r.email_contacto}<br /><small>{r.whatsapp_contacto}</small></td>
+                  <td>{r.costo}<br /><small>{r.payment_status}</small></td>
                   <td>Reglas: {r.reglamento_aceptado}<br />Imagen: {r.imagen_aceptada}</td>
-                  <td>{r.status}</td>
+                  <td>{r.registration_status}</td>
                 </tr>
               ))}
             </tbody>
