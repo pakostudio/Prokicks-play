@@ -1,8 +1,8 @@
 'use client';
 
-import Link from 'next/link';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { useEffect, useMemo, useState } from 'react';
 import { Trophy, CalendarDays, MapPin } from 'lucide-react';
 import { AppShell } from '@/components/AppShell';
 import { supabase } from '@/lib/supabase';
@@ -63,6 +63,14 @@ export default function TournamentsPage(){
 
   useEffect(()=>{ load(); },[]);
 
+  const sorted = useMemo(()=>{
+    return items.slice().sort((a,b)=>{
+      const ad = a.starts_at ? new Date(a.starts_at).getTime() : Number.MAX_SAFE_INTEGER;
+      const bd = b.starts_at ? new Date(b.starts_at).getTime() : Number.MAX_SAFE_INTEGER;
+      return ad - bd;
+    });
+  },[items]);
+
   return <AppShell active="torneos">
     <section className="hero section">
       <div className="kicker">Torneos ProKicks</div>
@@ -70,19 +78,27 @@ export default function TournamentsPage(){
       <p className="p">Consulta próximos torneos, sede, cupo y registro.</p>
     </section>
 
-    <section className="list section tournaments-list-safe">
-      {items.map((t)=><Link key={t.id} href={`/torneos/${t.id}`} className="card tournament-card">
+    <section className="list section tournaments-list-safe compact-tournaments-list">
+      {sorted.map((t)=><Link key={t.id} href={`/torneos/${t.id}`} className="card tournament-card tournament-card-compact">
         <div className="row">
-          <div className="tournament-icon"><Trophy size={20}/></div>
+          <div className="tournament-icon"><Trophy size={18}/></div>
           <span className={t.is_free === false ? 'tag tag-warm' : 'tag tag-blue'}>{costLabel(t)}</span>
         </div>
-        {tournamentFlyer(t) && <div className="tournament-card-flyer"><Image src={tournamentFlyer(t)} alt={t.title} width={600} height={800} /></div>}
-        <h2 className="card-title">{t.title}</h2>
-        <p className="p">{t.description}</p>
-        <div className="tournament-meta">
-          <span><MapPin size={15}/>{t.venue || t.city || 'CDMX'}</span>
-          <span><CalendarDays size={15}/>{dateLabel(t.starts_at)}</span>
+
+        <div className="tournament-card-layout">
+          {tournamentFlyer(t) && <div className="tournament-card-thumb">
+            <Image src={tournamentFlyer(t)} alt={t.title} width={240} height={320} />
+          </div>}
+          <div>
+            <h2 className="card-title">{t.title}</h2>
+            <p className="p">{t.description}</p>
+            <div className="tournament-meta">
+              <span><MapPin size={15}/>{t.venue || t.city || 'CDMX'}</span>
+              <span><CalendarDays size={15}/>{dateLabel(t.starts_at)}</span>
+            </div>
+          </div>
         </div>
+
         <div className="row">
           <span className="muted">Cupo: {t.capacity || 'Por definir'}</span>
           <span className="tag tag-warm">{t.status === 'open' ? 'Registrarme' : t.status}</span>

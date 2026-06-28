@@ -605,56 +605,81 @@ body{
 }
 
 
-/* Surgical fix · home tournament list subtle */
-.soft-tournament-list{
-  display:grid;
-  gap:10px;
-}
-.soft-tournament-item{
-  display:grid;
-  grid-template-columns:auto 1fr auto;
+/* Surgical fix · torneo order + compact flyers + modal */
+.compact-tournaments-list{
   gap:12px;
-  align-items:center;
-  padding:14px;
+}
+.tournament-card-compact{
+  padding:16px;
+}
+.tournament-card-layout{
+  display:grid;
+  grid-template-columns:92px 1fr;
+  gap:14px;
+  align-items:start;
+}
+.tournament-card-thumb{
+  width:92px;
+  max-height:122px;
+  overflow:hidden;
+  border-radius:14px;
   border:1px solid #D9E8FF;
-  border-radius:18px;
-  background:linear-gradient(180deg,#FFFFFF 0%,#F6FAFF 100%);
-  box-shadow:0 10px 24px rgba(23,59,99,.06);
-  color:#173B63;
-  text-decoration:none;
+  background:#fff;
+  box-shadow:0 8px 18px rgba(23,59,99,.07);
 }
-.soft-tournament-item strong{
+.tournament-card-thumb img{
   display:block;
-  color:#102033;
-  font-size:14px;
-  line-height:1.2;
+  width:100%;
+  height:auto;
+  object-fit:contain;
 }
-.soft-tournament-item span{
-  display:block;
-  color:#64748B;
-  font-size:12px;
-  margin-top:3px;
-  line-height:1.25;
+.tournament-flyer-preview{
+  max-height:310px;
 }
-.soft-tournament-item em{
-  font-style:normal;
-  font-size:12px;
-  font-weight:800;
-  color:#2563EB;
-  background:#EAF2FF;
-  border:1px solid #CFE0FF;
-  border-radius:999px;
-  padding:6px 10px;
+.tournament-flyer-click{
+  cursor:pointer;
+  padding:0;
+  border:1px solid var(--line);
+  text-align:left;
 }
-.soft-tournament-dot{
-  width:32px;
-  height:32px;
+.flyer-modal{
+  position:fixed;
+  inset:0;
+  z-index:9999;
   display:grid;
   place-items:center;
-  border-radius:12px;
-  background:#EAF2FF;
-  border:1px solid #CFE0FF;
+  padding:20px;
+  background:rgba(15,23,42,.76);
+  backdrop-filter:blur(6px);
+}
+.flyer-modal img{
+  display:block;
+  width:auto;
+  max-width:min(94vw,720px);
+  max-height:86vh;
+  height:auto;
+  border-radius:20px;
+  box-shadow:0 24px 80px rgba(0,0,0,.35);
+}
+.flyer-modal-close{
+  position:fixed;
+  top:18px;
+  right:18px;
+  border:1px solid rgba(255,255,255,.35);
+  border-radius:999px;
+  background:#fff;
   color:#173B63;
   font-weight:900;
-  font-size:13px;
+  padding:10px 14px;
+  cursor:pointer;
+}
+@media (max-width:420px){
+  .tournament-card-layout{
+    grid-template-columns:76px 1fr;
+    gap:12px;
+  }
+  .tournament-card-thumb{
+    width:76px;
+    max-height:104px;
+  }
 }
