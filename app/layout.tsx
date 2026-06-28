@@ -6,7 +6,7 @@ import './globals.css';
 export const metadata: Metadata = {
   title: 'ProKicks Play',
   description: 'Encuentra spots, únete a torneos y compite con la comunidad ProKicks.',
-  manifest: '/manifest.json',
+  manifest: '/manifest.json?v=3',
   applicationName: 'ProKicks Play',
   appleWebApp: {
     capable: true,
@@ -15,11 +15,11 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: '/favicon.ico' },
-      { url: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
-      { url: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' }
+      { url: '/favicon.ico?v=3' },
+      { url: '/icons/icon-192.png?v=3', sizes: '192x192', type: 'image/png' },
+      { url: '/icons/icon-512.png?v=3', sizes: '512x512', type: 'image/png' }
     ],
-    apple: [{ url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' }]
+    apple: [{ url: '/apple-touch-icon.png?v=3', sizes: '180x180', type: 'image/png' }]
   }
 };
 
