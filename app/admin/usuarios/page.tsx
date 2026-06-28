@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { AppShell } from '@/components/AppShell';
+import { AdminShell } from '@/components/AdminShell';
 import { supabase } from '@/lib/supabase';
 import { avatarOptions } from '@/lib/demo';
 
@@ -32,7 +32,7 @@ export default function AdminUsuarios(){
 
   useEffect(()=>{ load(); },[]);
 
-  return <AppShell active="perfil">
+  return <AdminShell active="usuarios">
     <section className="hero section"><div className="kicker">Admin</div><h1 className="h1">Usuarios / perfiles</h1><p className="p">Nombre, email, WhatsApp, nickname, avatar y fecha de registro.</p></section>
     <section className="card form section">
       <div className="row"><strong>{rows.length} perfiles</strong><button className="btn btn-soft" onClick={load}>Actualizar</button></div>
@@ -47,5 +47,5 @@ export default function AdminUsuarios(){
       {!rows.length && <p className="p">Aún no hay perfiles.</p>}
     </section>
     <section className="section"><Link className="btn btn-soft btn-full" href="/admin">Volver a Admin</Link></section>
-  </AppShell>
+  </AdminShell>
 }

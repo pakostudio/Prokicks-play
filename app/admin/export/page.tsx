@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { Download, FileSpreadsheet, FileText } from 'lucide-react';
-import { AppShell } from '@/components/AppShell';
+import { AdminShell } from '@/components/AdminShell';
 import { supabase } from '@/lib/supabase';
 
 type TableKey = 'profiles' | 'tournaments' | 'registrations' | 'consents' | 'guardian';
@@ -53,7 +53,7 @@ export default function ExportPage(){
     w.document.write(`<html><head><title>${cfg.label}</title><style>body{font-family:Arial;padding:24px;color:#1F2937} h1{color:#173B63} .data{font-size:11px;line-height:1.5;word-break:break-all}</style></head><body><h1>${cfg.label}</h1><p>Total registros: ${count}</p><div class="data">${csv}</div><script>window.print()</script></body></html>`);
     w.document.close();
   }
-  return <AppShell active="perfil">
+  return <AdminShell active="dashboard">
     <section className="hero section"><div className="kicker">Admin · Exportación</div><h1 className="h1">Base de datos</h1><p className="p">Exporta información operativa en CSV, Excel o PDF para revisión con cliente.</p></section>
     <section className="card form section">
       <select className="input" value={selected} onChange={(e)=>setSelected(e.target.value as TableKey)}>{Object.entries(tables).map(([k,v])=><option key={k} value={k}>{v.label}</option>)}</select>
@@ -65,5 +65,5 @@ export default function ExportPage(){
       </div>
     </section>
     <section className="section"><Link className="btn btn-soft btn-full" href="/admin">Volver a Admin</Link></section>
-  </AppShell>
+  </AdminShell>
 }

@@ -1,12 +1,13 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { AppShell } from '@/components/AppShell';
 import { SupabaseNotice } from '@/components/SupabaseNotice';
 import { realSpots } from '@/lib/demo';
 import { supabase } from '@/lib/supabase';
-import { MapPin, QrCode, Star, Trophy, UserRound } from 'lucide-react';
+import { FileText, MapPin, QrCode, Star, Trophy, UserRound } from 'lucide-react';
 
 type Challenge = {
   id: string;
@@ -33,21 +34,21 @@ export default function HomePage() {
     <AppShell active="home">
       <SupabaseNotice />
 
-      <section className="hero section pro-home-hero">
-        <div className="pro-home-overlay">
-          <div className="kicker">ProKicks Play</div>
-          <h1 className="h1">Entrena. Compite. Domina.</h1>
-          <p className="p">
-            Crea tu perfil, conecta spots reales y súmate a retas o torneos ProKicks.
-          </p>
+      <section className="hero section pro-home-clean">
+        <div className="kicker">ProKicks Play</div>
+        <h1 className="h1">Entrena. Compite. Domina.</h1>
+        <p className="p">Crea tu perfil, conecta spots reales y vive la experiencia ProKicks.</p>
 
-          <div className="grid-2 section">
-            <Link className="btn btn-primary" href="/registro"><UserRound size={18}/> Crear perfil</Link>
-            <Link className="btn btn-secondary-blue" href="/">Entrar / continuar</Link>
-            <Link className="btn btn-secondary-blue" href="/torneos"><Trophy size={18}/> Ver torneos</Link>
-            <Link className="btn btn-soft" href="/scan"><QrCode size={18}/> Escanear QR / conectar spot para Reta</Link>
-            <Link className="btn btn-primary btn-full" href="/spots"><MapPin size={18}/> Encuentra spots para echar la reta</Link>
-          </div>
+        <div className="hero-image-card">
+          <Image src="/prokicks-approved-hero.jpeg" alt="ProKicks Play" width={720} height={420} priority />
+        </div>
+
+        <div className="grid-2 section">
+          <Link className="btn btn-primary" href="/registro"><UserRound size={18}/> Crear perfil</Link>
+          <Link className="btn btn-secondary-blue" href="/">Entrar / continuar</Link>
+          <Link className="btn btn-secondary-blue" href="/torneos"><Trophy size={18}/> Ver torneos</Link>
+          <Link className="btn btn-soft" href="/scan"><QrCode size={18}/> Escanear QR / conectar spot para Reta</Link>
+          <Link className="btn btn-primary btn-full" href="/spots"><MapPin size={18}/> Encuentra spots para echar la reta</Link>
         </div>
       </section>
 
@@ -76,6 +77,18 @@ export default function HomePage() {
               <Link className="btn btn-primary btn-full section" href="/scan">Conectar spot</Link>
             </section>
           )}
+        </div>
+      </section>
+
+      <section className="section">
+        <div className="row"><h2 className="h2">Torneo inaugural</h2></div>
+        <div className="card">
+          <h3 className="card-title">ProKicks x Indoor Community</h3>
+          <p className="p">Consulta el flyer oficial, cronograma y sede del torneo.</p>
+          <div className="grid-2 section">
+            <Link className="btn btn-secondary-blue" href="/torneos"><Trophy size={18}/> Ver torneo</Link>
+            <a className="btn btn-soft" href="/docs/torneo-inaugural-prokicks-2026.pdf" target="_blank" rel="noopener noreferrer"><FileText size={18}/> Ver PDF</a>
+          </div>
         </div>
       </section>
 

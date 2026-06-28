@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { AppShell } from '@/components/AppShell';
+import { AdminShell } from '@/components/AdminShell';
 import { avatarOptions } from '@/lib/demo';
 import { supabase } from '@/lib/supabase';
 
@@ -33,7 +33,7 @@ export default function AdminRetas(){
 
   useEffect(()=>{ load(); },[]);
 
-  return <AppShell active="perfil">
+  return <AdminShell active="retas">
     <section className="hero section"><div className="kicker">Admin</div><h1 className="h1">Retas creadas</h1><p className="p">Vista rápida para presentación: spot, creador, nickname y estado.</p></section>
     <section className="card form section">
       <div className="row"><strong>{rows.length} retas</strong><button className="btn btn-soft" onClick={load}>Actualizar</button></div>
@@ -48,5 +48,5 @@ export default function AdminRetas(){
       {!rows.length && <p className="p">Aún no hay retas abiertas. Escanea un spot y crea la primera reta.</p>}
     </section>
     <section className="section"><Link className="btn btn-soft btn-full" href="/admin">Volver a Admin</Link></section>
-  </AppShell>
+  </AdminShell>
 }

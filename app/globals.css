@@ -450,7 +450,7 @@ body{
 }
 
 
-/* Manual hotfix final · visual home, acceso y botones elegantes */
+/* Final ProKicks fix · balón favicon, home limpia, admin, FAQ */
 .btn-secondary-blue{
   background:#EAF2FF;
   color:#173B63;
@@ -466,47 +466,80 @@ body{
   align-items:center;
   gap:8px;
 }
-.entry-hero-pro{
-  min-height:360px;
-  background-image:
-    linear-gradient(180deg, rgba(255,255,255,.72), rgba(255,255,255,.96)),
-    url('/prokicks-approved-hero.jpeg');
-  background-size:cover;
-  background-position:center top;
-  align-content:end;
+.pro-home-clean{
+  display:grid;
+  gap:14px;
+  background:linear-gradient(180deg,#fff 0%,#f8fbff 100%);
 }
-.entry-hero-pro:after{
+.pro-home-clean:after{
   display:none;
 }
-.pro-home-hero{
-  min-height:430px;
-  padding:0;
-  background-image:
-    linear-gradient(180deg, rgba(255,255,255,.72), rgba(255,255,255,.96)),
-    url('/prokicks-approved-hero.jpeg');
-  background-size:cover;
-  background-position:center top;
-  display:flex;
-  align-items:flex-end;
-}
-.pro-home-hero:after{
-  display:none;
-}
-.pro-home-overlay{
+.hero-image-card{
   width:100%;
-  padding:24px;
+  border-radius:24px;
+  overflow:hidden;
+  border:1px solid var(--line);
+  background:#fff;
+  box-shadow:0 14px 30px rgba(23,59,99,.10);
 }
-.pro-home-overlay .h1,
-.entry-hero-pro .h1{
+.hero-image-card img{
+  display:block;
+  width:100%;
+  height:auto;
+  object-fit:cover;
+}
+.entry-hero .h1,
+.pro-home-clean .h1{
   line-height:.98;
 }
-.pro-home-overlay .p,
-.entry-hero-pro .p{
-  max-width:390px;
+.admin-shell{
+  padding-bottom:150px;
+}
+.admin-nav{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+}
+.admin-nav-item{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  border:1px solid var(--line);
+  background:#fff;
+  color:#173B63;
+  border-radius:16px;
+  padding:10px 8px;
+  font-size:12px;
+  font-weight:900;
+  box-shadow:0 8px 20px rgba(17,19,24,.04);
+}
+.admin-nav-item.active{
+  background:#EAF2FF;
+  border-color:#BFD7FF;
+}
+.admin-stat-link{
+  color:inherit;
+  text-decoration:none;
+}
+.admin-stat-link:hover{
+  border-color:#BFD7FF;
+  background:#F8FBFF;
+}
+.admin-logout{
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+}
+.faq-item summary{
+  cursor:pointer;
+}
+.faq-item summary::marker{
+  color:#2563EB;
 }
 @media(max-width:420px){
-  .pro-home-hero{min-height:455px}
-  .pro-home-overlay{padding:22px}
   .grid-2{grid-template-columns:1fr}
+  .admin-nav{grid-template-columns:repeat(2,1fr)}
   .top-actions .tag{font-size:11px;padding:7px 9px}
 }
