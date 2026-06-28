@@ -27,13 +27,19 @@ type Tournament = {
   payment_url: string;
   payment_instructions: string;
   rules: string;
+  venue: string;
+  address: string;
+  maps_url: string;
 };
 
 const empty:Tournament = {
   title:'', description:'', city:'CDMX', state:'Ciudad de México', format:'1v1', level:'abierto', status:'open',
   starts_at:'', ends_at:'', capacity:32, is_free:true, cost:0, currency:'MXN', payment_method:'pendiente_configurar', payment_url:'',
   payment_instructions:'',
-  rules:'Registro sujeto a disponibilidad. El participante debe aceptar reglamento y autorización de uso de imagen.'
+  rules:'Registro sujeto a disponibilidad. El participante debe aceptar reglamento y autorización de uso de imagen.',
+  venue:'',
+  address:'',
+  maps_url:''
 };
 
 function toInputDate(value?:string){
@@ -90,6 +96,9 @@ export default function AdminTorneosPage(){
       payment_url: form.payment_url || null,
       payment_instructions: form.payment_instructions || null,
       rules: form.rules,
+      venue: form.venue || null,
+      address: form.address || null,
+      maps_url: form.maps_url || null,
       updated_at: new Date().toISOString()
     };
     const result = editing
@@ -137,6 +146,11 @@ export default function AdminTorneosPage(){
           <input className="input" placeholder="Estado" value={form.state} onChange={e=>update('state', e.target.value)} />
         </div>
         <div className="grid-2 tight">
+          <input className="input" placeholder="Sede / lugar ejemplo: La Barra 88" value={form.venue} onChange={e=>update('venue', e.target.value)} />
+          <input className="input" placeholder="Dirección completa" value={form.address} onChange={e=>update('address', e.target.value)} />
+        </div>
+        <input className="input" placeholder="Link de Google Maps" value={form.maps_url} onChange={e=>update('maps_url', e.target.value)} />
+        <div className="grid-2 tight">
           <select className="input" value={form.format} onChange={e=>update('format', e.target.value as Tournament['format'])}><option value="1v1">1v1</option><option value="2v2">2v2</option><option value="3v3">3v3 futuro</option><option value="mixto">Mixto</option></select>
           <select className="input" value={form.level} onChange={e=>update('level', e.target.value as Tournament['level'])}><option value="principiante">Principiante</option><option value="intermedio">Intermedio</option><option value="avanzado">Avanzado</option><option value="abierto">Abierto</option></select>
         </div>
@@ -172,7 +186,7 @@ export default function AdminTorneosPage(){
       <div className="card form">
         <div className="row"><h2 className="card-title">Torneos existentes</h2><button className="btn btn-soft" onClick={load}>{loading?'Cargando...':'Actualizar'}</button></div>
         <div className="list compact-list">
-          {sorted.map(t=><button key={t.id} className="admin-row" onClick={()=>setForm({...empty, ...t, starts_at:t.starts_at || '', ends_at:t.ends_at || '', cost:Number(t.cost || 0), currency:t.currency || 'MXN', payment_method:t.payment_method || 'pendiente_configurar', payment_url:t.payment_url || '', payment_instructions:t.payment_instructions || ''})}>
+          {sorted.map(t=><button key={t.id} className="admin-row" onClick={()=>setForm({...empty, ...t, starts_at:t.starts_at || '', ends_at:t.ends_at || '', cost:Number(t.cost || 0), currency:t.currency || 'MXN', payment_method:t.payment_method || 'pendiente_configurar', payment_url:t.payment_url || '', payment_instructions:t.payment_instructions || '', venue:t.venue || '', address:t.address || '', maps_url:t.maps_url || ''})}>
             <strong>{t.title}</strong><span>{t.format} · {t.level} · {t.status}</span><small><CalendarDays size={13}/>{t.starts_at ? new Date(t.starts_at).toLocaleString('es-MX') : 'Sin fecha'} · {t.is_free === false ? money(Number(t.cost || 0), t.currency || 'MXN') : 'Sin costo'}</small>
           </button>)}
           {!sorted.length && <p className="p">No hay torneos todavía.</p>}

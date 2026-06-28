@@ -449,23 +449,141 @@ body{
   margin-bottom:145px;
 }
 
+
+/* Final ProKicks fix · balón favicon, home limpia, admin, FAQ */
+.btn-secondary-blue{
+  background:#EAF2FF;
+  color:#173B63;
+  border:1px solid #BFD7FF;
+  box-shadow:0 10px 24px rgba(23,59,99,.08);
+}
+.btn-secondary-blue:hover{
+  background:#DCEBFF;
+  color:#173B63;
+}
+.top-actions{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.pro-home-clean{
+  display:grid;
+  gap:14px;
+  background:linear-gradient(180deg,#fff 0%,#f8fbff 100%);
+}
+.pro-home-clean:after{
+  display:none;
+}
+.hero-image-card{
+  width:100%;
+  border-radius:24px;
+  overflow:hidden;
+  border:1px solid var(--line);
+  background:#fff;
+  box-shadow:0 14px 30px rgba(23,59,99,.10);
+}
+.hero-image-card img{
+  display:block;
+  width:100%;
+  height:auto;
+  object-fit:cover;
+}
+.entry-hero .h1,
+.pro-home-clean .h1{
+  line-height:.98;
+}
+.admin-shell{
+  padding-bottom:150px;
+}
+.admin-nav{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+}
+.admin-nav-item{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  border:1px solid var(--line);
+  background:#fff;
+  color:#173B63;
+  border-radius:16px;
+  padding:10px 8px;
+  font-size:12px;
+  font-weight:900;
+  box-shadow:0 8px 20px rgba(17,19,24,.04);
+}
+.admin-nav-item.active{
+  background:#EAF2FF;
+  border-color:#BFD7FF;
+}
+.admin-stat-link{
+  color:inherit;
+  text-decoration:none;
+}
+.admin-stat-link:hover{
+  border-color:#BFD7FF;
+  background:#F8FBFF;
+}
+.admin-logout{
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+}
+.faq-item summary{
+  cursor:pointer;
+}
+.faq-item summary::marker{
+  color:#2563EB;
+}
+@media(max-width:420px){
+  .grid-2{grid-template-columns:1fr}
+  .admin-nav{grid-template-columns:repeat(2,1fr)}
+  .top-actions .tag{font-size:11px;padding:7px 9px}
+}
+
+
+/* Surgical fix · portada aprobada + flyer torneo */
+.btn-secondary-blue{
+  background:#EAF2FF;
+  color:#173B63;
+  border:1px solid #BFD7FF;
+  box-shadow:0 10px 24px rgba(23,59,99,.08);
+}
+.btn-secondary-blue:hover{
+  background:#DCEBFF;
+  color:#173B63;
+}
+.entry-hero-approved{
+  display:grid;
+  gap:14px;
+}
+.entry-hero-approved:after{
+  display:none;
+}
+.entry-approved-image,
+.hero-image-card,
 .tournament-flyer-preview{
   width:100%;
-  max-height:460px;
   overflow:hidden;
   border-radius:24px;
   border:1px solid var(--line);
   background:#fff;
   box-shadow:0 14px 30px rgba(23,59,99,.10);
 }
+.entry-approved-image img,
+.hero-image-card img,
 .tournament-flyer-preview img{
   display:block;
   width:100%;
   height:auto;
-  object-fit:contain;
+  object-fit:cover;
 }
-.btn-secondary-blue{
-  background:#EAF2FF;
-  color:#173B63;
-  border:1px solid #BFD7FF;
+.tournament-flyer-preview{
+  max-height:460px;
+}
+.tournament-flyer-preview img{
+  object-fit:contain;
 }
