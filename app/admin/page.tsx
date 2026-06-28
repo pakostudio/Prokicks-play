@@ -11,12 +11,14 @@ export default function AdminPage(){
     <section className="grid-2 section">
       <div className="stat"><span className="muted">Torneos</span><strong>Crear / Editar</strong></div>
       <div className="stat"><span className="muted">Registros</span><strong>Participantes</strong></div>
-      <div className="stat"><span className="muted">Export</span><strong>CSV · Excel · PDF</strong></div>
-      <div className="stat"><span className="muted">Etapa</span><strong>Demo sin costo</strong></div>
+      <div className="stat"><span className="muted">Perfiles</span><strong>Usuarios</strong></div>
+      <div className="stat"><span className="muted">Retas</span><strong>Spots</strong></div>
     </section>
     <section className="grid section">
       <Link className="btn btn-primary" href="/admin/torneos">Crear / editar torneos</Link>
       <Link className="btn btn-soft" href="/admin/registros-torneos">Ver registros a torneos</Link>
+      <Link className="btn btn-soft" href="/admin/usuarios">Ver perfiles registrados</Link>
+      <Link className="btn btn-soft" href="/admin/retas">Ver retas creadas</Link>
       <Link className="btn btn-soft" href="/admin/export">Exportar base CSV / Excel / PDF</Link>
       <Link className="btn btn-warm" href="/torneos">Ver torneos públicos</Link>
     </section>

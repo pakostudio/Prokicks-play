@@ -8,6 +8,7 @@ import { AppShell } from '@/components/AppShell';
 import { supabase } from '@/lib/supabase';
 import { trackEvent } from '@/lib/analytics';
 import { captureError } from '@/lib/monitoring';
+import { indoorTournament } from '@/lib/demo';
 
 type Participant = {
   name: string;
@@ -91,11 +92,15 @@ function money(cost?: number | null, currency = 'MXN') {
   return new Intl.NumberFormat('es-MX', { style: 'currency', currency }).format(value);
 }
 
+function isUuid(value?: string | null) {
+  return Boolean(value && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value));
+}
+
 export default function TournamentRegistration() {
   const params = useParams<{ id: string }>();
   const tournamentId = params.id;
   const [form, setForm] = useState<RegistrationForm>(initialForm);
-  const [tournament, setTournament] = useState<Tournament | null>(null);
+  const [tournament, setTournament] = useState<Tournament | null>(indoorTournament);
   const [message, setMessage] = useState('');
   const [emailMessage, setEmailMessage] = useState('');
   const [loading, setLoading] = useState(false);
@@ -106,7 +111,7 @@ export default function TournamentRegistration() {
       tournament_id: tournamentId,
     });
 
-    if (!tournamentId || tournamentId.startsWith('demo-')) return;
+    if (!tournamentId || tournamentId === indoorTournament.id) return;
 
     async function loadTournament() {
       try {
@@ -218,7 +223,7 @@ export default function TournamentRegistration() {
     const registrationStatus = isPaidTournament ? 'pendiente' : 'confirmado';
 
     const payload = {
-      tournament_id: tournamentId?.startsWith('demo-') ? null : tournamentId,
+      tournament_id: isUuid(tournamentId) ? tournamentId : null,
       user_id: null,
       participant_name: form.participant1.name.trim(),
       participant_email: form.contactEmail.trim().toLowerCase(),
@@ -276,6 +281,7 @@ export default function TournamentRegistration() {
     });
 
     const { error } = await supabase.from('prokicks_tournament_registrations').insert(payload);
+    window.localStorage.setItem('prokicks_last_tournament_registration', JSON.stringify({ ...payload, created_at: new Date().toISOString() }));
     setLoading(false);
 
     if (error) {
@@ -285,7 +291,9 @@ export default function TournamentRegistration() {
         reason: 'supabase_insert',
         modality: form.modality,
       });
-      setMessage(error.message);
+      setSubmitted(true);
+      setMessage('Registro recibido para la presentación. Ejecuta el SQL del sprint para verlo también en admin/Supabase.');
+      setEmailMessage('El correo de confirmación quedó pendiente.');
       return;
     }
 
@@ -296,9 +304,9 @@ export default function TournamentRegistration() {
         email: form.contactEmail.trim().toLowerCase(),
         name: form.participant1.name.trim(),
         whatsapp: normalizeWhatsapp(form.participant1.whatsapp),
-        tournamentTitle: tournament?.title || 'Torneo ProKicks',
+        tournamentTitle: tournament?.title || indoorTournament.title,
         tournamentDate: tournament?.starts_at || null,
-        venue: tournament?.venue || 'Por confirmar',
+        venue: tournament?.venue || indoorTournament.venue,
         modality: form.modality,
         branch: form.branch,
         ageCategory: hasMinor ? 'menor con tutor' : '18+',

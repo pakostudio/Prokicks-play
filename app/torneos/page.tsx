@@ -5,13 +5,11 @@ import { useEffect, useState } from 'react';
 import { Trophy, CalendarDays, MapPin } from 'lucide-react';
 import { AppShell } from '@/components/AppShell';
 import { supabase } from '@/lib/supabase';
+import { indoorTournament } from '@/lib/demo';
 
 type Tournament = { id:string; title:string; description:string|null; city:string|null; state:string|null; format:string|null; level:string|null; status:string|null; starts_at:string|null; capacity:number|null; is_free:boolean|null; cost?:number|null; currency?:string|null };
 
-const demo:Tournament[]=[
-  { id:'demo-roma', title:'ProKicks Open Roma Norte', description:'Torneo demo sin costo para validar comunidad y experiencia ProKicks.', city:'CDMX', state:'Ciudad de México', starts_at:new Date(Date.now()+7*86400000).toISOString(), status:'open', format:'1v1', level:'abierto', capacity:32, is_free:true, cost:0, currency:'MXN' },
-  { id:'demo-polanco', title:'Duplas ProKicks Polanco', description:'Formato 2v2 para probar registro, equipos y resultados.', city:'CDMX', state:'Ciudad de México', starts_at:new Date(Date.now()+10*86400000).toISOString(), status:'open', format:'2v2', level:'intermedio', capacity:24, is_free:true, cost:0, currency:'MXN' }
-];
+const demo:Tournament[]=[indoorTournament as Tournament];
 
 function costLabel(t:Tournament){
   if(t.is_free !== false || !Number(t.cost || 0)) return 'Sin costo';
@@ -20,9 +18,9 @@ function costLabel(t:Tournament){
 
 export default function TournamentsPage(){
   const [items,setItems]=useState<Tournament[]>(demo);
-  useEffect(()=>{ supabase.from('prokicks_tournaments').select('*').order('starts_at', { ascending:true }).then(({data})=>{ if(data?.length) setItems(data as Tournament[]); }); },[]);
+  useEffect(()=>{ supabase.from('prokicks_tournaments').select('*').ilike('title', '%Indoor Community%').order('starts_at', { ascending:true }).then(({data})=>{ if(data?.length) setItems(data as Tournament[]); }); },[]);
   return <AppShell active="torneos">
-    <section className="hero section"><div className="kicker">Torneos ProKicks</div><h1 className="h1">Compite y aparta tu lugar</h1><p className="p">Registro abierto para torneos sin costo o con costo futuro configurable.</p></section>
+    <section className="hero section"><div className="kicker">Torneos ProKicks</div><h1 className="h1">Indoor Community</h1><p className="p">17 de julio · Av. Toluca 481 · registro abierto.</p></section>
     <section className="list section tournaments-list-safe">
       {items.map((t)=><Link key={t.id} href={`/torneos/${t.id}`} className="card tournament-card">
         <div className="row"><div className="tournament-icon"><Trophy size={20}/></div><span className={t.is_free === false ? 'tag tag-warm' : 'tag tag-blue'}>{costLabel(t)}</span></div>

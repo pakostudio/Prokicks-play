@@ -1,13 +1,11 @@
 import { AppShell } from '@/components/AppShell';
-import { demoRanking } from '@/lib/demo';
 
 export default function RankingPage(){
   return <AppShell active="retas">
-    <section className="hero section"><div className="kicker">Ranking</div><h1 className="h1">Tabla ProKicks</h1><p className="p">XP, victorias y progreso.</p></section>
-    <section className="list section">
-      {demoRanking.map((r,i)=><div className="card rank-row" key={r.name}>
-        <div className="rank-pos">{i+1}</div><div><h3 className="card-title">{r.name}</h3><p className="p">{r.city} · {r.wins} victorias</p></div><strong>{r.xp} XP</strong>
-      </div>)}
+    <section className="hero section"><div className="kicker">Ranking</div><h1 className="h1">Ranking ProKicks en preparación</h1><p className="p">Pronto podrás ver puntos, posiciones y evolución por jugador.</p></section>
+    <section className="grid section">
+      <div className="card"><span className="tag tag-warm">Próximamente</span><h2 className="card-title">XP por retas</h2><p className="p">Puntos por participar, ganar y completar torneos.</p></div>
+      <div className="card"><span className="tag tag-blue">En preparación</span><h2 className="card-title">Badges y recompensas</h2><p className="p">Gana XP, badges y recompensas por participar en retas y torneos.</p></div>
     </section>
   </AppShell>
 }

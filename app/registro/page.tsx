@@ -2,232 +2,144 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { useMemo, useState } from 'react';
-import { CalendarDays, ChevronLeft, Mail, ShieldCheck, UserRound } from 'lucide-react';
+import { useState } from 'react';
+import { ChevronLeft, Mail, Phone, ShieldCheck, UserRound } from 'lucide-react';
+import { avatarOptions } from '@/lib/demo';
 import { supabase } from '@/lib/supabase';
-import { stateNames, getMunicipalities } from '@/lib/mexicoLocations';
 
-const avatarOptions = ['PK Azul', 'PK Naranja', 'PK Balón', 'PK Reta', 'PK Street'];
-const legalVersion = 'v1.0';
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-function calculateAge(day: string, month: string, year: string) {
-  if (!day || !month || !year) return null;
-  const birth = new Date(Number(year), Number(month) - 1, Number(day));
-  if (Number.isNaN(birth.getTime())) return null;
-  const today = new Date();
-  let age = today.getFullYear() - birth.getFullYear();
-  const m = today.getMonth() - birth.getMonth();
-  if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
-  return age;
+function digitsOnly(value: string) {
+  return value.replace(/\D/g, '');
 }
 
 export default function RegisterPage() {
-  const defaultState = 'Ciudad de México';
-  const [step, setStep] = useState(1);
   const [form, setForm] = useState({
-    day: '', month: '', year: '', firstName: '', lastName: '', gender: '', email: '', password: '',
-    state: defaultState, municipality: getMunicipalities(defaultState)[0], nickname: '', avatar: avatarOptions[0],
-    guardianFirstName: '', guardianLastName: '', guardianEmail: '', guardianRelation: '',
-    terms: false, privacy: false, promotions: false, media: false, guardianConsent: false
+    name: '',
+    email: '',
+    whatsapp: '',
+    nickname: '',
+    avatarId: avatarOptions[0].id,
+    password: '',
+    accepted: false,
   });
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const age = useMemo(() => calculateAge(form.day, form.month, form.year), [form.day, form.month, form.year]);
-  const isMinor = age !== null && age < 18;
-  const isUnder13 = age !== null && age < 13;
-  const municipalities = getMunicipalities(form.state);
+  const selectedAvatar = avatarOptions.find((avatar) => avatar.id === form.avatarId) || avatarOptions[0];
+  const canSubmit =
+    form.name.trim().length >= 3 &&
+    emailPattern.test(form.email.trim()) &&
+    digitsOnly(form.whatsapp).length >= 10 &&
+    form.nickname.trim().length >= 3 &&
+    form.password.length >= 6 &&
+    form.accepted;
 
-  function update(key: string, value: string | boolean) {
-    setForm((prev) => {
-      const next = { ...prev, [key]: value };
-      if (key === 'state') next.municipality = getMunicipalities(value as string)[0] || '';
-      return next;
-    });
+  function update(key: keyof typeof form, value: string | boolean) {
+    setForm((prev) => ({ ...prev, [key]: value }));
   }
 
-  function canAdvance() {
-    if (step === 1) return age !== null && age >= 0;
-    if (step === 2) return form.firstName.trim() && form.lastName.trim();
-    if (step === 3) return form.email.trim() && form.state && form.municipality;
-    if (step === 4) return form.nickname.trim().length >= 3 && form.password.length >= 8;
-    return true;
+  async function sendProfileEmail() {
+    await fetch('/api/profile-registration-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: form.name.trim(),
+        email: form.email.trim(),
+        whatsapp: form.whatsapp.trim(),
+        nickname: form.nickname.trim(),
+        avatarName: selectedAvatar.name,
+      }),
+    }).catch(() => null);
   }
 
   async function submit() {
     setMessage('');
-
-    if (!form.terms || !form.privacy) {
-      setMessage('Debes aceptar Términos y Aviso de Privacidad para continuar.');
-      return;
-    }
-
-    if (isMinor && (!form.guardianFirstName || !form.guardianLastName || !form.guardianEmail || !form.guardianRelation || !form.guardianConsent)) {
-      setMessage('Para menores de edad se requiere autorización de madre, padre o tutor.');
+    if (!canSubmit) {
+      setMessage('Completa nombre, email, WhatsApp, nickname, contraseña y aceptación para crear tu perfil.');
       return;
     }
 
     setLoading(true);
-    const birthDate = `${form.year}-${form.month.padStart(2, '0')}-${form.day.padStart(2, '0')}`;
-    const accountStatus = isMinor ? 'pending_parental_consent' : 'active';
+    const profile = {
+      name: form.name.trim(),
+      email: form.email.trim().toLowerCase(),
+      whatsapp: form.whatsapp.trim(),
+      nickname: form.nickname.trim(),
+      avatar_id: selectedAvatar.id,
+      avatar_name: selectedAvatar.name,
+    };
 
-    const { data, error } = await supabase.auth.signUp({
-      email: form.email,
-      password: form.password,
-      options: {
-        data: {
-          first_name: form.firstName,
-          last_name: form.lastName,
-          gender: form.gender,
-          birth_date: birthDate,
-          state: form.state,
-          municipality: form.municipality,
-          nickname: form.nickname,
-          avatar: form.avatar,
-          is_minor: isMinor,
-          account_status: accountStatus,
-          terms_version: legalVersion,
-          privacy_version: legalVersion,
-          promotions_consent: form.promotions,
-          media_consent: form.media,
-          guardian_first_name: form.guardianFirstName,
-          guardian_last_name: form.guardianLastName,
-          guardian_email: form.guardianEmail,
-          guardian_relation: form.guardianRelation
-        }
-      }
-    });
+    const { error } = await supabase.from('prokicks_profiles').insert(profile);
+    window.localStorage.setItem('prokicks_profile', JSON.stringify({ ...profile, created_at: new Date().toISOString() }));
+    await sendProfileEmail();
+    setLoading(false);
 
     if (error) {
-      setLoading(false);
-      setMessage(error.message);
+      setMessage('Perfil ProKicks creado para esta demo. Ejecuta el SQL del sprint para verlo también en admin/Supabase.');
       return;
     }
 
-    if (data.user) {
-      const profilePayload = {
-        id: data.user.id,
-        display_name: `${form.firstName} ${form.lastName}`.trim(),
-        first_name: form.firstName,
-        last_name: form.lastName,
-        gender: form.gender || null,
-        birth_date: birthDate,
-        is_minor: isMinor,
-        guardian_required: isMinor,
-        guardian_status: isMinor ? 'pending' : 'not_required',
-        registration_completed: true,
-        account_status: accountStatus,
-        email: form.email,
-        state: form.state,
-        municipality: form.municipality,
-        alias: form.nickname,
-        avatar_key: form.avatar,
-        role: 'player'
-      };
-
-      await supabase.from('prokicks_profiles').upsert(profilePayload);
-
-      await supabase.from('prokicks_user_consents').insert([
-        { user_id: data.user.id, document_type: 'terms', document_version: legalVersion, accepted: form.terms },
-        { user_id: data.user.id, document_type: 'privacy_notice', document_version: legalVersion, accepted: form.privacy },
-        { user_id: data.user.id, document_type: 'marketing_consent', document_version: legalVersion, accepted: form.promotions },
-        { user_id: data.user.id, document_type: 'image_release', document_version: legalVersion, accepted: form.media }
-      ]);
-
-      if (isMinor) {
-        await supabase.from('prokicks_guardian_consents').insert({
-          minor_user_id: data.user.id,
-          guardian_first_name: form.guardianFirstName,
-          guardian_last_name: form.guardianLastName,
-          guardian_email: form.guardianEmail,
-          relationship: form.guardianRelation,
-          document_version: legalVersion,
-          status: 'pending'
-        });
-      }
-    }
-
-    setLoading(false);
-    window.location.href = isMinor ? '/registro/pendiente' : '/';
+    setMessage('Perfil ProKicks creado. Ya puedes conectar un spot y crear una reta.');
   }
 
   return (
     <main className="register-screen">
       <header className="register-header">
-        <Link href="/login" className="back-link"><ChevronLeft size={18} /> Volver</Link>
+        <Link href="/play" className="back-link"><ChevronLeft size={18} /> Volver</Link>
         <Image src="/logo-negro.png" alt="ProKicks" width={120} height={40} className="logo" />
       </header>
 
       <section className="register-title">
-        <span>Registro ProKicks</span>
-        <h1>Crea tu cuenta</h1>
-        <p>Datos mínimos, perfil deportivo y consentimientos separados.</p>
+        <span>Perfil ProKicks</span>
+        <h1>Crea tu perfil</h1>
+        <p>Registro básico para presentación: nickname, avatar y contacto.</p>
       </section>
 
-      <div className="stepper" aria-label="Paso de registro">
-        {[1, 2, 3, 4, 5].map((n) => <span key={n} className={step >= n ? 'active' : ''} />)}
-      </div>
-
       <section className="register-card">
-        {step === 1 && <>
-          <div className="card-head"><CalendarDays /><div><h2>Fecha de nacimiento</h2><p>Calculamos edad para proteger a menores.</p></div></div>
-          <div className="date-grid">
-            <select value={form.day} onChange={(e) => update('day', e.target.value)}><option value="">Día</option>{Array.from({ length: 31 }, (_, i) => <option key={i + 1}>{i + 1}</option>)}</select>
-            <select value={form.month} onChange={(e) => update('month', e.target.value)}><option value="">Mes</option>{Array.from({ length: 12 }, (_, i) => <option key={i + 1} value={i + 1}>{i + 1}</option>)}</select>
-            <select value={form.year} onChange={(e) => update('year', e.target.value)}><option value="">Año</option>{Array.from({ length: 85 }, (_, i) => new Date().getFullYear() - i).map((y) => <option key={y}>{y}</option>)}</select>
+        <div className="card-head"><UserRound /><div><h2>Datos del jugador</h2><p>Con esto puedes continuar el recorrido principal.</p></div></div>
+        <input placeholder="Nombre completo" value={form.name} onChange={(e) => update('name', e.target.value)} />
+        <label className="field-label"><Mail size={16} /> Email</label>
+        <input type="email" placeholder="tu@email.com" value={form.email} onChange={(e) => update('email', e.target.value)} />
+        <label className="field-label"><Phone size={16} /> WhatsApp</label>
+        <input inputMode="tel" placeholder="+52 56 2449 2892" value={form.whatsapp} onChange={(e) => update('whatsapp', e.target.value)} />
+        <input placeholder="Nickname" value={form.nickname} onChange={(e) => update('nickname', e.target.value)} />
+
+        <div className="avatar-section">
+          <h2 className="card-title">Elige tu avatar</h2>
+          <div className="avatar-grid">
+            {avatarOptions.map((avatar) => (
+              <button
+                type="button"
+                key={avatar.id}
+                className={`avatar-choice ${avatar.tone} ${form.avatarId === avatar.id ? 'selected' : ''}`}
+                onClick={() => update('avatarId', avatar.id)}
+              >
+                <span>{avatar.initials}</span>
+                <strong>{avatar.name}</strong>
+              </button>
+            ))}
           </div>
-          {age !== null && <div className={`age-note ${isMinor ? 'minor' : ''}`}>{isUnder13 ? 'Menor de 13: el perfil debe ser administrado por tutor.' : isMinor ? 'Menor de edad: requeriremos autorización de tutor.' : 'Mayor de edad: registro normal.'}</div>}
-        </>}
-
-        {step === 2 && <>
-          <div className="card-head"><UserRound /><div><h2>Datos personales</h2><p>Solo lo necesario para tu perfil.</p></div></div>
-          <input placeholder="Nombre(s)" value={form.firstName} onChange={(e) => update('firstName', e.target.value)} />
-          <input placeholder="Apellidos" value={form.lastName} onChange={(e) => update('lastName', e.target.value)} />
-          <select value={form.gender} onChange={(e) => update('gender', e.target.value)}>
-            <option value="">Género opcional</option><option value="hombre">Hombre</option><option value="mujer">Mujer</option><option value="otro">Otro</option><option value="prefiero_no_decirlo">Prefiero no decirlo</option>
-          </select>
-        </>}
-
-        {step === 3 && <>
-          <div className="card-head"><Mail /><div><h2>Contacto y ubicación</h2><p>Email obligatorio. No pedimos WhatsApp ni domicilio.</p></div></div>
-          <input type="email" placeholder="Email" value={form.email} onChange={(e) => update('email', e.target.value)} />
-          <select value={form.state} onChange={(e) => update('state', e.target.value)}>{stateNames.map((s) => <option key={s}>{s}</option>)}</select>
-          <select value={form.municipality} onChange={(e) => update('municipality', e.target.value)}>{municipalities.map((m) => <option key={m}>{m}</option>)}</select>
-          <p className="legal-note">En CDMX mostramos alcaldías. En otros estados, municipios.</p>
-        </>}
-
-        {step === 4 && <>
-          <div className="card-head"><UserRound /><div><h2>Nickname y avatar</h2><p>Tu identidad pública dentro de ProKicks.</p></div></div>
-          <input placeholder="Nickname" value={form.nickname} onChange={(e) => update('nickname', e.target.value)} />
-          <select value={form.avatar} onChange={(e) => update('avatar', e.target.value)}>{avatarOptions.map((a) => <option key={a}>{a}</option>)}</select>
-          <input type="password" placeholder="Contraseña mínimo 8 caracteres" value={form.password} onChange={(e) => update('password', e.target.value)} />
-        </>}
-
-        {step === 5 && <>
-          <div className="card-head"><ShieldCheck /><div><h2>Consentimientos</h2><p>Separados para cumplir mejor y no mezclar permisos.</p></div></div>
-          {isMinor && <div className="guardian-box">
-            <strong>Autorización de tutor</strong>
-            <input placeholder="Nombre del tutor" value={form.guardianFirstName} onChange={(e) => update('guardianFirstName', e.target.value)} />
-            <input placeholder="Apellidos del tutor" value={form.guardianLastName} onChange={(e) => update('guardianLastName', e.target.value)} />
-            <input type="email" placeholder="Email del tutor" value={form.guardianEmail} onChange={(e) => update('guardianEmail', e.target.value)} />
-            <select value={form.guardianRelation} onChange={(e) => update('guardianRelation', e.target.value)}><option value="">Relación</option><option value="madre">Madre</option><option value="padre">Padre</option><option value="tutor">Tutor legal</option><option value="otro">Otro</option></select>
-            <label className="check"><input type="checkbox" checked={form.guardianConsent} onChange={(e) => update('guardianConsent', e.target.checked)} /> Confirmo que el tutor deberá autorizar esta cuenta.</label>
-            <Link className="consent-link" href="/legal/minor-consent" target="_blank">Ver autorización para menores</Link>
-          </div>}
-          <label className="check"><input type="checkbox" checked={form.terms} onChange={(e) => update('terms', e.target.checked)} /> Acepto Términos y Condiciones <Link className="consent-link" href="/legal/terms" target="_blank">Ver términos</Link></label>
-          <label className="check"><input type="checkbox" checked={form.privacy} onChange={(e) => update('privacy', e.target.checked)} /> He leído el Aviso de Privacidad <Link className="consent-link" href="/legal/privacy" target="_blank">Ver aviso</Link></label>
-          <label className="check"><input type="checkbox" checked={form.promotions} onChange={(e) => update('promotions', e.target.checked)} /> Quiero recibir promociones <Link className="consent-link" href="/legal/marketing" target="_blank">Ver consentimiento</Link></label>
-          <label className="check"><input type="checkbox" checked={form.media} onChange={(e) => update('media', e.target.checked)} /> Autorizo uso público de fotos/videos de eventos <Link className="consent-link" href="/legal/image-release" target="_blank">Ver autorización</Link></label>
-          <p className="legal-note">Antes del lanzamiento, textos legales y consentimiento parental deben revisarse con abogado mexicano de privacidad digital.</p>
-        </>}
-
-        {message && <div className="alert error">{message}</div>}
-
-        <div className="register-actions">
-          {step > 1 && <button className="btn btn-soft" onClick={() => setStep(step - 1)}>Atrás</button>}
-          {step < 5 && <button className="btn btn-primary" disabled={!canAdvance()} onClick={() => setStep(step + 1)}>Continuar</button>}
-          {step === 5 && <button className="btn btn-primary" onClick={submit} disabled={loading}>{loading ? 'Creando...' : isMinor ? 'Solicitar alta' : 'Crear cuenta'}</button>}
         </div>
+
+        <label className="field-label">Contraseña</label>
+        <input type="password" placeholder="Contraseña" value={form.password} onChange={(e) => update('password', e.target.value)} />
+        <p className="legal-note">Crea una contraseña para entrar después a tu perfil. Login con Google/Apple próximamente.</p>
+
+        <label className="check"><input type="checkbox" checked={form.accepted} onChange={(e) => update('accepted', e.target.checked)} /> Acepto el reglamento, privacidad y uso de imagen ProKicks.</label>
+        <div className="card">
+          <div className={`avatar-preview ${selectedAvatar.tone}`}>{selectedAvatar.initials}</div>
+          <h3 className="card-title">{form.nickname || 'Tu nickname'}</h3>
+          <p className="p">{selectedAvatar.name}</p>
+        </div>
+        {message && <div className={message.includes('creado') ? 'alert ok' : 'alert warn'}>{message}</div>}
+        {message && <div className="grid section">
+          <Link className="btn btn-primary" href="/scan">Conectar spot</Link>
+          <Link className="btn btn-warm" href="/torneos">Ver torneo Indoor</Link>
+          <Link className="btn btn-soft" href="/perfil">Ver perfil</Link>
+        </div>}
+        <button className="btn btn-primary btn-full" onClick={submit} disabled={loading || !canSubmit}>{loading ? 'Creando...' : 'Crear perfil ProKicks'}</button>
+        {!canSubmit && <p className="helper-text">Completa todos los campos para continuar.</p>}
       </section>
     </main>
   );

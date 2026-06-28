@@ -8,6 +8,7 @@ import { AppShell } from '@/components/AppShell';
 import { supabase } from '@/lib/supabase';
 import { trackEvent } from '@/lib/analytics';
 import { captureError } from '@/lib/monitoring';
+import { indoorTournament } from '@/lib/demo';
 
 type Tournament = {
   id: string;
@@ -25,24 +26,15 @@ type Tournament = {
   currency?: string | null;
   payment_url?: string | null;
   rules: string | null;
+  venue?: string | null;
+  address?: string | null;
+  maps_url?: string | null;
 };
 
 const demo: Tournament = {
-  id: 'demo-roma',
-  title: 'ProKicks Open Roma Norte',
-  description: 'Torneo demo sin costo para validar comunidad y experiencia ProKicks.',
-  city: 'CDMX',
-  state: 'Ciudad de México',
-  starts_at: new Date(Date.now() + 7 * 86400000).toISOString(),
-  format: '1v1',
-  level: 'abierto',
-  status: 'open',
-  capacity: 32,
-  is_free: true,
-  cost: 0,
-  currency: 'MXN',
+  ...indoorTournament,
   payment_url: null,
-  rules: 'Registro sin costo. Cupo limitado.',
+  rules: 'Registro sin costo. Cupo limitado. Modalidad individual, dupla y menor con tutor disponibles.',
 };
 
 function costLabel(t: Tournament) {
@@ -66,7 +58,7 @@ export default function TournamentDetail() {
     trackEvent('Tournament Viewed', { tournament_id: tournamentId });
 
     async function loadTournament() {
-      if (!tournamentId || tournamentId.startsWith('demo-')) return;
+      if (!tournamentId || tournamentId === indoorTournament.id) return;
 
       try {
         const { data, error } = await supabase
@@ -124,8 +116,9 @@ export default function TournamentDetail() {
             <div>
               <h3 className="card-title">Sede</h3>
               <p className="p">
-                {item.city || 'CDMX'} · {item.state || 'Ciudad de México'}
+                {item.venue || 'Indoor Community'}<br />{item.address || `${item.city || 'CDMX'} · ${item.state || 'Ciudad de México'}`}
               </p>
+              {item.maps_url && <Link className="inline-link" href={item.maps_url} target="_blank">Cómo llegar</Link>}
             </div>
           </div>
         </div>
