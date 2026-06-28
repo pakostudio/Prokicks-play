@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { AppShell } from '@/components/AppShell';
-import { demoChallenges } from '@/lib/demo';
 import { supabase } from '@/lib/supabase';
 
 type Challenge = {
@@ -18,15 +17,12 @@ type Challenge = {
 };
 
 export default function RetasPage(){
-  const [items,setItems]=useState<Challenge[]>(demoChallenges);
+  const [items,setItems]=useState<Challenge[]>([]);
 
   useEffect(() => {
     async function load() {
       const { data } = await supabase.from('prokicks_challenges').select('*').order('created_at', { ascending: false }).limit(12);
-      const localRaw = window.localStorage.getItem('prokicks_last_challenge');
-      const local = localRaw ? JSON.parse(localRaw) : null;
-      const merged = [...(local ? [local] : []), ...((data?.length ? data : demoChallenges) as Challenge[])];
-      setItems(merged);
+      setItems((data || []) as Challenge[]);
     }
     load();
   }, []);
@@ -44,6 +40,7 @@ export default function RetasPage(){
           <Link className="btn btn-primary" href={`/retas/${c.id}`}>Unirme</Link>
         </div>
       </article>)}
+      {!items.length && <section className="card"><h3 className="card-title">Aún no hay retas abiertas</h3><p className="p">Escanea un spot y crea la primera reta.</p><Link className="btn btn-primary btn-full section" href="/scan">Conectar spot</Link></section>}
     </section>
   </AppShell>
 }

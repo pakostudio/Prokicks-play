@@ -9,7 +9,7 @@ import { indoorTournament } from '@/lib/demo';
 
 type Tournament = { id:string; title:string; description:string|null; city:string|null; state:string|null; format:string|null; level:string|null; status:string|null; starts_at:string|null; capacity:number|null; is_free:boolean|null; cost?:number|null; currency?:string|null };
 
-const demo:Tournament[]=[indoorTournament as Tournament];
+const fallbackTournaments:Tournament[]=[indoorTournament as Tournament];
 
 function costLabel(t:Tournament){
   if(t.is_free !== false || !Number(t.cost || 0)) return 'Sin costo';
@@ -17,7 +17,7 @@ function costLabel(t:Tournament){
 }
 
 export default function TournamentsPage(){
-  const [items,setItems]=useState<Tournament[]>(demo);
+  const [items,setItems]=useState<Tournament[]>(fallbackTournaments);
   useEffect(()=>{ supabase.from('prokicks_tournaments').select('*').ilike('title', '%Indoor Community%').order('starts_at', { ascending:true }).then(({data})=>{ if(data?.length) setItems(data as Tournament[]); }); },[]);
   return <AppShell active="torneos">
     <section className="hero section"><div className="kicker">Torneos ProKicks</div><h1 className="h1">Indoor Community</h1><p className="p">17 de julio · Av. Toluca 481 · registro abierto.</p></section>

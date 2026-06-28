@@ -418,6 +418,11 @@ body{
 .map-preview:before,.map-preview:after{content:"";position:absolute;background:rgba(23,59,99,.12);height:18px;width:150%;left:-20%;transform:rotate(-18deg);top:36px;border-radius:999px}
 .map-preview:after{transform:rotate(24deg);top:82px;background:rgba(208,128,48,.16)}
 .map-preview .pin{left:50%;top:42%;transform:translate(-50%,-50%) rotate(-45deg);z-index:2}
+.map-embed{width:100%;height:180px;border:0;border-radius:22px;background:#eef3fa}
+.entry-screen{min-height:100dvh;max-width:560px;margin:0 auto;padding:22px 18px 110px;background:linear-gradient(180deg,#fff 0%,#f4f8ff 48%,#fff7e8 100%)}
+.entry-hero{position:relative;overflow:hidden;background:#fff;border:1px solid var(--line);border-radius:34px;padding:24px;box-shadow:var(--shadow);display:grid;gap:12px}
+.entry-hero:after{content:"";position:absolute;right:-60px;bottom:-70px;width:190px;height:190px;border-radius:50%;background:conic-gradient(from 220deg,var(--blue),var(--orange),var(--yellow),var(--blue));opacity:.14}
+.entry-profile{display:flex;align-items:center;gap:12px}
 .confirmation-actions{
   display:grid;
   gap:12px;

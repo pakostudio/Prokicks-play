@@ -60,12 +60,10 @@ export default function NewChallenge(){
       data = retry.data;
       error = retry.error;
     }
-    const localChallenge = { ...payload, id: data?.id || `local-${Date.now()}` };
-    window.localStorage.setItem('prokicks_last_challenge', JSON.stringify(localChallenge));
     setLoading(false);
 
     if (error) {
-      setMsg('Reta creada para la presentación. Ejecuta el SQL del sprint para verla también en admin/Supabase.');
+      setMsg('No pudimos guardar la reta en este momento. Revisa conexión o policies de Supabase.');
       return;
     }
     setMsg('Reta creada. Ya aparece como abierta.');

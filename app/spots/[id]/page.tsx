@@ -1,9 +1,9 @@
 import Link from 'next/link';
 import { AppShell } from '@/components/AppShell';
-import { demoSpots } from '@/lib/demo';
+import { mapEmbedUrl, realSpots } from '@/lib/demo';
 
 export default function SpotDetail({ params }:{ params:{ id:string }}){
-  const spot = demoSpots.find(s=>s.id===params.id) || demoSpots[0];
+  const spot = realSpots.find(s=>s.id===params.id) || realSpots[0];
   return <AppShell active="map">
     <section className="hero section"><div className="kicker">Spot activo</div><h1 className="h1">{spot.name}</h1><p className="p">{spot.address}</p></section>
     <section className="grid-2 section">
@@ -11,7 +11,7 @@ export default function SpotDetail({ params }:{ params:{ id:string }}){
       <div className="stat"><span className="muted">Código</span><strong style={{fontSize:18}}>{spot.code}</strong></div>
     </section>
     <section className="card section spot-card">
-      <div className="map-preview"><span className="pin p2"></span></div>
+      <iframe className="map-embed" src={mapEmbedUrl(spot.address)} loading="lazy" referrerPolicy="no-referrer-when-downgrade" title={`Mapa ${spot.name}`} />
       <h2 className="card-title">Ubicación del spot</h2>
       <p className="p">{spot.address}</p>
       <Link className="btn btn-warm btn-full" href={spot.maps_url} target="_blank">Abrir en Google Maps</Link>

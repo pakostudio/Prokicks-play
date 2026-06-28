@@ -8,7 +8,7 @@ import { AppShell } from '@/components/AppShell';
 import { supabase } from '@/lib/supabase';
 import { trackEvent } from '@/lib/analytics';
 import { captureError } from '@/lib/monitoring';
-import { indoorTournament } from '@/lib/demo';
+import { indoorTournament, mapEmbedUrl } from '@/lib/demo';
 
 type Tournament = {
   id: string;
@@ -31,7 +31,7 @@ type Tournament = {
   maps_url?: string | null;
 };
 
-const demo: Tournament = {
+const fallbackTournament: Tournament = {
   ...indoorTournament,
   payment_url: null,
   rules: 'Registro sin costo. Cupo limitado. Modalidad individual, dupla y menor con tutor disponibles.',
@@ -50,8 +50,8 @@ export default function TournamentDetail() {
   const params = useParams<{ id: string }>();
   const tournamentId = params.id;
   const [item, setItem] = useState<Tournament>({
-    ...demo,
-    id: tournamentId || demo.id,
+    ...fallbackTournament,
+    id: tournamentId || fallbackTournament.id,
   });
 
   useEffect(() => {
@@ -111,7 +111,7 @@ export default function TournamentDetail() {
 
       <section className="grid section detail-grid-safe">
         <div className="card spot-card">
-          <div className="map-preview"><span className="pin p2"></span></div>
+          <iframe className="map-embed" src={mapEmbedUrl(item.address || indoorTournament.address)} loading="lazy" referrerPolicy="no-referrer-when-downgrade" title={`Mapa ${item.venue || 'Indoor Community'}`} />
           <div className="row">
             <MapPin color="#173B63" />
             <div>
@@ -142,7 +142,7 @@ export default function TournamentDetail() {
             <div>
               <h3 className="card-title">Formato</h3>
               <p className="p">
-                {item.format || 'Formato demo'} · {item.level || 'abierto'}
+                {item.format || 'Formato abierto'} · {item.level || 'abierto'}
               </p>
             </div>
           </div>

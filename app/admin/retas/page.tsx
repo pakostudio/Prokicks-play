@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { AppShell } from '@/components/AppShell';
-import { avatarOptions, demoChallenges } from '@/lib/demo';
+import { avatarOptions } from '@/lib/demo';
 import { supabase } from '@/lib/supabase';
 
 type Challenge = {
@@ -22,15 +22,13 @@ type Challenge = {
 };
 
 export default function AdminRetas(){
-  const [rows,setRows]=useState<Challenge[]>(demoChallenges);
+  const [rows,setRows]=useState<Challenge[]>([]);
   const [msg,setMsg]=useState('');
 
   async function load(){
     const { data, error } = await supabase.from('prokicks_challenges').select('*').order('created_at', { ascending:false }).limit(50);
-    const localRaw = window.localStorage.getItem('prokicks_last_challenge');
-    const local = localRaw ? JSON.parse(localRaw) : null;
-    if (error) setMsg('Retas en Supabase pendientes de SQL/policies. Mostrando datos de presentación.');
-    setRows([...(local ? [local] : []), ...((data?.length ? data : demoChallenges) as Challenge[])]);
+    if (error) setMsg('No pudimos cargar retas en este momento.');
+    setRows((data || []) as Challenge[]);
   }
 
   useEffect(()=>{ load(); },[]);
@@ -47,6 +45,7 @@ export default function AdminRetas(){
           return <tr key={row.id}><td>{row.title}</td><td>{row.spot_name}<br/><small>{row.spot_code}</small></td><td>{image && <img className="admin-avatar-img" src={image} alt={row.creator_nickname || 'Avatar'} />}{row.creator_name || '-'}<br/><small>{row.creator_nickname || row.creator_avatar_id || ''}</small></td><td>{row.type || '-'}</td><td>{row.status || 'Abierta'}</td></tr>
         })}
       </tbody></table></div>
+      {!rows.length && <p className="p">Aún no hay retas abiertas. Escanea un spot y crea la primera reta.</p>}
     </section>
     <section className="section"><Link className="btn btn-soft btn-full" href="/admin">Volver a Admin</Link></section>
   </AppShell>

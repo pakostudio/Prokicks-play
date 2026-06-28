@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { AppShell } from '@/components/AppShell';
-import { findSpotByCode, realSpots } from '@/lib/demo';
+import { findSpotByCode, mapEmbedUrl, realSpots } from '@/lib/demo';
 
 export default function ScanPage(){
   const [code,setCode]=useState('PK-INDOOR-001');
@@ -22,7 +22,7 @@ export default function ScanPage(){
       {msg && <div className="alert error">{msg}</div>}
       <button className="btn btn-primary" onClick={lookup}>Detectar spot</button>
       {spot && <div className="card spot-card">
-        <div className="map-preview"><span className="pin p1"></span></div>
+        <iframe className="map-embed" src={mapEmbedUrl(spot.address)} loading="lazy" referrerPolicy="no-referrer-when-downgrade" title={`Mapa ${spot.name}`} />
         <div className="row"><h3 className="card-title">{spot.name}</h3><span className="tag tag-blue">{spot.code}</span></div>
         <p className="field-label">Ubicación del spot</p>
         <p className="p">{spot.address}</p>

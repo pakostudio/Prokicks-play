@@ -82,7 +82,7 @@ export default function RegisterPage() {
     setLoading(false);
 
     if (error) {
-      setMessage('Perfil ProKicks creado para esta demo. Ejecuta el SQL del sprint para verlo también en admin/Supabase.');
+      setMessage('Perfil ProKicks creado en este dispositivo. Revisa Supabase/policies para verlo también en admin.');
       return;
     }
 
