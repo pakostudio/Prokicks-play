@@ -7,7 +7,7 @@ import { AppShell } from '@/components/AppShell';
 import { SupabaseNotice } from '@/components/SupabaseNotice';
 import { realSpots } from '@/lib/demo';
 import { supabase } from '@/lib/supabase';
-import { Instagram, MapPin, QrCode, ShieldCheck, Trophy, UserRound } from 'lucide-react';
+import { MapPin, QrCode, ShieldCheck, Star, Trophy, UserRound } from 'lucide-react';
 
 type Challenge = {
   id: string;
@@ -103,7 +103,7 @@ export default function HomePage() {
           <Link className="btn btn-soft" href="/comprar">Comprar</Link>
           <Link className="btn btn-soft" href="/legal">Legal</Link>
           <Link className="btn btn-soft" href="/perfil">Perfil</Link>
-          <a className="btn btn-warm btn-full instagram-wide" href="https://www.instagram.com/prokicksoficial?igsh=MTQyZDgwcTUwcTdxOQ==" target="_blank" rel="noreferrer"><Instagram size={18}/> Seguir en Instagram</a>
+          <a className="btn btn-warm btn-full instagram-wide" href="https://www.instagram.com/prokicksoficial?igsh=MTQyZDgwcTUwcTdxOQ==" target="_blank" rel="noreferrer"><Star size={18}/> Seguir en Instagram</a>
         </div>
       </section>
     </AppShell>
