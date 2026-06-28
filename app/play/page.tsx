@@ -81,17 +81,29 @@ export default function HomePage() {
       </section>
 
       <section className="section">
-        <div className="row"><h2 className="h2">Torneo inaugural</h2></div>
-        <div className="card">
-          <div className="tournament-flyer-preview">
-            <Image src="/tournaments/torneo-inaugural-prokicks-2026.png" alt="Flyer torneo inaugural ProKicks" width={900} height={1200} />
-          </div>
-          <h3 className="card-title">ProKicks x Indoor Community</h3>
-          <p className="p">Consulta el flyer oficial, cronograma y sede del torneo.</p>
-          <div className="grid-2 section">
-            <Link className="btn btn-secondary-blue" href="/torneos"><Trophy size={18}/> Ver torneo</Link>
-            <a className="btn btn-soft" href="/docs/torneo-inaugural-prokicks-2026.pdf" target="_blank" rel="noopener noreferrer"><FileText size={18}/> Ver PDF</a>
-          </div>
+        <div className="row">
+          <h2 className="h2">Próximos torneos</h2>
+          <Link className="tag tag-blue" href="/torneos">Ver todos</Link>
+        </div>
+
+        <div className="soft-tournament-list">
+          <Link href="/torneos" className="soft-tournament-item">
+            <div className="soft-tournament-dot">1</div>
+            <div>
+              <strong>1er Torneo La Barra</strong>
+              <span>5 julio · La Barra 88 · 1v1 · categoría libre</span>
+            </div>
+            <em>Ver</em>
+          </Link>
+
+          <Link href="/torneos" className="soft-tournament-item">
+            <div className="soft-tournament-dot">2</div>
+            <div>
+              <strong>Indoor Community</strong>
+              <span>27 julio · Altolivo · 1v1 · registro abierto</span>
+            </div>
+            <em>Ver</em>
+          </Link>
         </div>
       </section>
 
