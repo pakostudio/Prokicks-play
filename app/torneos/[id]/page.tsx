@@ -47,6 +47,30 @@ function costLabel(t: Tournament) {
   }).format(Number(t.cost || 0));
 }
 
+function tournamentFlyer(t: Tournament) {
+  const title = `${t.title || ''}`.toLowerCase();
+  const venue = `${t.venue || ''}`.toLowerCase();
+  const address = `${t.address || ''}`.toLowerCase();
+
+  if (title.includes('barra') || venue.includes('barra') || address.includes('tlatelolco')) {
+    return {
+      title: 'Flyer oficial · La Barra',
+      image: '/tournaments/torneo-la-barra-2026.jpeg',
+      pdf: '',
+    };
+  }
+
+  if (title.includes('indoor') || venue.includes('indoor') || address.includes('altolivo')) {
+    return {
+      title: 'Flyer oficial',
+      image: '/tournaments/torneo-inaugural-prokicks-2026.png',
+      pdf: '/docs/torneo-inaugural-prokicks-2026.pdf',
+    };
+  }
+
+  return null;
+}
+
 export default function TournamentDetail() {
   const params = useParams<{ id: string }>();
   const tournamentId = params.id;
@@ -82,6 +106,7 @@ export default function TournamentDetail() {
   }, [tournamentId]);
 
   const isPaid = item.is_free === false && Number(item.cost || 0) > 0;
+  const flyer = tournamentFlyer(item);
 
   return (
     <AppShell active="torneos">
@@ -121,6 +146,20 @@ export default function TournamentDetail() {
           <a className="btn btn-soft" href="/docs/torneo-inaugural-prokicks-2026.pdf" target="_blank" rel="noopener noreferrer">Ver PDF</a>
         </div>
       </section>
+
+
+      {flyer && (
+        <section className="card section detail-bottom-safe">
+          <h2 className="card-title">{flyer.title}</h2>
+          <div className="tournament-flyer-preview">
+            <Image src={flyer.image} alt={flyer.title} width={900} height={1200} priority />
+          </div>
+          <div className="grid-2 section">
+            <a className="btn btn-secondary-blue" href={flyer.image} target="_blank" rel="noopener noreferrer">Ver flyer</a>
+            {flyer.pdf && <a className="btn btn-soft" href={flyer.pdf} target="_blank" rel="noopener noreferrer">Ver PDF</a>}
+          </div>
+        </section>
+      )}
 
       <section className="grid section detail-grid-safe">
         <div className="card spot-card">
