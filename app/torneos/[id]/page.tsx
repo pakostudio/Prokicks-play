@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { CalendarDays, MapPin, Trophy, Users } from 'lucide-react';
@@ -107,6 +108,18 @@ export default function TournamentDetail() {
         >
           Registrarme al torneo
         </Link>
+      </section>
+
+
+      <section className="card section detail-bottom-safe">
+        <h2 className="card-title">Flyer oficial</h2>
+        <div className="tournament-flyer-preview">
+          <Image src="/tournaments/torneo-inaugural-prokicks-2026.png" alt="Flyer torneo inaugural ProKicks" width={900} height={1200} priority />
+        </div>
+        <div className="grid-2 section">
+          <a className="btn btn-secondary-blue" href="/tournaments/torneo-inaugural-prokicks-2026.png" target="_blank" rel="noopener noreferrer">Ver flyer</a>
+          <a className="btn btn-soft" href="/docs/torneo-inaugural-prokicks-2026.pdf" target="_blank" rel="noopener noreferrer">Ver PDF</a>
+        </div>
       </section>
 
       <section className="grid section detail-grid-safe">
