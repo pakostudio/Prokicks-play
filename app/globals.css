@@ -683,3 +683,22 @@ body{
     max-height:104px;
   }
 }
+
+
+/* Surgical fix · larger entry logo */
+.entry-main-logo{
+  width:168px !important;
+  height:auto !important;
+  display:block;
+  margin-bottom:22px;
+  object-fit:contain;
+}
+.entry-hero-approved .kicker{
+  margin-top:2px;
+}
+@media (max-width:420px){
+  .entry-main-logo{
+    width:150px !important;
+    margin-bottom:18px;
+  }
+}

@@ -28,7 +28,7 @@ export default function EntryPage() {
   return (
     <main className="entry-screen">
       <section className="entry-hero entry-hero-approved">
-        <Image src="/logo-negro.png" alt="ProKicks" width={150} height={48} className="logo" priority />
+        <Image src="/logo-negro.png" alt="ProKicks" width={240} height={86} className="logo entry-main-logo" priority />
         <div className="kicker">ProKicks Play</div>
         <h1 className="h1">Entrena. Compite. Domina.</h1>
         <p className="p">Crea tu perfil, conecta spots reales y vive la experiencia ProKicks.</p>
