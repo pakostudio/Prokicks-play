@@ -702,3 +702,116 @@ body{
     margin-bottom:18px;
   }
 }
+
+
+/* Surgical fix · premium entry hero spacing */
+.entry-screen{
+  background:
+    radial-gradient(circle at 18% 8%, rgba(37,99,235,.08), transparent 28%),
+    radial-gradient(circle at 86% 16%, rgba(245,158,11,.09), transparent 26%),
+    linear-gradient(180deg,#F8FBFF 0%,#F4F7FB 100%);
+}
+.entry-hero-approved{
+  position:relative;
+  padding:56px 48px 38px !important;
+  gap:18px !important;
+  overflow:hidden;
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.98) 0%, rgba(255,255,255,.92) 58%, rgba(239,246,255,.95) 100%);
+  border:1px solid #D8E6F8;
+  box-shadow:0 28px 80px rgba(23,59,99,.10);
+}
+.entry-hero-approved:before{
+  content:"";
+  position:absolute;
+  right:-80px;
+  top:-90px;
+  width:260px;
+  height:260px;
+  border-radius:999px;
+  background:linear-gradient(135deg, rgba(37,99,235,.10), rgba(245,158,11,.12));
+  z-index:0;
+}
+.entry-hero-approved > *{
+  position:relative;
+  z-index:1;
+}
+.entry-brand-row{
+  display:inline-flex;
+  align-items:center;
+  gap:14px;
+  width:max-content;
+  padding:10px 14px;
+  border-radius:22px;
+  background:rgba(255,255,255,.82);
+  border:1px solid #E0ECFF;
+  box-shadow:0 12px 28px rgba(23,59,99,.08);
+  margin-bottom:22px;
+}
+.entry-brand-row span{
+  font-size:13px;
+  font-weight:900;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:#173B63;
+  border-left:1px solid #D9E8FF;
+  padding-left:14px;
+}
+.entry-main-logo{
+  width:178px !important;
+  height:auto !important;
+  display:block;
+  margin:0 !important;
+  object-fit:contain;
+}
+.entry-hero-approved .kicker{
+  margin:2px 0 0;
+  color:#173B63;
+  letter-spacing:.22em;
+}
+.entry-hero-approved .h1{
+  max-width:860px;
+  margin:0;
+  letter-spacing:-.04em;
+  line-height:.96;
+}
+.entry-hero-approved .p{
+  max-width:760px;
+  font-size:20px;
+  line-height:1.45;
+  color:#5F718B;
+  margin:2px 0 10px;
+}
+.entry-approved-image{
+  margin-top:10px;
+  border-radius:28px;
+  border:1px solid #D8E6F8;
+  box-shadow:0 20px 50px rgba(23,59,99,.10);
+}
+.entry-approved-image img{
+  max-height:390px;
+  object-fit:cover;
+  object-position:center;
+}
+@media (max-width:720px){
+  .entry-hero-approved{
+    padding:34px 24px 28px !important;
+    border-radius:28px;
+  }
+  .entry-brand-row{
+    margin-bottom:12px;
+  }
+  .entry-main-logo{
+    width:140px !important;
+  }
+  .entry-brand-row span{
+    font-size:11px;
+    padding-left:10px;
+  }
+  .entry-hero-approved .p{
+    font-size:16px;
+  }
+  .entry-approved-image img{
+    max-height:300px;
+  }
+}
