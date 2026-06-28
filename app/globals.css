@@ -587,3 +587,19 @@ body{
 .tournament-flyer-preview img{
   object-fit:contain;
 }
+
+.tournament-card-flyer{
+  width:100%;
+  max-height:220px;
+  overflow:hidden;
+  border-radius:18px;
+  border:1px solid var(--line);
+  background:#fff;
+  margin:10px 0 14px;
+}
+.tournament-card-flyer img{
+  display:block;
+  width:100%;
+  height:auto;
+  object-fit:contain;
+}

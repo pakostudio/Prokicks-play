@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { Trophy, CalendarDays, MapPin } from 'lucide-react';
 import { AppShell } from '@/components/AppShell';
@@ -38,6 +39,13 @@ function dateLabel(value:string|null){
   return new Date(value).toLocaleDateString('es-MX');
 }
 
+function tournamentFlyer(t:Tournament){
+  const raw = `${t.title || ''} ${t.venue || ''} ${t.address || ''}`.toLowerCase();
+  if(raw.includes('barra') || raw.includes('tlatelolco') || raw.includes('peralvillo')) return '/tournaments/torneo-la-barra-2026.jpeg';
+  if(raw.includes('indoor') || raw.includes('altolivo')) return '/tournaments/torneo-inaugural-prokicks-2026.png';
+  return '';
+}
+
 export default function TournamentsPage(){
   const [items,setItems]=useState<Tournament[]>(fallbackTournaments);
 
@@ -68,6 +76,7 @@ export default function TournamentsPage(){
           <div className="tournament-icon"><Trophy size={20}/></div>
           <span className={t.is_free === false ? 'tag tag-warm' : 'tag tag-blue'}>{costLabel(t)}</span>
         </div>
+        {tournamentFlyer(t) && <div className="tournament-card-flyer"><Image src={tournamentFlyer(t)} alt={t.title} width={600} height={800} /></div>}
         <h2 className="card-title">{t.title}</h2>
         <p className="p">{t.description}</p>
         <div className="tournament-meta">

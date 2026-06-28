@@ -55,6 +55,22 @@ function money(value:number, currency = 'MXN'){
   return new Intl.NumberFormat('es-MX', { style:'currency', currency }).format(value);
 }
 
+function resolveTournamentFlyer(t:Tournament){
+  const raw = `${t.title || ''} ${t.venue || ''} ${t.address || ''}`.toLowerCase();
+  if(raw.includes('barra') || raw.includes('tlatelolco') || raw.includes('peralvillo')){
+    return {
+      title:'Flyer oficial · La Barra',
+      image:'/tournaments/torneo-la-barra-2026.jpeg',
+      pdf:''
+    };
+  }
+  return {
+    title:'Flyer oficial · Indoor Community',
+    image:'/tournaments/torneo-inaugural-prokicks-2026.png',
+    pdf:'/docs/torneo-inaugural-prokicks-2026.pdf'
+  };
+}
+
 export default function AdminTorneosPage(){
   const [items,setItems]=useState<Tournament[]>([]);
   const [form,setForm]=useState<Tournament>(empty);
@@ -62,6 +78,7 @@ export default function AdminTorneosPage(){
   const [msg,setMsg]=useState('');
   const editing = Boolean(form.id);
   const sorted = useMemo(()=>items.slice().sort((a,b)=>String(a.starts_at||'').localeCompare(String(b.starts_at||''))),[items]);
+  const currentFlyer = resolveTournamentFlyer(form);
 
   async function load(){
     setLoading(true);
@@ -126,13 +143,13 @@ export default function AdminTorneosPage(){
 
     <section className="card section">
       <h2 className="card-title">Imagen / flyer del torneo</h2>
-      <p className="p">Flyer oficial visible en la app pública. La subida editable con Storage queda para el siguiente paso.</p>
+      <p className="p">{currentFlyer.title}. Cambia automáticamente según el torneo seleccionado.</p>
       <div className="tournament-flyer-preview">
-        <Image src="/tournaments/torneo-inaugural-prokicks-2026.png" alt="Flyer torneo inaugural ProKicks" width={900} height={1200} />
+        <Image src={currentFlyer.image} alt={currentFlyer.title} width={900} height={1200} />
       </div>
       <div className="grid-2 section">
-        <a className="btn btn-secondary-blue" href="/tournaments/torneo-inaugural-prokicks-2026.png" target="_blank" rel="noopener noreferrer">Ver PNG</a>
-        <a className="btn btn-soft" href="/docs/torneo-inaugural-prokicks-2026.pdf" target="_blank" rel="noopener noreferrer">Ver PDF</a>
+        <a className="btn btn-secondary-blue" href={currentFlyer.image} target="_blank" rel="noopener noreferrer">Ver flyer</a>
+        {currentFlyer.pdf && <a className="btn btn-soft" href={currentFlyer.pdf} target="_blank" rel="noopener noreferrer">Ver PDF</a>}
       </div>
     </section>
 
