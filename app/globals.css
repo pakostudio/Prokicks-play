@@ -543,3 +543,47 @@ body{
   .admin-nav{grid-template-columns:repeat(2,1fr)}
   .top-actions .tag{font-size:11px;padding:7px 9px}
 }
+
+
+/* Surgical fix · portada aprobada + flyer torneo */
+.btn-secondary-blue{
+  background:#EAF2FF;
+  color:#173B63;
+  border:1px solid #BFD7FF;
+  box-shadow:0 10px 24px rgba(23,59,99,.08);
+}
+.btn-secondary-blue:hover{
+  background:#DCEBFF;
+  color:#173B63;
+}
+.entry-hero-approved{
+  display:grid;
+  gap:14px;
+}
+.entry-hero-approved:after{
+  display:none;
+}
+.entry-approved-image,
+.hero-image-card,
+.tournament-flyer-preview{
+  width:100%;
+  overflow:hidden;
+  border-radius:24px;
+  border:1px solid var(--line);
+  background:#fff;
+  box-shadow:0 14px 30px rgba(23,59,99,.10);
+}
+.entry-approved-image img,
+.hero-image-card img,
+.tournament-flyer-preview img{
+  display:block;
+  width:100%;
+  height:auto;
+  object-fit:cover;
+}
+.tournament-flyer-preview{
+  max-height:460px;
+}
+.tournament-flyer-preview img{
+  object-fit:contain;
+}

@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { CalendarDays, Plus, Save, Trash2 } from 'lucide-react';
 import { AdminShell } from '@/components/AdminShell';
 import { supabase } from '@/lib/supabase';
@@ -113,6 +114,18 @@ export default function AdminTorneosPage(){
 
   return <AdminShell active="torneos">
     <section className="hero section"><div className="kicker">Admin · Torneos</div><h1 className="h1">Crear y editar torneos</h1><p className="p">Configura sede, cupo, costo y base futura para pagos.</p></section>
+
+    <section className="card section">
+      <h2 className="card-title">Imagen / flyer del torneo</h2>
+      <p className="p">Flyer oficial visible en la app pública. La subida editable con Storage queda para el siguiente paso.</p>
+      <div className="tournament-flyer-preview">
+        <Image src="/tournaments/torneo-inaugural-prokicks-2026.png" alt="Flyer torneo inaugural ProKicks" width={900} height={1200} />
+      </div>
+      <div className="grid-2 section">
+        <a className="btn btn-secondary-blue" href="/tournaments/torneo-inaugural-prokicks-2026.png" target="_blank" rel="noopener noreferrer">Ver PNG</a>
+        <a className="btn btn-soft" href="/docs/torneo-inaugural-prokicks-2026.pdf" target="_blank" rel="noopener noreferrer">Ver PDF</a>
+      </div>
+    </section>
 
     <section className="grid-2 section">
       <div className="card form">

@@ -83,6 +83,9 @@ export default function HomePage() {
       <section className="section">
         <div className="row"><h2 className="h2">Torneo inaugural</h2></div>
         <div className="card">
+          <div className="tournament-flyer-preview">
+            <Image src="/tournaments/torneo-inaugural-prokicks-2026.png" alt="Flyer torneo inaugural ProKicks" width={900} height={1200} />
+          </div>
           <h3 className="card-title">ProKicks x Indoor Community</h3>
           <p className="p">Consulta el flyer oficial, cronograma y sede del torneo.</p>
           <div className="grid-2 section">
