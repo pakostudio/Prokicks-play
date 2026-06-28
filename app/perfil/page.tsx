@@ -12,11 +12,13 @@ type Profile = {
   nickname: string;
   avatar_id: string;
   avatar_name: string;
+  avatar_image?: string;
 };
 
 export default function PerfilPage(){
   const [profile,setProfile]=useState<Profile | null>(null);
   const avatar = avatarOptions.find((item) => item.id === profile?.avatar_id) || avatarOptions[0];
+  const avatarImage = profile?.avatar_image || avatar.image;
 
   useEffect(() => {
     const raw = window.localStorage.getItem('prokicks_profile');
@@ -27,7 +29,7 @@ export default function PerfilPage(){
     <section className="hero section"><div className="kicker">Jugador</div><h1 className="h1">Perfil ProKicks</h1><p className="p">Tu identidad para retas, spots y torneos.</p></section>
     {!profile && <section className="card section"><h2 className="card-title">Aún no tienes perfil</h2><p className="p">Crea tu nickname y avatar para continuar con el flujo real.</p><Link href="/registro" className="btn btn-primary btn-full">Crear perfil</Link></section>}
     {profile && <section className="card section">
-      <div className={`avatar-preview ${avatar.tone}`}>{avatar.initials}</div>
+      <img className="avatar-preview" src={avatarImage} alt={profile.avatar_name || avatar.name} />
       <h2 className="card-title">{profile.nickname}</h2>
       <p className="p">{profile.name} · {profile.avatar_name}</p>
       <p className="p">{profile.email}<br/>{profile.whatsapp}</p>

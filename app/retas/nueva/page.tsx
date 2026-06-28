@@ -11,6 +11,7 @@ type LocalProfile = {
   nickname: string;
   avatar_id: string;
   avatar_name: string;
+  avatar_image?: string;
 };
 
 export default function NewChallenge(){
@@ -46,12 +47,19 @@ export default function NewChallenge(){
       creator_name: profile.name,
       creator_nickname: profile.nickname,
       creator_avatar_id: profile.avatar_id,
+      creator_avatar_image: profile.avatar_image || null,
       type,
       status: 'abierta',
       scheduled_at: scheduledAt ? new Date(scheduledAt).toISOString() : new Date().toISOString(),
     };
 
-    const { data, error } = await supabase.from('prokicks_challenges').insert(payload).select().maybeSingle();
+    let { data, error } = await supabase.from('prokicks_challenges').insert(payload).select().maybeSingle();
+    if (error && String(error.message || '').includes('creator_avatar_image')) {
+      const { creator_avatar_image, ...payloadWithoutImage } = payload;
+      const retry = await supabase.from('prokicks_challenges').insert(payloadWithoutImage).select().maybeSingle();
+      data = retry.data;
+      error = retry.error;
+    }
     const localChallenge = { ...payload, id: data?.id || `local-${Date.now()}` };
     window.localStorage.setItem('prokicks_last_challenge', JSON.stringify(localChallenge));
     setLoading(false);

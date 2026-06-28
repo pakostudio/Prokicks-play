@@ -1,12 +1,16 @@
 export const avatarOptions = [
-  { id: 'street-striker', name: 'Street Striker', initials: 'SS', tone: 'avatar-red' },
-  { id: 'roma-baller', name: 'Roma Baller', initials: 'RB', tone: 'avatar-blue' },
-  { id: 'indoor-beast', name: 'Indoor Beast', initials: 'IB', tone: 'avatar-ink' },
-  { id: 'freestyle-pk', name: 'Freestyle PK', initials: 'FP', tone: 'avatar-gold' },
-  { id: 'reta-master', name: 'Reta Master', initials: 'RM', tone: 'avatar-coral' },
-  { id: 'urban-captain', name: 'Urban Captain', initials: 'UC', tone: 'avatar-violet' },
-  { id: 'neon-play', name: 'Neon Play', initials: 'NP', tone: 'avatar-lime' },
-  { id: 'prokicks-crew', name: 'ProKicks Crew', initials: 'PC', tone: 'avatar-sky' }
+  { id: 'street-striker', name: 'Street Striker', image: '/avatars/street-striker.png' },
+  { id: 'roma-baller', name: 'Roma Baller', image: '/avatars/roma-baller.png' },
+  { id: 'indoor-beast', name: 'Indoor Beast', image: '/avatars/indoor-beast.png' },
+  { id: 'freestyle-pk', name: 'Freestyle PK', image: '/avatars/freestyle-pk.png' },
+  { id: 'reta-master', name: 'Reta Master', image: '/avatars/reta-master.png' },
+  { id: 'urban-captain', name: 'Urban Captain', image: '/avatars/urban-captain.png' },
+  { id: 'neon-play', name: 'Neon Play', image: '/avatars/neon-play.png' },
+  { id: 'prokicks-crew', name: 'ProKicks Crew', image: '/avatars/prokicks-crew.png' },
+  { id: 'street-pup', name: 'Street Pup', image: '/avatars/street-pup.png' },
+  { id: 'barrio-pup', name: 'Barrio Pup', image: '/avatars/barrio-pup.png' },
+  { id: 'kitty-baller', name: 'Kitty Baller', image: '/avatars/kitty-baller.png' },
+  { id: 'neon-kitty', name: 'Neon Kitty', image: '/avatars/neon-kitty.png' }
 ];
 
 export const realSpots = [
@@ -37,8 +41,8 @@ export const realSpots = [
 export const demoSpots = realSpots;
 
 export const demoChallenges = [
-  { id: 'aaaaaaa1-aaaa-aaaa-aaaa-aaaaaaaaaaa1', title: 'Reta abierta Indoor', spot_id: demoSpots[0].id, spot_code: demoSpots[0].code, spot_name: demoSpots[0].name, type: '1v1', level: 'intermedio', status: 'abierta', scheduled_at: new Date().toISOString() },
-  { id: 'aaaaaaa2-aaaa-aaaa-aaaa-aaaaaaaaaaa2', title: 'Reta Atoyac 2v2', spot_id: demoSpots[1].id, spot_code: demoSpots[1].code, spot_name: demoSpots[1].name, type: '2v2', level: 'abierto', status: 'abierta', scheduled_at: new Date().toISOString() }
+  { id: 'aaaaaaa1-aaaa-aaaa-aaaa-aaaaaaaaaaa1', title: 'Reta abierta en Indoor Community', spot_id: demoSpots[0].id, spot_code: demoSpots[0].code, spot_name: demoSpots[0].name, type: '1v1', level: 'intermedio', status: 'Abierta', scheduled_at: new Date().toISOString() },
+  { id: 'aaaaaaa2-aaaa-aaaa-aaaa-aaaaaaaaaaa2', title: 'Reta abierta en Sta. Cruz Atoyac', spot_id: demoSpots[1].id, spot_code: demoSpots[1].code, spot_name: demoSpots[1].name, type: '1v1', level: 'abierto', status: 'Abierta', scheduled_at: new Date().toISOString() }
 ];
 
 export const indoorTournament = {

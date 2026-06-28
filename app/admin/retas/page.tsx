@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { AppShell } from '@/components/AppShell';
-import { demoChallenges } from '@/lib/demo';
+import { avatarOptions, demoChallenges } from '@/lib/demo';
 import { supabase } from '@/lib/supabase';
 
 type Challenge = {
@@ -14,6 +14,7 @@ type Challenge = {
   creator_name?: string | null;
   creator_nickname?: string | null;
   creator_avatar_id?: string | null;
+  creator_avatar_image?: string | null;
   type?: string | null;
   status?: string | null;
   scheduled_at?: string | null;
@@ -40,7 +41,11 @@ export default function AdminRetas(){
       <div className="row"><strong>{rows.length} retas</strong><button className="btn btn-soft" onClick={load}>Actualizar</button></div>
       {msg && <div className="alert warn">{msg}</div>}
       <div className="table-wrap"><table className="admin-table"><thead><tr><th>Reta</th><th>Spot</th><th>Creador</th><th>Tipo</th><th>Estado</th></tr></thead><tbody>
-        {rows.map((row)=><tr key={row.id}><td>{row.title}</td><td>{row.spot_name}<br/><small>{row.spot_code}</small></td><td>{row.creator_name || '-'}<br/><small>{row.creator_nickname || row.creator_avatar_id || ''}</small></td><td>{row.type || '-'}</td><td>{row.status || 'abierta'}</td></tr>)}
+        {rows.map((row)=>{
+          const avatar = avatarOptions.find((item) => item.id === row.creator_avatar_id);
+          const image = row.creator_avatar_image || avatar?.image;
+          return <tr key={row.id}><td>{row.title}</td><td>{row.spot_name}<br/><small>{row.spot_code}</small></td><td>{image && <img className="admin-avatar-img" src={image} alt={row.creator_nickname || 'Avatar'} />}{row.creator_name || '-'}<br/><small>{row.creator_nickname || row.creator_avatar_id || ''}</small></td><td>{row.type || '-'}</td><td>{row.status || 'Abierta'}</td></tr>
+        })}
       </tbody></table></div>
     </section>
     <section className="section"><Link className="btn btn-soft btn-full" href="/admin">Volver a Admin</Link></section>

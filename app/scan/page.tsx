@@ -21,10 +21,12 @@ export default function ScanPage(){
       <input className="input" value={code} onChange={e=>setCode(e.target.value)} placeholder="Código QR" />
       {msg && <div className="alert error">{msg}</div>}
       <button className="btn btn-primary" onClick={lookup}>Detectar spot</button>
-      {spot && <div className="card">
+      {spot && <div className="card spot-card">
+        <div className="map-preview"><span className="pin p1"></span></div>
         <div className="row"><h3 className="card-title">{spot.name}</h3><span className="tag tag-blue">{spot.code}</span></div>
+        <p className="field-label">Ubicación del spot</p>
         <p className="p">{spot.address}</p>
-        <Link className="btn btn-warm btn-full" href={spot.maps_url} target="_blank">Cómo llegar</Link>
+        <Link className="btn btn-warm btn-full" href={spot.maps_url} target="_blank">Abrir en Google Maps</Link>
         <Link className="btn btn-primary btn-full" href={`/retas/nueva?spot=${spot.id}`}>Crear reta en este spot</Link>
       </div>}
     </section>

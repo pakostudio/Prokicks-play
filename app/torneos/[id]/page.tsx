@@ -110,15 +110,16 @@ export default function TournamentDetail() {
       </section>
 
       <section className="grid section detail-grid-safe">
-        <div className="card">
+        <div className="card spot-card">
+          <div className="map-preview"><span className="pin p2"></span></div>
           <div className="row">
             <MapPin color="#173B63" />
             <div>
-              <h3 className="card-title">Sede</h3>
+              <h3 className="card-title">Ubicación del spot</h3>
               <p className="p">
                 {item.venue || 'Indoor Community'}<br />{item.address || `${item.city || 'CDMX'} · ${item.state || 'Ciudad de México'}`}
               </p>
-              {item.maps_url && <Link className="inline-link" href={item.maps_url} target="_blank">Cómo llegar</Link>}
+              {item.maps_url && <Link className="inline-link" href={item.maps_url} target="_blank">Abrir en Google Maps</Link>}
             </div>
           </div>
         </div>

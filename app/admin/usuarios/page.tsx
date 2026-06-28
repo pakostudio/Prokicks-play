@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { AppShell } from '@/components/AppShell';
 import { supabase } from '@/lib/supabase';
+import { avatarOptions } from '@/lib/demo';
 
 type Profile = {
   id?: string;
@@ -13,6 +14,7 @@ type Profile = {
   nickname?: string | null;
   avatar_id?: string | null;
   avatar_name?: string | null;
+  avatar_image?: string | null;
   created_at?: string | null;
 };
 
@@ -36,7 +38,11 @@ export default function AdminUsuarios(){
       <div className="row"><strong>{rows.length} perfiles</strong><button className="btn btn-soft" onClick={load}>Actualizar</button></div>
       {msg && <div className="alert warn">{msg}</div>}
       <div className="table-wrap"><table className="admin-table"><thead><tr><th>Nombre</th><th>Contacto</th><th>Nickname</th><th>Avatar</th><th>Fecha</th></tr></thead><tbody>
-        {rows.map((row, index)=><tr key={row.id || `${row.email}-${index}`}><td>{row.name || '-'}</td><td>{row.email || '-'}<br/><small>{row.whatsapp || ''}</small></td><td>{row.nickname || '-'}</td><td>{row.avatar_name || row.avatar_id || '-'}</td><td>{row.created_at ? new Date(row.created_at).toLocaleString('es-MX') : '-'}</td></tr>)}
+        {rows.map((row, index)=>{
+          const avatar = avatarOptions.find((item) => item.id === row.avatar_id);
+          const image = row.avatar_image || avatar?.image;
+          return <tr key={row.id || `${row.email}-${index}`}><td>{row.name || '-'}</td><td>{row.email || '-'}<br/><small>{row.whatsapp || ''}</small></td><td>{row.nickname || '-'}</td><td>{image && <img className="admin-avatar-img" src={image} alt={row.avatar_name || row.avatar_id || 'Avatar'} />}{row.avatar_name || row.avatar_id || '-'}</td><td>{row.created_at ? new Date(row.created_at).toLocaleString('es-MX') : '-'}</td></tr>
+        })}
       </tbody></table></div>
       {!rows.length && <p className="p">Aún no hay perfiles.</p>}
     </section>

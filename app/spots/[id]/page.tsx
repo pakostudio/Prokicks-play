@@ -10,9 +10,14 @@ export default function SpotDetail({ params }:{ params:{ id:string }}){
       <div className="stat"><span className="muted">Estado</span><strong style={{fontSize:18}}>{spot.status}</strong></div>
       <div className="stat"><span className="muted">Código</span><strong style={{fontSize:18}}>{spot.code}</strong></div>
     </section>
+    <section className="card section spot-card">
+      <div className="map-preview"><span className="pin p2"></span></div>
+      <h2 className="card-title">Ubicación del spot</h2>
+      <p className="p">{spot.address}</p>
+      <Link className="btn btn-warm btn-full" href={spot.maps_url} target="_blank">Abrir en Google Maps</Link>
+    </section>
     <section className="grid section">
       <Link className="btn btn-primary btn-full" href={`/retas/nueva?spot=${spot.id}`}>Crear reta aquí</Link>
-      <Link className="btn btn-warm btn-full" href={spot.maps_url} target="_blank">Cómo llegar</Link>
       <Link className="btn btn-soft btn-full" href="/scan">Escanear QR / conectar spot para Reta</Link>
       <Link className="btn btn-soft btn-full" href="/retas">Ver retas activas</Link>
     </section>

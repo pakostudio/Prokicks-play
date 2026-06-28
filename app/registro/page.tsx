@@ -68,9 +68,15 @@ export default function RegisterPage() {
       nickname: form.nickname.trim(),
       avatar_id: selectedAvatar.id,
       avatar_name: selectedAvatar.name,
+      avatar_image: selectedAvatar.image,
     };
 
-    const { error } = await supabase.from('prokicks_profiles').insert(profile);
+    let { error } = await supabase.from('prokicks_profiles').insert(profile);
+    if (error && String(error.message || '').includes('avatar_image')) {
+      const { avatar_image, ...profileWithoutImage } = profile;
+      const retry = await supabase.from('prokicks_profiles').insert(profileWithoutImage);
+      error = retry.error;
+    }
     window.localStorage.setItem('prokicks_profile', JSON.stringify({ ...profile, created_at: new Date().toISOString() }));
     await sendProfileEmail();
     setLoading(false);
@@ -112,10 +118,10 @@ export default function RegisterPage() {
               <button
                 type="button"
                 key={avatar.id}
-                className={`avatar-choice ${avatar.tone} ${form.avatarId === avatar.id ? 'selected' : ''}`}
+                className={`avatar-choice ${form.avatarId === avatar.id ? 'selected' : ''}`}
                 onClick={() => update('avatarId', avatar.id)}
               >
-                <span>{avatar.initials}</span>
+                <img src={avatar.image} alt={avatar.name} />
                 <strong>{avatar.name}</strong>
               </button>
             ))}
@@ -128,7 +134,7 @@ export default function RegisterPage() {
 
         <label className="check"><input type="checkbox" checked={form.accepted} onChange={(e) => update('accepted', e.target.checked)} /> Acepto el reglamento, privacidad y uso de imagen ProKicks.</label>
         <div className="card">
-          <div className={`avatar-preview ${selectedAvatar.tone}`}>{selectedAvatar.initials}</div>
+          <img className="avatar-preview" src={selectedAvatar.image} alt={selectedAvatar.name} />
           <h3 className="card-title">{form.nickname || 'Tu nickname'}</h3>
           <p className="p">{selectedAvatar.name}</p>
         </div>
