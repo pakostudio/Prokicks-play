@@ -79,8 +79,8 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     const apiKey = process.env.RESEND_API_KEY;
-    const from = process.env.PROKICKS_EMAIL_FROM || 'ProKicks <onboarding@resend.dev>';
-    const adminEmail = process.env.PROKICKS_ADMIN_EMAIL;
+    const from = process.env.PROKICKS_EMAIL_FROM || 'ProKicks Play <pako@sportcstudio.com>';
+    const adminEmail = process.env.PROKICKS_ADMIN_EMAIL || 'pako@sportcstudio.com';
 
     if (!apiKey) {
       await enqueueEmailAttempt({
@@ -168,6 +168,9 @@ export async function POST(request: Request) {
 
     const results = await Promise.all(sends);
     const allOk = results.every((r) => r.ok);
+    if (!allOk) {
+      console.error('ProKicks email send partial failure', JSON.stringify({ adminEmail, results }));
+    }
 
     await enqueueEmailAttempt({
       recipient: email,

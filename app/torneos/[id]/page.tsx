@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
@@ -30,6 +29,8 @@ type Tournament = {
   venue?: string | null;
   address?: string | null;
   maps_url?: string | null;
+  flyer_url?: string | null;
+  pdf_url?: string | null;
 };
 
 const fallbackTournament: Tournament = {
@@ -47,28 +48,6 @@ function costLabel(t: Tournament) {
   }).format(Number(t.cost || 0));
 }
 
-function tournamentFlyer(t: Tournament) {
-  const raw = `${t.title || ''} ${t.venue || ''} ${t.address || ''}`.toLowerCase();
-
-  if (raw.includes('barra') || raw.includes('tlatelolco') || raw.includes('peralvillo')) {
-    return {
-      title: 'Flyer oficial · La Barra',
-      image: '/tournaments/torneo-la-barra-2026.jpeg',
-      pdf: '',
-    };
-  }
-
-  if (raw.includes('indoor') || raw.includes('altolivo')) {
-    return {
-      title: 'Flyer oficial',
-      image: '/tournaments/torneo-inaugural-prokicks-2026.png',
-      pdf: '/docs/torneo-inaugural-prokicks-2026.pdf',
-    };
-  }
-
-  return null;
-}
-
 export default function TournamentDetail() {
   const params = useParams<{ id: string }>();
   const tournamentId = params.id;
@@ -76,7 +55,7 @@ export default function TournamentDetail() {
     ...fallbackTournament,
     id: tournamentId || fallbackTournament.id,
   });
-  const [openFlyer, setOpenFlyer] = useState(false);
+  const [flyerOpen, setFlyerOpen] = useState(false);
 
   useEffect(() => {
     trackEvent('Tournament Viewed', { tournament_id: tournamentId });
@@ -105,8 +84,6 @@ export default function TournamentDetail() {
   }, [tournamentId]);
 
   const isPaid = item.is_free === false && Number(item.cost || 0) > 0;
-  const flyer = tournamentFlyer(item);
-  const mapAddress = item.address || indoorTournament.address;
 
   return (
     <AppShell active="torneos">
@@ -114,6 +91,11 @@ export default function TournamentDetail() {
         <div className="kicker">Torneo · {costLabel(item)}</div>
         <h1 className="h1">{item.title}</h1>
         <p className="p">{item.description}</p>
+        {item.flyer_url && (
+          <button className="flyer-button" onClick={() => setFlyerOpen(true)}>
+            <img className="tournament-flyer" src={item.flyer_url} alt={`Flyer ${item.title}`} onError={(event) => { event.currentTarget.style.display = 'none'; }} />
+          </button>
+        )}
 
         {isPaid && (
           <div className="alert warn section">
@@ -133,37 +115,25 @@ export default function TournamentDetail() {
         >
           Registrarme al torneo
         </Link>
+        {item.pdf_url && <Link className="btn btn-soft btn-full" href={item.pdf_url} target="_blank">Abrir PDF del torneo</Link>}
       </section>
 
-      {flyer && (
-        <section className="card section detail-bottom-safe">
-          <h2 className="card-title">{flyer.title}</h2>
-          <button className="tournament-flyer-preview tournament-flyer-click" onClick={() => setOpenFlyer(true)}>
-            <Image src={flyer.image} alt={flyer.title} width={900} height={1200} priority />
-          </button>
-          <div className="grid-2 section">
-            <button className="btn btn-secondary-blue" onClick={() => setOpenFlyer(true)}>Ver flyer grande</button>
-            {flyer.pdf && <a className="btn btn-soft" href={flyer.pdf} target="_blank" rel="noopener noreferrer">Ver PDF</a>}
-          </div>
-        </section>
-      )}
-
-      {openFlyer && flyer && (
-        <div className="flyer-modal" role="dialog" aria-modal="true" onClick={() => setOpenFlyer(false)}>
-          <button className="flyer-modal-close" onClick={() => setOpenFlyer(false)}>Cerrar ×</button>
-          <Image src={flyer.image} alt={flyer.title} width={1200} height={1600} />
+      {flyerOpen && item.flyer_url && (
+        <div className="modal-backdrop" onClick={() => setFlyerOpen(false)}>
+          <button className="modal-close" onClick={() => setFlyerOpen(false)}>Cerrar</button>
+          <img className="modal-flyer" src={item.flyer_url} alt={`Flyer ${item.title}`} onError={(event) => { event.currentTarget.style.display = 'none'; }} />
         </div>
       )}
 
       <section className="grid section detail-grid-safe">
         <div className="card spot-card">
-          <iframe className="map-embed" src={mapEmbedUrl(mapAddress)} loading="lazy" referrerPolicy="no-referrer-when-downgrade" title={`Mapa ${item.venue || 'sede del torneo'}`} />
+          <iframe className="map-embed" src={mapEmbedUrl(item.address || indoorTournament.address)} loading="lazy" referrerPolicy="no-referrer-when-downgrade" title={`Mapa ${item.venue || 'Indoor Community'}`} />
           <div className="row">
             <MapPin color="#173B63" />
             <div>
               <h3 className="card-title">Ubicación del spot</h3>
               <p className="p">
-                {item.venue || 'Sede por confirmar'}<br />{item.address || `${item.city || 'CDMX'} · ${item.state || 'Ciudad de México'}`}
+                {item.venue || 'Indoor Community'}<br />{item.address || `${item.city || 'CDMX'} · ${item.state || 'Ciudad de México'}`}
               </p>
               {item.maps_url && <Link className="inline-link" href={item.maps_url} target="_blank">Abrir en Google Maps</Link>}
             </div>

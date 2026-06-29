@@ -1,13 +1,12 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { AppShell } from '@/components/AppShell';
 import { SupabaseNotice } from '@/components/SupabaseNotice';
 import { realSpots } from '@/lib/demo';
 import { supabase } from '@/lib/supabase';
-import { FileText, MapPin, QrCode, Star, Trophy, UserRound } from 'lucide-react';
+import { MapPin, QrCode, Star, Trophy, UserRound } from 'lucide-react';
 
 type Challenge = {
   id: string;
@@ -33,22 +32,17 @@ export default function HomePage() {
   return (
     <AppShell active="home">
       <SupabaseNotice />
-
-      <section className="hero section pro-home-clean">
+      <section className="hero home-hero section">
+        <div className="home-mark">PK</div>
         <div className="kicker">ProKicks Play</div>
-        <h1 className="h1">Entrena. Compite. Domina.</h1>
-        <p className="p">Crea tu perfil, conecta spots reales y vive la experiencia ProKicks.</p>
-
-        <div className="hero-image-card">
-          <Image src="/prokicks-approved-hero.jpeg" alt="ProKicks Play" width={720} height={420} priority />
-        </div>
-
+        <h1 className="h1">Juega. Conecta. Compite.</h1>
+        <p className="p">Crea tu perfil, encuentra spots para echar la reta, conecta un spot y regístrate al torneo Indoor Community.</p>
         <div className="grid-2 section">
           <Link className="btn btn-primary" href="/registro"><UserRound size={18}/> Crear perfil</Link>
-          <Link className="btn btn-secondary-blue" href="/">Entrar / continuar</Link>
-          <Link className="btn btn-secondary-blue" href="/torneos"><Trophy size={18}/> Ver torneos</Link>
+          <Link className="btn btn-soft" href="/">Entrar / continuar</Link>
+          <Link className="btn btn-warm" href="/torneos"><Trophy size={18}/> Ver torneos</Link>
           <Link className="btn btn-soft" href="/scan"><QrCode size={18}/> Escanear QR / conectar spot para Reta</Link>
-          <Link className="btn btn-primary btn-full" href="/spots"><MapPin size={18}/> Encuentra spots para echar la reta</Link>
+          <Link className="btn btn-primary" href="/spots"><MapPin size={18}/> Encuentra spots para echar la reta</Link>
         </div>
       </section>
 
@@ -70,40 +64,7 @@ export default function HomePage() {
               </div>
             </article>
           ))}
-          {!challenges.length && (
-            <section className="card">
-              <h3 className="card-title">Aún no hay retas abiertas</h3>
-              <p className="p">Escanea un spot y crea la primera reta.</p>
-              <Link className="btn btn-primary btn-full section" href="/scan">Conectar spot</Link>
-            </section>
-          )}
-        </div>
-      </section>
-
-      <section className="section">
-        <div className="row">
-          <h2 className="h2">Próximos torneos</h2>
-          <Link className="tag tag-blue" href="/torneos">Ver todos</Link>
-        </div>
-
-        <div className="soft-tournament-list">
-          <Link href="/torneos" className="soft-tournament-item">
-            <div className="soft-tournament-dot">1</div>
-            <div>
-              <strong>1er Torneo La Barra</strong>
-              <span>5 julio · La Barra 88 · 1v1 · categoría libre</span>
-            </div>
-            <em>Ver</em>
-          </Link>
-
-          <Link href="/torneos" className="soft-tournament-item">
-            <div className="soft-tournament-dot">2</div>
-            <div>
-              <strong>Indoor Community</strong>
-              <span>27 julio · Altolivo · 1v1 · registro abierto</span>
-            </div>
-            <em>Ver</em>
-          </Link>
+          {!challenges.length && <section className="card"><h3 className="card-title">Aún no hay retas abiertas</h3><p className="p">Escanea un spot y crea la primera reta.</p><Link className="btn btn-primary btn-full section" href="/scan">Conectar spot</Link></section>}
         </div>
       </section>
 
@@ -118,7 +79,7 @@ export default function HomePage() {
           <Link className="btn btn-soft" href="/comprar">Comprar</Link>
           <Link className="btn btn-soft" href="/legal">Legal</Link>
           <Link className="btn btn-soft" href="/perfil">Perfil</Link>
-          <a className="btn btn-secondary-blue btn-full" href="https://www.instagram.com/prokicksoficial?igsh=MTQyZDgwcTUwcTdxOQ==" target="_blank" rel="noopener noreferrer"><Star size={18}/> Seguir en Instagram</a>
+          <a className="btn btn-warm" href="https://www.instagram.com/prokicksoficial?igsh=MTQyZDgwcTUwcTdxOQ==" target="_blank"><Star size={18}/> Seguir en Instagram</a>
         </div>
       </section>
     </AppShell>

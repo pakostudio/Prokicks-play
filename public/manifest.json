@@ -1,27 +1,23 @@
 {
   "name": "ProKicks Play",
   "short_name": "ProKicks",
-  "description": "Entrena, compite y domina con la comunidad ProKicks.",
+  "description": "Encuentra spots, únete a torneos y compite con la comunidad ProKicks.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#F4F6F8",
   "theme_color": "#173B63",
-  "categories": [
-    "sports",
-    "social",
-    "lifestyle"
-  ],
+  "categories": ["sports", "social", "lifestyle"],
   "icons": [
     {
-      "src": "/icons/icon-192.png?v=20",
+      "src": "/icons/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/icons/icon-512.png?v=20",
+      "src": "/icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"

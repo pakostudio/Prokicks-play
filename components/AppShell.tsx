@@ -17,10 +17,7 @@ export function AppShell({ children, active = 'home' }: { children: React.ReactN
         <Link href="/play" className="brand-pill">
           <Image src="/logo-negro.png" alt="ProKicks" width={132} height={42} className="logo" priority />
         </Link>
-        <div className="top-actions">
-          <Link href="/admin/login" className="tag tag-blue">Admin</Link>
-          <Link href="/perfil" className="tag tag-blue">Perfil</Link>
-        </div>
+        <Link href="/perfil" className="avatar">PK</Link>
       </div>
       {children}
       <nav className="bottom-nav">
