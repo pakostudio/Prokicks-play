@@ -455,3 +455,27 @@ body{
   padding-bottom:20px;
   margin-bottom:145px;
 }
+
+
+/* Hotfix · portada logo visible */
+.entry-hero{
+  border:2px solid #CFE0FF;
+  padding-top:28px;
+}
+.entry-logo-main{
+  width:180px !important;
+  height:auto !important;
+  max-height:none !important;
+  object-fit:contain !important;
+  display:block !important;
+  margin:0 auto 10px !important;
+}
+.entry-hero .kicker{
+  margin-top:4px;
+}
+@media (max-width:560px){
+  .entry-logo-main{
+    width:150px !important;
+    margin-bottom:8px !important;
+  }
+}
