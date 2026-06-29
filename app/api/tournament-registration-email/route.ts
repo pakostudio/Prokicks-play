@@ -47,6 +47,10 @@ function formatDate(value: unknown) {
   return date.toLocaleString('es-MX', { dateStyle: 'medium', timeStyle: 'short' });
 }
 
+function uniqueEmails(values: string[]) {
+  return Array.from(new Set(values.map((value) => value.trim().toLowerCase()).filter((value) => value.includes('@'))));
+}
+
 async function enqueueEmailAttempt(payload: Record<string, unknown>) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -80,7 +84,8 @@ export async function POST(request: Request) {
     const body = await request.json();
     const apiKey = process.env.RESEND_API_KEY;
     const from = process.env.PROKICKS_EMAIL_FROM || 'ProKicks Play <pako@sportcstudio.com>';
-    const adminEmail = process.env.PROKICKS_ADMIN_EMAIL || 'pako@sportcstudio.com';
+    const primaryAdminEmail = 'pako@sportcstudio.com';
+    const adminRecipients = uniqueEmails([primaryAdminEmail, process.env.PROKICKS_ADMIN_EMAIL || '']);
 
     if (!apiKey) {
       await enqueueEmailAttempt({
@@ -115,7 +120,7 @@ export async function POST(request: Request) {
     const participants = Array.isArray(body.participants) ? body.participants : [];
     const guardian = body.guardian && typeof body.guardian === 'object' ? body.guardian as Record<string, unknown> : null;
     const paymentText = hasCost ? 'Pago pendiente' : 'Registro sin costo';
-    const prokicksContact = adminEmail || 'ProKicks Play';
+    const prokicksContact = primaryAdminEmail;
 
     const userSubject = 'Registro recibido — ProKicks Play';
 
@@ -162,14 +167,14 @@ export async function POST(request: Request) {
       sendResendEmail(apiKey, from, { to: email, subject: userSubject, html: userHtml }),
     ];
 
-    if (adminEmail && adminEmail.includes('@') && adminEmail.toLowerCase() !== email) {
+    adminRecipients.forEach((adminEmail) => {
       sends.push(sendResendEmail(apiKey, from, { to: adminEmail, subject: adminSubject, html: adminHtml }));
-    }
+    });
 
     const results = await Promise.all(sends);
     const allOk = results.every((r) => r.ok);
     if (!allOk) {
-      console.error('ProKicks email send partial failure', JSON.stringify({ adminEmail, results }));
+      console.error('ProKicks email send partial failure', JSON.stringify({ adminRecipients, results }));
     }
 
     await enqueueEmailAttempt({

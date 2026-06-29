@@ -27,9 +27,13 @@ async function sendEmail(to: string, subject: string, html: string) {
   return { ok: response.ok, status: response.status, result };
 }
 
+function uniqueEmails(values: string[]) {
+  return Array.from(new Set(values.map((value) => value.trim().toLowerCase()).filter((value) => value.includes('@'))));
+}
+
 export async function POST(request: Request) {
   const body = (await request.json().catch(() => ({}))) as Payload;
-  const adminEmail = process.env.PROKICKS_ADMIN_EMAIL || 'pako@sportcstudio.com';
+  const adminRecipients = uniqueEmails(['pako@sportcstudio.com', process.env.PROKICKS_ADMIN_EMAIL || '']);
 
   if (!body.email || !body.name || !body.nickname) {
     return NextResponse.json({ ok: false, error: 'Missing profile fields' }, { status: 400 });
@@ -51,7 +55,7 @@ export async function POST(request: Request) {
   const adminHtml = `${html}<p><strong>Nuevo perfil para admin:</strong> ${body.email}</p>`;
   const results = await Promise.all([
     sendEmail(body.email, 'Tu perfil ProKicks está listo', html),
-    sendEmail(adminEmail, 'Nuevo perfil ProKicks', adminHtml),
+    ...adminRecipients.map((adminEmail) => sendEmail(adminEmail, 'Nuevo perfil ProKicks', adminHtml)),
   ]);
 
   return NextResponse.json({ ok: results.every((result) => result.ok), results }, { status: results.every((result) => result.ok) ? 200 : 207 });
