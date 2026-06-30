@@ -78,6 +78,12 @@ function isValidWhatsapp(value: string) {
   return digits.length === 10 || (digits.length === 12 && digits.startsWith('52')) || (digits.length === 13 && digits.startsWith('521'));
 }
 
+function makeCheckInCode() {
+  const timePart = Date.now().toString(36).toUpperCase();
+  const randomPart = Math.random().toString(36).slice(2, 7).toUpperCase();
+  return `PKC-${timePart}-${randomPart}`;
+}
+
 function isValidEmail(value: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
 }
@@ -221,6 +227,7 @@ export default function TournamentRegistration() {
 
     const paymentStatus = isPaidTournament ? 'pago_pendiente' : 'sin_costo';
     const registrationStatus = isPaidTournament ? 'pendiente' : 'confirmado';
+    const checkInCode = makeCheckInCode();
 
     const payload = {
       tournament_id: isUuid(tournamentId) ? tournamentId : null,
@@ -271,6 +278,8 @@ export default function TournamentRegistration() {
       payment_status: paymentStatus,
       registration_status: registrationStatus,
       payment_method: isPaidTournament ? 'pendiente_configurar' : 'sin_costo',
+      check_in_code: checkInCode,
+      check_in_status: 'pending',
     };
 
     trackEvent('Tournament Registration Submitted', {

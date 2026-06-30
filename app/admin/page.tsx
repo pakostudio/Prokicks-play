@@ -20,6 +20,10 @@ export default function AdminPage(){
       <Link className="btn btn-soft" href="/admin/usuarios">Ver perfiles registrados</Link>
       <Link className="btn btn-soft" href="/admin/retas">Ver retas creadas</Link>
       <Link className="btn btn-soft" href="/admin/spots">Crear / editar spots</Link>
+      <Link className="btn btn-soft" href="/admin/check-in">Check-in QR</Link>
+      <Link className="btn btn-soft" href="/admin/galeria">Galería / fotos</Link>
+      <Link className="btn btn-soft" href="/admin/videos">Videos YouTube</Link>
+      <Link className="btn btn-soft" href="/admin/resultados">Resultados</Link>
       <Link className="btn btn-soft" href="/admin/export">Exportar base CSV / Excel / PDF</Link>
       <Link className="btn btn-warm" href="/torneos">Ver torneos públicos</Link>
     </section>

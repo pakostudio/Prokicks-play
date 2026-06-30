@@ -3,12 +3,13 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { CalendarDays, MapPin, Trophy, Users } from 'lucide-react';
+import { CalendarDays, QrCode, Share2, MapPin, Trophy, Users } from 'lucide-react';
 import { AppShell } from '@/components/AppShell';
 import { supabase } from '@/lib/supabase';
 import { trackEvent } from '@/lib/analytics';
 import { captureError } from '@/lib/monitoring';
 import { indoorTournament, mapEmbedUrl } from '@/lib/demo';
+import { qrImageUrl, tournamentUrl } from '@/lib/media';
 
 type Tournament = {
   id: string;
@@ -56,6 +57,7 @@ export default function TournamentDetail() {
     id: tournamentId || fallbackTournament.id,
   });
   const [flyerOpen, setFlyerOpen] = useState(false);
+  const [qrOpen, setQrOpen] = useState(false);
 
   useEffect(() => {
     trackEvent('Tournament Viewed', { tournament_id: tournamentId });
@@ -84,6 +86,12 @@ export default function TournamentDetail() {
   }, [tournamentId]);
 
   const isPaid = item.is_free === false && Number(item.cost || 0) > 0;
+  const publicUrl = tournamentUrl(item.id);
+
+  async function shareTournament() {
+    if (navigator.share) await navigator.share({ title: item.title, text: item.description || 'Torneo ProKicks', url: publicUrl });
+    else await navigator.clipboard.writeText(publicUrl);
+  }
 
   return (
     <AppShell active="torneos">
@@ -116,12 +124,33 @@ export default function TournamentDetail() {
           Registrarme al torneo
         </Link>
         {item.pdf_url && <Link className="btn btn-soft btn-full" href={item.pdf_url} target="_blank">Abrir PDF del torneo</Link>}
+        <div className="grid-2 section">
+          <button className="btn btn-soft" onClick={shareTournament}><Share2 size={16} /> Compartir torneo</button>
+          <button className="btn btn-soft" onClick={() => setQrOpen(true)}><QrCode size={16} /> Ver QR</button>
+        </div>
+        <div className="grid section">
+          <Link className="btn btn-soft btn-full" href={`/torneos/${item.id}/resultados`}>Ver resultados</Link>
+          <Link className="btn btn-soft btn-full" href={`/torneos/${item.id}/galeria`}>Ver galería</Link>
+          <Link className="btn btn-soft btn-full" href={`/torneos/${item.id}/videos`}>Ver videos</Link>
+        </div>
       </section>
 
       {flyerOpen && item.flyer_url && (
         <div className="modal-backdrop" onClick={() => setFlyerOpen(false)}>
           <button className="modal-close" onClick={() => setFlyerOpen(false)}>Cerrar</button>
           <img className="modal-flyer" src={item.flyer_url} alt={`Flyer ${item.title}`} onError={(event) => { event.currentTarget.style.display = 'none'; }} />
+        </div>
+      )}
+
+      {qrOpen && (
+        <div className="modal-backdrop" onClick={() => setQrOpen(false)}>
+          <button className="modal-close" onClick={() => setQrOpen(false)}>Cerrar</button>
+          <div className="qr-modal" onClick={(event) => event.stopPropagation()}>
+            <h2>{item.title}</h2>
+            <img src={qrImageUrl(publicUrl)} alt={`QR ${item.title}`} />
+            <p>{publicUrl}</p>
+            <button className="btn btn-primary btn-full" onClick={() => navigator.clipboard.writeText(publicUrl)}>Copiar link</button>
+          </div>
         </div>
       )}
 

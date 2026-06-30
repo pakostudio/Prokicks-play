@@ -2,10 +2,11 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { CalendarDays, Plus, Save, Trash2 } from 'lucide-react';
+import { CalendarDays, Copy, Download, Plus, QrCode, Save, Trash2 } from 'lucide-react';
 import { AppShell } from '@/components/AppShell';
 import { supabase } from '@/lib/supabase';
 import { captureError } from '@/lib/monitoring';
+import { qrImageUrl, tournamentUrl } from '@/lib/media';
 
 type Tournament = {
   id?: string;
@@ -58,6 +59,7 @@ export default function AdminTorneosPage(){
   const [form,setForm]=useState<Tournament>(empty);
   const [loading,setLoading]=useState(false);
   const [msg,setMsg]=useState('');
+  const [qrTournament,setQrTournament]=useState<Tournament | null>(null);
   const editing = Boolean(form.id);
   const sorted = useMemo(()=>items.slice().sort((a,b)=>String(a.starts_at||'').localeCompare(String(b.starts_at||''))),[items]);
 
@@ -121,6 +123,12 @@ export default function AdminTorneosPage(){
     load();
   }
 
+  async function copyTournamentLink(id?: string) {
+    if (!id) return;
+    await navigator.clipboard.writeText(tournamentUrl(id));
+    setMsg('Link copiado.');
+  }
+
   return <AppShell active="perfil">
     <section className="hero section"><div className="kicker">Admin · Torneos</div><h1 className="h1">Crear y editar torneos</h1><p className="p">Configura sede, cupo, costo y base futura para pagos.</p></section>
 
@@ -175,13 +183,29 @@ export default function AdminTorneosPage(){
       <div className="card form">
         <div className="row"><h2 className="card-title">Torneos existentes</h2><button className="btn btn-soft" onClick={load}>{loading?'Cargando...':'Actualizar'}</button></div>
         <div className="list compact-list">
-          {sorted.map(t=><button key={t.id} className="admin-row" onClick={()=>setForm({...empty, ...t, starts_at:t.starts_at || '', ends_at:t.ends_at || '', cost:Number(t.cost || 0), currency:t.currency || 'MXN', payment_method:t.payment_method || 'pendiente_configurar', payment_url:t.payment_url || '', payment_instructions:t.payment_instructions || ''})}>
-            <strong>{t.title}</strong><span>{t.format} · {t.level} · {t.status}</span><small><CalendarDays size={13}/>{t.starts_at ? new Date(t.starts_at).toLocaleString('es-MX') : 'Sin fecha'} · {t.is_free === false ? money(Number(t.cost || 0), t.currency || 'MXN') : 'Sin costo'}</small>
-          </button>)}
+          {sorted.map(t=><div key={t.id} className="admin-row admin-row-panel">
+            <button className="admin-row-main" onClick={()=>setForm({...empty, ...t, starts_at:t.starts_at || '', ends_at:t.ends_at || '', cost:Number(t.cost || 0), currency:t.currency || 'MXN', payment_method:t.payment_method || 'pendiente_configurar', payment_url:t.payment_url || '', payment_instructions:t.payment_instructions || ''})}>
+              <strong>{t.title}</strong><span>{t.format} · {t.level} · {t.status}</span><small><CalendarDays size={13}/>{t.starts_at ? new Date(t.starts_at).toLocaleString('es-MX') : 'Sin fecha'} · {t.is_free === false ? money(Number(t.cost || 0), t.currency || 'MXN') : 'Sin costo'}</small>
+            </button>
+            {t.id && <div className="admin-actions">
+              <button className="btn btn-soft" onClick={()=>copyTournamentLink(t.id)}><Copy size={14}/> Copiar link</button>
+              <button className="btn btn-soft" onClick={()=>setQrTournament(t)}><QrCode size={14}/> Ver QR</button>
+              <a className="btn btn-soft" href={qrImageUrl(tournamentUrl(t.id), 640)} download={`qr-${t.id}.png`} target="_blank"><Download size={14}/> Descargar QR</a>
+            </div>}
+          </div>)}
           {!sorted.length && <p className="p">No hay torneos todavía.</p>}
         </div>
         <Link className="btn btn-soft btn-full" href="/admin/registros-torneos">Ver registros de participantes</Link>
       </div>
     </section>
+    {qrTournament?.id && <div className="modal-backdrop" onClick={()=>setQrTournament(null)}>
+      <button className="modal-close" onClick={()=>setQrTournament(null)}>Cerrar</button>
+      <div className="qr-modal" onClick={(event)=>event.stopPropagation()}>
+        <h2>{qrTournament.title}</h2>
+        <img src={qrImageUrl(tournamentUrl(qrTournament.id))} alt={`QR ${qrTournament.title}`} />
+        <p>{tournamentUrl(qrTournament.id)}</p>
+        <button className="btn btn-primary btn-full" onClick={()=>copyTournamentLink(qrTournament.id)}>Copiar link</button>
+      </div>
+    </div>}
   </AppShell>
 }
