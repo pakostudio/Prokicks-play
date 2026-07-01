@@ -289,8 +289,15 @@ export default function TournamentRegistration() {
       paid: isPaidTournament,
     });
 
-    const { error } = await supabase.from('prokicks_tournament_registrations').insert(payload);
-    window.localStorage.setItem('prokicks_last_tournament_registration', JSON.stringify({ ...payload, created_at: new Date().toISOString() }));
+    let finalPayload = payload;
+    let { error } = await supabase.from('prokicks_tournament_registrations').insert(finalPayload);
+    if (error && (error.message?.includes('check_in') || error.code === '42703')) {
+      const { check_in_code: _checkInCode, check_in_status: _checkInStatus, ...payloadWithoutCheckIn } = payload;
+      const retry = await supabase.from('prokicks_tournament_registrations').insert(payloadWithoutCheckIn);
+      error = retry.error;
+      finalPayload = payloadWithoutCheckIn as typeof payload;
+    }
+    window.localStorage.setItem('prokicks_last_tournament_registration', JSON.stringify({ ...finalPayload, created_at: new Date().toISOString() }));
     setLoading(false);
 
     if (error) {
