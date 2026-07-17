@@ -620,3 +620,27 @@ button.media-card{
     grid-template-columns:repeat(3,minmax(0,1fr));
   }
 }
+
+/* ============================================================
+   PROKICKS VISION — bloque adicional, no modifica reglas previas.
+   Mantiene identidad visual: fondos claros, #F4F6F8, azul #173B63,
+   azul de acción #2563EB, texto #1F2937, sans-serif, tarjetas limpias.
+   ============================================================ */
+.vision-entry-card{background:#fff;border:1px solid #E5E9EF}
+.vision-error{color:#B91C1C}
+.vision-camera-selector .vision-camera-slot{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.vision-select{padding:10px 12px;border-radius:10px;border:1px solid #D7DEE7;background:#F4F6F8;color:#1F2937;font-family:inherit}
+.vision-preview{width:100%;border-radius:12px;background:#0F172A;aspect-ratio:4/3;object-fit:cover}
+.vision-player-picker{gap:8px}
+.vision-detection-canvas{position:relative;width:100%;aspect-ratio:16/9;background:#F4F6F8;border:1px dashed #D7DEE7;border-radius:12px;margin-top:12px;overflow:hidden}
+.vision-person-box{position:absolute;border:2px solid #2563EB;background:rgba(37,99,235,.12);color:#173B63;font-size:11px;font-weight:700;border-radius:6px;padding:2px}
+.vision-session-timer{text-align:center}
+.vision-timer-display{font-size:clamp(40px,10vw,64px);font-weight:800;color:#173B63;letter-spacing:.02em;padding:16px 0}
+.vision-player-mini-card{display:flex;flex-direction:column;gap:2px;padding:12px;border-radius:12px;background:#F4F6F8}
+.vision-metrics-panel{position:fixed;top:0;right:0;bottom:0;width:min(360px,92vw);background:#fff;box-shadow:-8px 0 24px rgba(15,23,42,.18);padding:20px;overflow-y:auto;z-index:60}
+.vision-panel-close{padding:6px 10px}
+.vision-metrics-player{margin-top:12px}
+.vision-metrics-table{width:100%;border-collapse:collapse;font-size:13px}
+.vision-metrics-table td{padding:6px 4px;border-bottom:1px solid #EEF1F5;color:#1F2937}
+.vision-metrics-table td:last-child{text-align:right;font-weight:600;color:#173B63}
+.vision-evolution-chart{width:100%;height:90px}
