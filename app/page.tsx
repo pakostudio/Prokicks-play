@@ -21,7 +21,7 @@ type NextTournament = {
 function SoccerBallLoader() {
   return (
     <div className="preloader">
-      <svg className="preloader-ball" width="64" height="64" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <svg className="preloader-ball" width="90" height="90" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
         <circle cx="50" cy="50" r="44" fill="#ffffff" stroke="#173B63" strokeWidth="4" />
         <polygon points="50,36 63.31,45.67 58.23,61.32 41.77,61.32 36.69,45.67" fill="#173B63" />
         <line x1="50" y1="36" x2="50" y2="6" stroke="#173B63" strokeWidth="3.5" strokeLinecap="round" />
@@ -69,19 +69,25 @@ export default function EntryPage() {
 
   return (
     <main className="entry-screen">
-      <section className="entry-hero">
-        <Image src="/logo-negro.png" alt="ProKicks" width={180} height={58} className="entry-logo" priority />
-        <div className="kicker">ProKicks Play</div>
-        <h1 className="h1">Entrena. Compite. Domina.</h1>
-        <p className="p">Crea tu perfil, conecta spots reales y vive la experiencia ProKicks.</p>
-        <Image
-          src="/prokicks-approved-hero.jpeg"
-          alt="ProKicks Play"
-          width={900}
-          height={580}
-          className="entry-hero-image"
-          priority
-        />
+      <section className="entry-hero-full">
+        <div className="entry-hero-media">
+          <Image
+            src="/prokicks-approved-hero.jpeg"
+            alt="ProKicks Play"
+            width={900}
+            height={580}
+            className="entry-hero-image-full"
+            priority
+          />
+          <div className="entry-logo-badge">
+            <Image src="/logo-negro.png" alt="ProKicks" width={34} height={34} priority />
+          </div>
+        </div>
+        <div className="entry-hero-copy">
+          <div className="kicker">ProKicks Play</div>
+          <h1 className="h1">Entrena. Compite. Domina.</h1>
+          <p className="p">Crea tu perfil, conecta spots reales y vive la experiencia ProKicks.</p>
+        </div>
       </section>
 
       {profile && (
