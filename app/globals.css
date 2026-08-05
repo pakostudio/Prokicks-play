@@ -1,3 +1,18 @@
+/* Sprint 1.9 - Fix overflow entry-screen */
+.entry-screen{padding:6px 16px 14px !important;gap:6px !important}
+.entry-hero{padding:8px 16px !important;gap:4px !important}
+.entry-logo{width:90px !important}
+.entry-hero .kicker{font-size:11px !important;letter-spacing:.12em !important}
+.entry-hero .h1{font-size:clamp(18px,4dvh,26px) !important;margin:0 !important}
+.entry-hero .p{font-size:12px !important;margin:0 auto !important}
+.entry-hero-image{max-height:12dvh !important;margin-top:0 !important}
+.entry-profile{padding:8px !important}
+.entry-screen .btn{min-height:40px !important;padding:8px 14px !important}
+.entry-actions{gap:6px !important}
+.entry-divider{margin:0 !important}
+.link-muted{padding:2px !important}
+.admin-link{margin:4px auto 0 !important}
+
 :root{
   --bg:#f6f7f9;
   --surface:#ffffff;
