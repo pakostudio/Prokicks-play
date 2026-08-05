@@ -1,3 +1,11 @@
+/* Sprint 2.1 - Foto sin recorte, jerarquia de color e info social real */
+.entry-hero-image{object-fit:contain !important;background:#F4F6F8 !important;max-height:16dvh !important}
+.entry-hero .h1{color:#111318 !important}
+.btn-outline{border-color:#CBD5E1 !important;color:#111318 !important}
+.entry-stat-card{display:flex;align-items:center;gap:10px;background:#FAEEDA;color:#633806;border-radius:12px;padding:10px 14px;text-decoration:none;margin:2px 0}
+.entry-stat-card strong{display:block;font-size:14px;color:#412402}
+.entry-stat-card span{display:block;font-size:11px;color:#854F0B}
+
 /* Sprint 2.0 - Centrar contenido y arreglar recorte de imagen */
 .entry-screen{justify-content:center !important}
 .entry-hero-image{object-position:center 22% !important;max-height:14dvh !important}
