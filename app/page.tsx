@@ -14,17 +14,14 @@ type LocalProfile = {
 function SoccerBallLoader() {
   return (
     <div className="preloader">
-      <svg className="preloader-ball" width="56" height="56" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="50" cy="50" r="46" fill="#ffffff" stroke="#173B63" strokeWidth="4" />
-        <g fill="#173B63">
-          <polygon points="50,28 61,36 57,49 43,49 39,36" />
-          <polygon points="50,28 39,36 30,28 34,16 46,14" />
-          <polygon points="50,28 61,36 70,28 66,16 54,14" />
-          <polygon points="39,36 30,28 20,38 24,52 34,55" />
-          <polygon points="61,36 70,28 80,38 76,52 66,55" />
-          <polygon points="43,49 34,55 38,68 50,72 46,60" />
-          <polygon points="57,49 66,55 62,68 50,72 54,60" />
-        </g>
+      <svg className="preloader-ball" width="64" height="64" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="50" r="44" fill="#ffffff" stroke="#173B63" strokeWidth="4" />
+        <polygon points="50,36 63.31,45.67 58.23,61.32 41.77,61.32 36.69,45.67" fill="#173B63" />
+        <line x1="50" y1="36" x2="50" y2="6" stroke="#173B63" strokeWidth="3.5" strokeLinecap="round" />
+        <line x1="63.31" y1="45.67" x2="91.84" y2="36.4" stroke="#173B63" strokeWidth="3.5" strokeLinecap="round" />
+        <line x1="58.23" y1="61.32" x2="75.87" y2="85.6" stroke="#173B63" strokeWidth="3.5" strokeLinecap="round" />
+        <line x1="41.77" y1="61.32" x2="24.13" y2="85.6" stroke="#173B63" strokeWidth="3.5" strokeLinecap="round" />
+        <line x1="36.69" y1="45.67" x2="8.16" y2="36.4" stroke="#173B63" strokeWidth="3.5" strokeLinecap="round" />
       </svg>
       <p className="preloader-text">Cargando ProKicks…</p>
     </div>
@@ -95,3 +92,4 @@ export default function EntryPage() {
     </main>
   );
 }
+
