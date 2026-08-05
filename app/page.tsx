@@ -3,12 +3,19 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { ShieldCheck, UserRound, Users } from 'lucide-react';
+import { ShieldCheck, UserRound, Users, CalendarDays } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
 
 type LocalProfile = {
   nickname?: string;
   avatar_image?: string;
   avatar_name?: string;
+};
+
+type NextTournament = {
+  id: string;
+  title: string;
+  starts_at: string | null;
 };
 
 function SoccerBallLoader() {
@@ -31,11 +38,24 @@ function SoccerBallLoader() {
 export default function EntryPage() {
   const [profile, setProfile] = useState<LocalProfile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [nextTournament, setNextTournament] = useState<NextTournament | null>(null);
 
   useEffect(() => {
     const raw = window.localStorage.getItem('prokicks_profile');
     if (raw) setProfile(JSON.parse(raw));
     const timer = setTimeout(() => setLoading(false), 900);
+
+    supabase
+      .from('prokicks_tournaments')
+      .select('id, title, starts_at')
+      .eq('status', 'open')
+      .gte('starts_at', new Date().toISOString())
+      .order('starts_at', { ascending: true })
+      .limit(1)
+      .then(({ data }) => {
+        if (data && data.length) setNextTournament(data[0] as NextTournament);
+      });
+
     return () => clearTimeout(timer);
   }, []);
 
@@ -72,6 +92,16 @@ export default function EntryPage() {
             <h2 className="card-title">Continuar como {profile.nickname || 'jugador ProKicks'}</h2>
           </div>
         </section>
+      )}
+
+      {nextTournament && (
+        <Link href="/torneos" className="entry-stat-card">
+          <CalendarDays size={16} />
+          <div>
+            <strong>{new Date(nextTournament.starts_at as string).toLocaleDateString('es-MX', { day: 'numeric', month: 'short' })}</strong>
+            <span>Próximo torneo: {nextTournament.title}</span>
+          </div>
+        </Link>
       )}
 
       <section className="grid section entry-actions">
