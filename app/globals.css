@@ -1,3 +1,7 @@
+/* Sprint 2.0 - Centrar contenido y arreglar recorte de imagen */
+.entry-screen{justify-content:center !important}
+.entry-hero-image{object-position:center 22% !important;max-height:14dvh !important}
+
 /* Sprint 1.9 - Fix overflow entry-screen */
 .entry-screen{padding:6px 16px 14px !important;gap:6px !important}
 .entry-hero{padding:8px 16px !important;gap:4px !important}
