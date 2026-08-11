@@ -7,6 +7,7 @@ import { AppShell } from '@/components/AppShell';
 import { supabase } from '@/lib/supabase';
 import { captureError } from '@/lib/monitoring';
 import { qrImageUrl, tournamentUrl } from '@/lib/media';
+import { formatDateTimeEs } from '@/lib/format';
 
 type Tournament = {
   id?: string;
@@ -185,7 +186,7 @@ export default function AdminTorneosPage(){
         <div className="list compact-list">
           {sorted.map(t=><div key={t.id} className="admin-row admin-row-panel">
             <button className="admin-row-main" onClick={()=>setForm({...empty, ...t, starts_at:t.starts_at || '', ends_at:t.ends_at || '', cost:Number(t.cost || 0), currency:t.currency || 'MXN', payment_method:t.payment_method || 'pendiente_configurar', payment_url:t.payment_url || '', payment_instructions:t.payment_instructions || ''})}>
-              <strong>{t.title}</strong><span>{t.format} · {t.level} · {t.status}</span><small><CalendarDays size={13}/>{t.starts_at ? new Date(t.starts_at).toLocaleString('es-MX') : 'Sin fecha'} · {t.is_free === false ? money(Number(t.cost || 0), t.currency || 'MXN') : 'Sin costo'}</small>
+              <strong>{t.title}</strong><span>{t.format} · {t.level} · {t.status}</span><small><CalendarDays size={13}/>{t.starts_at ? formatDateTimeEs(t.starts_at) : 'Sin fecha'} · {t.is_free === false ? money(Number(t.cost || 0), t.currency || 'MXN') : 'Sin costo'}</small>
             </button>
             {t.id && <div className="admin-actions">
               <button className="btn btn-soft" onClick={()=>copyTournamentLink(t.id)}><Copy size={14}/> Copiar link</button>
