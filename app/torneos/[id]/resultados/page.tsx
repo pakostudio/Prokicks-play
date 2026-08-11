@@ -39,6 +39,7 @@ export default function TournamentResultsPage() {
   const [rows, setRows] = useState<Result[]>([]);
   const [tournament, setTournament] = useState<Tournament | null>(null);
   const [msg, setMsg] = useState('');
+  const [shareMsg, setShareMsg] = useState('');
 
   useEffect(() => {
     async function load() {
@@ -58,15 +59,30 @@ export default function TournamentResultsPage() {
 
   async function share() {
     const url = `${PROKICKS_PUBLIC_URL}/torneos/${tournamentId}/resultados`;
-    if (navigator.share) await navigator.share({ title: `Resultados ${tournament?.title || 'ProKicks'}`, url });
-    else await navigator.clipboard.writeText(url);
+    setShareMsg('');
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: `Resultados ${tournament?.title || 'ProKicks'}`, url });
+      } else {
+        await navigator.clipboard.writeText(url);
+        setShareMsg('Link copiado. Pégalo donde quieras compartirlo: WhatsApp, redes sociales, correo, etc.');
+      }
+    } catch (error) {
+      captureError(error, { area: 'results-share', tournamentId });
+    }
   }
 
   const podium = rows.filter((row) => row.position <= 3);
 
   return (
     <AppShell active="torneos">
-      <section className="hero section"><div className="kicker">Resultados</div><h1 className="h1">{tournament?.title || 'Torneo ProKicks'}</h1><p className="p">Podio y tabla oficial publicada.</p><button className="btn btn-soft btn-full section" onClick={share}><Share2 size={16} /> Compartir resultados</button></section>
+      <section className="hero section">
+        <div className="kicker">Resultados</div>
+        <h1 className="h1">{tournament?.title || 'Torneo ProKicks'}</h1>
+        <p className="p">Podio y tabla oficial publicada.</p>
+        <button className="btn btn-soft btn-full section" onClick={share}><Share2 size={16} /> Compartir resultados</button>
+        {shareMsg && <div className="alert ok section">{shareMsg}</div>}
+      </section>
       {msg && <div className="alert warn section">{msg}</div>}
       <section className="podium-grid section">
         {podium.map((row) => <div className="card podium-card" key={row.id}><strong>{medal(row.position)}</strong><h2 className="card-title">{row.participant_name}</h2><p className="p">{row.team_name || row.category || row.status}</p></div>)}
