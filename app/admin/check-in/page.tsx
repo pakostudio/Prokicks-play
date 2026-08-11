@@ -6,6 +6,7 @@ import { CheckCircle2, Search } from 'lucide-react';
 import { AppShell } from '@/components/AppShell';
 import { supabase } from '@/lib/supabase';
 import { captureError } from '@/lib/monitoring';
+import { formatDateTimeEs } from '@/lib/format';
 
 type Registration = {
   id: string;
@@ -99,7 +100,7 @@ function CheckInTool() {
           <p className="p">{item.modality || 'modalidad'} · {item.registration_status || 'registro'}</p>
           <p className="p">{item.contact_email || 'sin email'} · {item.contact_whatsapp || 'sin WhatsApp'}</p>
           <p className="field-label">Estado check-in</p>
-          <p className="p">{item.check_in_status || 'pendiente'}{item.check_in_at ? ` · ${new Date(item.check_in_at).toLocaleString('es-MX')}` : ''}</p>
+          <p className="p">{item.check_in_status || 'pendiente'}{item.check_in_at ? ` · ${formatDateTimeEs(item.check_in_at)}` : ''}</p>
           <button className="btn btn-warm btn-full" disabled={loading || item.check_in_status === 'checked_in'} onClick={markCheckedIn}><CheckCircle2 size={16} /> Confirmar asistencia</button>
         </section>
       )}
