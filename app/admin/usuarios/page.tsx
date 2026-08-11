@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { AppShell } from '@/components/AppShell';
 import { supabase } from '@/lib/supabase';
 import { avatarOptions } from '@/lib/demo';
+import { formatDateTimeEs } from '@/lib/format';
 
 type Profile = {
   id?: string;
@@ -41,7 +42,7 @@ export default function AdminUsuarios(){
         {rows.map((row, index)=>{
           const avatar = avatarOptions.find((item) => item.id === row.avatar_id);
           const image = row.avatar_image || avatar?.image;
-          return <tr key={row.id || `${row.email}-${index}`}><td>{row.name || '-'}</td><td>{row.email || '-'}<br/><small>{row.whatsapp || ''}</small></td><td>{row.nickname || '-'}</td><td>{image && <img className="admin-avatar-img" src={image} alt={row.avatar_name || row.avatar_id || 'Avatar'} />}{row.avatar_name || row.avatar_id || '-'}</td><td>{row.created_at ? new Date(row.created_at).toLocaleString('es-MX') : '-'}</td></tr>
+          return <tr key={row.id || `${row.email}-${index}`}><td>{row.name || '-'}</td><td>{row.email || '-'}<br/><small>{row.whatsapp || ''}</small></td><td>{row.nickname || '-'}</td><td>{image && <img className="admin-avatar-img" src={image} alt={row.avatar_name || row.avatar_id || 'Avatar'} />}{row.avatar_name || row.avatar_id || '-'}</td><td>{row.created_at ? formatDateTimeEs(row.created_at) : '-'}</td></tr>
         })}
       </tbody></table></div>
       {!rows.length && <p className="p">Aún no hay perfiles.</p>}
