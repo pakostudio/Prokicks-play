@@ -694,7 +694,7 @@ button.media-card{
 .admin-link{display:flex;align-items:center;justify-content:center;gap:4px;color:var(--muted);font-size:11px;text-decoration:none;margin:18px auto 0;opacity:.7}
 .preloader{min-height:100dvh;display:grid;place-items:center;gap:6px;background:#fff}
 .preloader-ball{animation:pk-spin .9s linear infinite}
-.preloader-text{color:#173B63;font-size:14px;font-weight:700}
+.preloader-text{color:#173B63;font-size:14px;font-weight:700;margin:0}
 @keyframes pk-spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 
 
