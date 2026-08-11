@@ -7,6 +7,7 @@ import { EvolutionChart } from '@/components/vision/EvolutionChart';
 import { getPlayerHistory, pendingIfMissing } from '@/lib/vision/supabaseVision';
 import { VISION_METRIC_KEYS, VISION_METRIC_LABELS } from '@/lib/vision/types';
 import type { VisionSession, VisionMetric } from '@/lib/vision/types';
+import { formatDateEs } from '@/lib/format';
 
 // Consulta propia: RLS permite que el jugador solo vea sus propias métricas
 // (auth.uid() = player_id) o que su coach/admin las vea.
@@ -77,7 +78,7 @@ export default function JugadorPage() {
                 {sessions.map((s) => (
                   <div className="row" key={s.id}>
                     <span>Bloque {s.block_number}</span>
-                    <span className="muted">{new Date(s.created_at).toLocaleDateString('es-MX')}</span>
+                    <span className="muted">{formatDateEs(s.created_at)}</span>
                   </div>
                 ))}
                 {!sessions.length && <p className="p muted">Sin sesiones todavía.</p>}
