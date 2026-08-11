@@ -10,6 +10,7 @@ import { trackEvent } from '@/lib/analytics';
 import { captureError } from '@/lib/monitoring';
 import { indoorTournament, mapEmbedUrl } from '@/lib/demo';
 import { tournamentUrl } from '@/lib/media';
+import { formatDateEs } from '@/lib/format';
 
 type Tournament = {
   id: string;
@@ -163,7 +164,7 @@ export default function TournamentDetail() {
             <div>
               <h3 className="card-title">Fecha</h3>
               <p className="p">
-                {item.starts_at ? new Date(item.starts_at).toLocaleDateString('es-MX') : 'Por confirmar'}
+                {item.starts_at ? formatDateEs(item.starts_at) : 'Por confirmar'}
               </p>
             </div>
           </div>
