@@ -6,6 +6,7 @@ import { AppShell } from '@/components/AppShell';
 import { supabase } from '@/lib/supabase';
 import { getCoachHistory } from '@/lib/vision/supabaseVision';
 import type { VisionSession } from '@/lib/vision/types';
+import { formatDateTimeEs } from '@/lib/format';
 
 export default function HistorialPage() {
   const [sessions, setSessions] = useState<VisionSession[]>([]);
@@ -50,7 +51,7 @@ export default function HistorialPage() {
                 <span className="tag tag-blue">{s.status}</span>
               </div>
               <p className="p">
-                {new Date(s.created_at).toLocaleString('es-MX')} ·{' '}
+                {formatDateTimeEs(s.created_at)} ·{' '}
                 {s.duration_seconds ? `${Math.round(s.duration_seconds / 60)} min` : 'En curso'}
               </p>
               {s.status === 'completed' ? (
