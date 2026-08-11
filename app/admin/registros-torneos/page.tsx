@@ -7,6 +7,7 @@ import { AppShell } from '@/components/AppShell';
 import { supabase } from '@/lib/supabase';
 import { trackEvent } from '@/lib/analytics';
 import { captureError } from '@/lib/monitoring';
+import { formatDateTimeEs } from '@/lib/format';
 
 type Registration = {
   id: string;
@@ -272,7 +273,7 @@ export default function AdminRegistrosTorneosPage() {
                   <td>{r.email_contacto}<br /><small>{r.whatsapp_contacto}</small></td>
                   <td>{r.costo}<br /><small>{r.payment_status}</small></td>
                   <td>Reglas: {r.reglamento_aceptado}<br />Imagen: {r.imagen_aceptada}<br /><small>Tutor: {r.requiere_tutor} {r.tutor ? `· ${r.tutor}` : ''}</small></td>
-                  <td>{r.registration_status}<br /><small>{new Date(r.fecha).toLocaleString('es-MX')}</small></td>
+                  <td>{r.registration_status}<br /><small>{formatDateTimeEs(r.fecha)}</small></td>
                   <td>
                     <div className="admin-actions">
                       <button className="btn btn-soft" onClick={() => startEdit(row)}><Pencil size={14} /> Editar</button>
