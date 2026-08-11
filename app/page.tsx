@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { ShieldCheck, UserRound, Users, CalendarDays } from 'lucide-react';
+import { ArrowRight, ShieldCheck, UserRound, Users, CalendarDays } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { formatDateShortEs } from '@/lib/format';
 
@@ -94,11 +94,12 @@ export default function EntryPage() {
       )}
 
       {nextTournament && (
-        <Link href="/torneos" className="entry-stat-card">
+        <Link href={`/torneos/${nextTournament.id}/registro`} className="entry-stat-card">
           <CalendarDays size={16} />
           <div>
             <strong>{formatDateShortEs(nextTournament.starts_at as string)}</strong>
             <span>Próximo torneo: {nextTournament.title}</span>
+            <span className="entry-stat-cta"><ArrowRight size={12} /> Inscríbete aquí</span>
           </div>
         </Link>
       )}
