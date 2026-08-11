@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { ChevronLeft, Instagram, MapPinCheck, ShieldCheck } from 'lucide-react';
+import { ChevronLeft, AtSign, MapPinCheck, ShieldCheck } from 'lucide-react';
 import { AppShell } from '@/components/AppShell';
 import { supabase } from '@/lib/supabase';
 import { trackEvent } from '@/lib/analytics';
@@ -174,14 +174,14 @@ export default function TournamentCheckIn() {
 
           <section className="card section">
             <div className="card-head">
-              <Instagram />
+              <AtSign />
               <div>
                 <h2>Paso 1 · Síguenos en Instagram</h2>
                 <p>Apoya a la comunidad ProKicks siguiéndonos @prokicksoficial.</p>
               </div>
             </div>
             <a className="btn btn-warm btn-full" href={INSTAGRAM_URL} target="_blank" rel="noreferrer" onClick={() => trackEvent('Tournament CheckIn IG Clicked', { tournament_id: tournamentId })}>
-              <Instagram size={16} /> Abrir Instagram
+              <AtSign size={16} /> Abrir Instagram
             </a>
             <label className="check-row">
               <input type="checkbox" checked={igConfirmed} onChange={(e) => (e.target.checked ? confirmIgFollow() : setIgConfirmed(false))} />
