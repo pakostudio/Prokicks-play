@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react';
 import { useParams } from 'next/navigation';
 import { ChevronLeft, Eraser, FileSignature, ShieldCheck } from 'lucide-react';
 import { AppShell } from '@/components/AppShell';
@@ -19,7 +19,7 @@ type Registration = {
   signed_at: string | null;
 };
 
-function getPoint(canvas: HTMLCanvasElement, event: React.PointerEvent<HTMLCanvasElement>) {
+function getPoint(canvas: HTMLCanvasElement, event: ReactPointerEvent<HTMLCanvasElement>) {
   const rect = canvas.getBoundingClientRect();
   return {
     x: ((event.clientX - rect.left) / rect.width) * canvas.width,
@@ -114,7 +114,7 @@ export default function TournamentSignature() {
     }
   }
 
-  function startDraw(event: React.PointerEvent<HTMLCanvasElement>) {
+  function startDraw(event: ReactPointerEvent<HTMLCanvasElement>) {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
@@ -126,7 +126,7 @@ export default function TournamentSignature() {
     ctx.moveTo(x, y);
   }
 
-  function draw(event: React.PointerEvent<HTMLCanvasElement>) {
+  function draw(event: ReactPointerEvent<HTMLCanvasElement>) {
     if (!drawingRef.current) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
