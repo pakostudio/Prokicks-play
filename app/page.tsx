@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { ShieldCheck, UserRound, Users, CalendarDays } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
+import { formatDateShortEs } from '@/lib/format';
 
 type LocalProfile = {
   nickname?: string;
@@ -104,7 +105,7 @@ export default function EntryPage() {
         <Link href="/torneos" className="entry-stat-card">
           <CalendarDays size={16} />
           <div>
-            <strong>{new Date(nextTournament.starts_at as string).toLocaleDateString('es-MX', { day: 'numeric', month: 'short' })}</strong>
+            <strong>{formatDateShortEs(nextTournament.starts_at as string)}</strong>
             <span>Próximo torneo: {nextTournament.title}</span>
           </div>
         </Link>
@@ -128,4 +129,3 @@ export default function EntryPage() {
     </main>
   );
 }
-
