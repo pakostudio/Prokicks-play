@@ -707,3 +707,5 @@ button.media-card{
 
 .entry-stat-cta{display:flex;align-items:center;gap:4px;font-weight:700;text-decoration:underline;margin-top:4px !important}
 .welcome-badge{margin-top:8px;padding:6px 14px;background:#E6F1FB;color:#0C447C;font-size:12px;font-weight:700;letter-spacing:.02em;border-radius:999px}
+
+.preloader{display:flex !important;flex-direction:column !important;align-items:center !important;justify-content:center !important}
