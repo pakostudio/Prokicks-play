@@ -10,6 +10,9 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "latest",
+    "@tensorflow-models/pose-detection": "^2.1.3",
+    "@tensorflow/tfjs": "^4.20.0",
+    "@tensorflow/tfjs-backend-webgl": "^4.20.0",
     "lucide-react": "latest",
     "next": "latest",
     "react": "latest",
