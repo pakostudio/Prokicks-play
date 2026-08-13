@@ -49,7 +49,7 @@ export default function NewChallenge(){
       creator_avatar_id: profile.avatar_id,
       creator_avatar_image: profile.avatar_image || null,
       type,
-      status: 'abierta',
+      status: 'open',
       scheduled_at: scheduledAt ? new Date(scheduledAt).toISOString() : new Date().toISOString(),
     };
 
@@ -77,7 +77,7 @@ export default function NewChallenge(){
       <input className="input" value={title} onChange={e=>setTitle(e.target.value)} placeholder="Nombre de la reta" />
       <select className="input" value={spotId} onChange={e=>setSpotId(e.target.value)}>{realSpots.map(s=><option key={s.id} value={s.id}>{s.name}</option>)}</select>
       <p className="p">{spot.address}</p>
-      <select className="input" value={type} onChange={e=>setType(e.target.value)}><option>1v1</option><option>2v2</option><option>3v3</option><option>5v5</option></select>
+      <select className="input" value={type} onChange={e=>setType(e.target.value)}><option>1v1</option><option>2v2</option><option>3v3</option></select>
       <label className="field-label">Fecha/hora opcional</label>
       <input className="input" type="datetime-local" value={scheduledAt} onChange={e=>setScheduledAt(e.target.value)} />
       {msg && <div className={msg.includes('creada') ? 'alert ok' : 'alert warn'}>{msg}</div>}
