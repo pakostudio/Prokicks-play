@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ChevronLeft, Mail, Phone, ShieldCheck, UserRound } from 'lucide-react';
 import { avatarOptions } from '@/lib/demo';
 import { supabase } from '@/lib/supabase';
@@ -25,6 +25,26 @@ export default function RegisterPage() {
   });
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+
+  useEffect(() => {
+    const raw = window.localStorage.getItem('prokicks_profile');
+    if (!raw) return;
+    try {
+      const existing = JSON.parse(raw);
+      setForm((prev) => ({
+        ...prev,
+        name: existing.name || '',
+        email: existing.email || '',
+        whatsapp: existing.whatsapp || '',
+        nickname: existing.nickname || '',
+        avatarId: existing.avatar_id || prev.avatarId,
+      }));
+      setIsEditing(true);
+    } catch {
+      // perfil local invalido, se ignora y se deja el formulario vacio
+    }
+  }, []);
 
   const selectedAvatar = avatarOptions.find((avatar) => avatar.id === form.avatarId) || avatarOptions[0];
   const canSubmit =
@@ -86,7 +106,8 @@ export default function RegisterPage() {
       return;
     }
 
-    setMessage('Perfil ProKicks creado. Ya puedes conectar un spot y crear una reta.');
+    setMessage(isEditing ? 'Perfil ProKicks actualizado.' : 'Perfil ProKicks creado. Ya puedes conectar un spot y crear una reta.');
+    setIsEditing(true);
   }
 
   return (
@@ -98,8 +119,8 @@ export default function RegisterPage() {
 
       <section className="register-title">
         <span>Perfil ProKicks</span>
-        <h1>Crea tu perfil</h1>
-        <p>Registro básico para presentación: nickname, avatar y contacto.</p>
+        <h1>{isEditing ? 'Edita tu perfil' : 'Crea tu perfil'}</h1>
+        <p>{isEditing ? 'Actualiza tus datos, nickname o avatar. Tu registro se guarda en este dispositivo.' : 'Registro básico para presentación: nickname, avatar y contacto.'}</p>
       </section>
 
       <section className="register-card">
@@ -129,7 +150,7 @@ export default function RegisterPage() {
         </div>
 
         <label className="field-label">Contraseña</label>
-        <input type="password" placeholder="Contraseña" value={form.password} onChange={(e) => update('password', e.target.value)} />
+        <input type="password" placeholder={isEditing ? 'Vuelve a escribir tu contraseña para guardar' : 'Contraseña'} value={form.password} onChange={(e) => update('password', e.target.value)} />
         <p className="legal-note">Crea una contraseña para entrar después a tu perfil. Login con Google/Apple próximamente.</p>
 
         <label className="check"><input type="checkbox" checked={form.accepted} onChange={(e) => update('accepted', e.target.checked)} /> Acepto el reglamento, privacidad y uso de imagen ProKicks.</label>
@@ -138,13 +159,13 @@ export default function RegisterPage() {
           <h3 className="card-title">{form.nickname || 'Tu nickname'}</h3>
           <p className="p">{selectedAvatar.name}</p>
         </div>
-        {message && <div className={message.includes('creado') ? 'alert ok' : 'alert warn'}>{message}</div>}
+        {message && <div className={message.includes('creado') || message.includes('actualizado') ? 'alert ok' : 'alert warn'}>{message}</div>}
         {message && <div className="grid section">
           <Link className="btn btn-primary" href="/scan">Conectar spot</Link>
           <Link className="btn btn-warm" href="/torneos">Ver torneo Indoor</Link>
           <Link className="btn btn-soft" href="/perfil">Ver perfil</Link>
         </div>}
-        <button className="btn btn-primary btn-full" onClick={submit} disabled={loading || !canSubmit}>{loading ? 'Creando...' : 'Crear perfil ProKicks'}</button>
+        <button className="btn btn-primary btn-full" onClick={submit} disabled={loading || !canSubmit}>{loading ? 'Guardando...' : isEditing ? 'Guardar cambios' : 'Crear perfil ProKicks'}</button>
         {!canSubmit && <p className="helper-text">Completa todos los campos para continuar.</p>}
       </section>
     </main>
