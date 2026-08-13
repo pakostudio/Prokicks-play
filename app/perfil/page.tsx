@@ -40,6 +40,6 @@ export default function PerfilPage(){
       <div className="stat"><span className="muted">Retas</span><strong style={{fontSize:18}}>Activas</strong></div>
       <div className="stat"><span className="muted">Ranking</span><strong style={{fontSize:18}}>Próximamente</strong></div>
     </section>
-    <section className="grid section"><Link href="/registro" className="btn btn-soft">Editar / recrear perfil</Link><Link href="/scan" className="btn btn-primary">Conectar spot</Link></section>
+    <section className="grid section"><Link href="/registro" className="btn btn-soft">Editar / recrear perfil</Link><Link href="/scan" className="btn btn-primary">Conectar spot</Link></section><section className="section"><Link href="/faq" className="btn btn-soft btn-full">Preguntas frecuentes (FAQ)</Link></section>
   </AppShell>
 }
