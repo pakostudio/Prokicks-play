@@ -80,6 +80,7 @@ export default function EntryPage() {
           <div className="kicker">ProKicks Play</div>
           <h1 className="h1">Entrena. Compite. Domina.</h1>
           <p className="p">Crea tu perfil, conecta spots reales y vive la experiencia ProKicks.</p>
+          <div className="welcome-badge">Bienvenido a la comunidad ProKicks Play</div>
         </div>
       </section>
 
