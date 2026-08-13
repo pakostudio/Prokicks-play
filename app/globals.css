@@ -709,3 +709,15 @@ button.media-card{
 .welcome-badge{margin-top:8px;padding:6px 14px;background:#E6F1FB;color:#0C447C;font-size:12px;font-weight:700;letter-spacing:.02em;border-radius:999px}
 
 .preloader{display:flex !important;flex-direction:column !important;align-items:center !important;justify-content:center !important}
+
+/* Sprint 2.3 - ProX: modulo de mediciones individuales (celular + tripie) */
+.tag-amber{color:#854F0B;background:#FAEEDA}
+.prox-req-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.prox-req{display:inline-flex;align-items:center;gap:6px;background:#F2F4FF;color:#173B63;font-size:12px;font-weight:700;padding:8px 12px;border-radius:999px}
+.prox-locked{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:28px 20px;color:#173B63}
+.prox-locked svg{color:#854F0B}
+.prox-stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.prox-stat-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:4px}
+.prox-stat-label{font-size:12px;font-weight:800;color:#5e6675;text-transform:uppercase;letter-spacing:.04em}
+.prox-stat-value{font-size:20px;font-weight:900;color:#173B63}
+.prox-stat-hint{font-size:11px;color:var(--muted)}
