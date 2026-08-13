@@ -21,6 +21,7 @@ export default function RegisterPage() {
     nickname: '',
     avatarId: avatarOptions[0].id,
     password: '',
+    heightCm: '',
     accepted: false,
   });
   const [message, setMessage] = useState('');
@@ -39,6 +40,7 @@ export default function RegisterPage() {
         whatsapp: existing.whatsapp || '',
         nickname: existing.nickname || '',
         avatarId: existing.avatar_id || prev.avatarId,
+        heightCm: existing.height_cm ? String(existing.height_cm) : '',
       }));
       setIsEditing(true);
     } catch {
@@ -81,6 +83,7 @@ export default function RegisterPage() {
     }
 
     setLoading(true);
+    const heightCmNumber = Number(form.heightCm);
     const profile = {
       name: form.name.trim(),
       email: form.email.trim().toLowerCase(),
@@ -89,12 +92,18 @@ export default function RegisterPage() {
       avatar_id: selectedAvatar.id,
       avatar_name: selectedAvatar.name,
       avatar_image: selectedAvatar.image,
+      height_cm: heightCmNumber >= 120 && heightCmNumber <= 220 ? heightCmNumber : null,
     };
 
     let { error } = await supabase.from('prokicks_profiles').insert(profile);
     if (error && String(error.message || '').includes('avatar_image')) {
       const { avatar_image, ...profileWithoutImage } = profile;
       const retry = await supabase.from('prokicks_profiles').insert(profileWithoutImage);
+      error = retry.error;
+    }
+    if (error && String(error.message || '').includes('height_cm')) {
+      const { height_cm, ...profileWithoutHeight } = profile;
+      const retry = await supabase.from('prokicks_profiles').insert(profileWithoutHeight);
       error = retry.error;
     }
     window.localStorage.setItem('prokicks_profile', JSON.stringify({ ...profile, created_at: new Date().toISOString() }));
@@ -131,6 +140,10 @@ export default function RegisterPage() {
         <label className="field-label"><Phone size={16} /> WhatsApp</label>
         <input inputMode="tel" placeholder="+52 56 2449 2892" value={form.whatsapp} onChange={(e) => update('whatsapp', e.target.value)} />
         <input placeholder="Nickname" value={form.nickname} onChange={(e) => update('nickname', e.target.value)} />
+
+        <label className="field-label">Estatura (cm) · opcional</label>
+        <input inputMode="numeric" placeholder="Ej. 172" value={form.heightCm} onChange={(e) => update('heightCm', e.target.value)} />
+        <p className="legal-note">La usamos para calibrar tus mediciones ProX con la cámara. Puedes dejarlo en blanco y agregarlo después.</p>
 
         <div className="avatar-section">
           <h2 className="card-title">Elige tu avatar</h2>
