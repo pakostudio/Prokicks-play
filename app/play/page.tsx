@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { AppShell } from '@/components/AppShell';
 import { SupabaseNotice } from '@/components/SupabaseNotice';
 import { VisionEntryCard } from '@/components/vision/VisionEntryCard';
+import { ProxEntryCard } from '@/components/vision/ProxEntryCard';
 import { realSpots } from '@/lib/demo';
 import { supabase } from '@/lib/supabase';
 import { MapPin, QrCode, Star, Trophy, UserRound } from 'lucide-react';
@@ -50,6 +51,10 @@ return (
 <section className="grid-2 section home-stats">
 <div className="stat"><span className="muted">Spots reales</span><strong>{realSpots.length}</strong></div>
 <div className="stat"><span className="muted">Retas abiertas</span><strong>{challenges.length}</strong></div>
+</section>
+
+<section className="section">
+<ProxEntryCard />
 </section>
 
 <section className="section">
