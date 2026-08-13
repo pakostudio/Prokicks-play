@@ -83,7 +83,10 @@ export const VISION_METRIC_KEYS = [
   'velocidad_aproximada',
   'tiempo_activo',
   'consistencia',
-  'confianza_modelo'
+  'confianza_modelo',
+  'salto_altura',
+  'desplazamiento_lateral',
+  'habilidad_tecnica'
 ] as const;
 
 export type VisionMetricKey = (typeof VISION_METRIC_KEYS)[number];
@@ -101,8 +104,22 @@ export const VISION_METRIC_LABELS: Record<VisionMetricKey, string> = {
   velocidad_aproximada: 'Velocidad aproximada',
   tiempo_activo: 'Tiempo activo',
   consistencia: 'Consistencia',
-  confianza_modelo: 'Confianza del modelo'
+  confianza_modelo: 'Confianza del modelo',
+  salto_altura: 'Altura de salto',
+  desplazamiento_lateral: 'Desplazamiento lateral',
+  habilidad_tecnica: 'Habilidad técnica'
 };
+
+// ProX -- categorias de medicion individual (celular + tripie, sin camaras dobles ni coach).
+// Subconjunto de VISION_METRIC_KEYS pensado para el perfil personal del jugador.
+export const PROX_CATEGORIES: Array<{ key: VisionMetricKey; label: string; hint: string }> = [
+  { key: 'salto_altura', label: 'Salto', hint: 'Altura de salto vertical' },
+  { key: 'desplazamiento_lateral', label: 'Desplazamiento lateral', hint: 'Velocidad de cambio de direccion' },
+  { key: 'habilidad_tecnica', label: 'Habilidad', hint: 'Control y precision de balon' },
+  { key: 'velocidad_aproximada', label: 'Velocidad', hint: 'Velocidad de desplazamiento' },
+  { key: 'tiempo_reaccion', label: 'Reaccion', hint: 'Tiempo de reaccion a estimulos' },
+  { key: 'consistencia', label: 'Consistencia', hint: 'Constancia entre repeticiones' }
+];
 
 export type VisionMetric = {
   id: string;
