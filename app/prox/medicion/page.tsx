@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { AppShell } from '@/components/AppShell';
-import { Camera, Lock, UserRound } from 'lucide-react';
+import { Camera, Lock, UserRound, Volume2, VolumeX } from 'lucide-react';
 import { getPoseDetector, detectPose, SKELETON_PAIRS, kp, Keypoint } from '@/lib/vision/poseEngine';
 import {
   Sample,
@@ -47,6 +47,20 @@ const PHASE_LABEL: Record<Phase, string> = {
   processing: 'Calculando tus resultados...',
 };
 
+// Frases más cortas para voz (mismas fases, pensadas para escucharse a 2-3 metros
+// sin tener que leer la pantalla).
+const PHASE_VOICE: Partial<Record<Phase, string>> = {
+  'requesting-camera': 'Pidiendo acceso a la cámara',
+  'camera-error': 'No pudimos usar la cámara',
+  calibrating: 'Ponte de pie, cuerpo completo en el cuadro',
+  jump: 'Salta lo más alto que puedas',
+  'reaction-wait': 'Espera la señal',
+  'reaction-go': 'Muévete ahora',
+  lateral: 'Muévete de lado a lado, lo más rápido posible',
+  skill: 'Movimientos libres de balón',
+  processing: 'Calculando tus resultados',
+};
+
 function wait(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -57,6 +71,7 @@ export default function ProxMedicionPage() {
   const [checked, setChecked] = useState(false);
   const [phase, setPhase] = useState<Phase>('idle');
   const [countdownText, setCountdownText] = useState('');
+  const [voiceOn, setVoiceOn] = useState(true);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -64,6 +79,11 @@ export default function ProxMedicionPage() {
   const detectorRef = useRef<Awaited<ReturnType<typeof getPoseDetector>> | null>(null);
   const runningRef = useRef(false);
   const bucketRef = useRef<Sample[] | null>(null);
+  const voiceOnRef = useRef(true);
+
+  useEffect(() => {
+    voiceOnRef.current = voiceOn;
+  }, [voiceOn]);
 
   useEffect(() => {
     const raw = window.localStorage.getItem('prokicks_profile');
@@ -72,8 +92,36 @@ export default function ProxMedicionPage() {
     return () => {
       runningRef.current = false;
       streamRef.current?.getTracks().forEach((t) => t.stop());
+      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
     };
   }, []);
+
+  // Guía por voz: se lee en voz alta cada instrucción para que el jugador no
+  // dependa de acercarse a leer la pantalla. Corre 100% en el celular
+  // (Web Speech API), sin costo de servidor ni conexión a internet.
+  function speak(text: string) {
+    if (!text) return;
+    if (!voiceOnRef.current) return;
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+    try {
+      window.speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = 'es-MX';
+      utter.rate = 1;
+      utter.pitch = 1;
+      window.speechSynthesis.speak(utter);
+    } catch {
+      // si el navegador no soporta síntesis de voz, seguimos solo con texto en pantalla
+    }
+  }
+
+  function goPhase(p: Phase) {
+    setPhase(p);
+    const voiceMsg = PHASE_VOICE[p] || PHASE_LABEL[p];
+    speak(voiceMsg);
+  }
 
   function drawOverlay(keypoints: Keypoint[] | null) {
     const canvas = canvasRef.current;
@@ -127,7 +175,7 @@ export default function ProxMedicionPage() {
   }
 
   async function startCapture() {
-    setPhase('requesting-camera');
+    goPhase('requesting-camera');
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: 'user', width: { ideal: 720 }, height: { ideal: 960 } },
@@ -139,7 +187,7 @@ export default function ProxMedicionPage() {
         await videoRef.current.play();
       }
     } catch {
-      setPhase('camera-error');
+      goPhase('camera-error');
       return;
     }
 
@@ -147,7 +195,7 @@ export default function ProxMedicionPage() {
     try {
       detectorRef.current = await getPoseDetector();
     } catch {
-      setPhase('camera-error');
+      goPhase('camera-error');
       return;
     }
 
@@ -156,9 +204,9 @@ export default function ProxMedicionPage() {
 
     const heightCm = profile && profile.height_cm ? Number(profile.height_cm) : 170;
 
-    setPhase('calibrating');
+    goPhase('calibrating');
     bucketRef.current = [];
-    await wait(2200);
+    await wait(2600);
     const calibSamples = bucketRef.current || [];
     const pxPerCm = calibrateScale(calibSamples, heightCm) || 4;
 
@@ -166,6 +214,7 @@ export default function ProxMedicionPage() {
     bucketRef.current = null;
     for (const n of ['3', '2', '1', '¡Salta!']) {
       setCountdownText(n);
+      speak(n === '¡Salta!' ? '¡Salta!' : n);
       await wait(650);
     }
 
@@ -174,25 +223,25 @@ export default function ProxMedicionPage() {
     await wait(2200);
     const jumpCm = computeJumpHeightCm(bucketRef.current || [], pxPerCm);
 
-    setPhase('reaction-wait');
+    goPhase('reaction-wait');
     bucketRef.current = [];
     await wait(1200 + Math.random() * 1800);
     const cueTimeMs = performance.now();
-    setPhase('reaction-go');
+    goPhase('reaction-go');
     await wait(1500);
     const reactionSeconds = computeReactionSeconds(cueTimeMs, bucketRef.current || []);
 
-    setPhase('lateral');
+    goPhase('lateral');
     bucketRef.current = [];
     await wait(6000);
     const lateral = computeLateralMetrics(bucketRef.current || [], pxPerCm);
 
-    setPhase('skill');
+    goPhase('skill');
     bucketRef.current = [];
     await wait(5000);
     const smoothness = computeSmoothnessScore(bucketRef.current || []);
 
-    setPhase('processing');
+    goPhase('processing');
     bucketRef.current = null;
     runningRef.current = false;
     streamRef.current?.getTracks().forEach((t) => t.stop());
@@ -212,6 +261,7 @@ export default function ProxMedicionPage() {
   }
 
   const showOverlay = phase !== 'idle' && phase !== 'camera-error';
+  const isCountdown = phase === 'countdown';
 
   return (
     <AppShell active="home">
@@ -241,6 +291,16 @@ export default function ProxMedicionPage() {
       {checked && profile && (
         <section className="section">
           <div className="card">
+            <button
+              type="button"
+              className="btn btn-soft"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 6, marginBottom: 10 }}
+              onClick={() => setVoiceOn((v) => !v)}
+            >
+              {voiceOn ? <Volume2 size={16} /> : <VolumeX size={16} />}
+              {voiceOn ? 'Guía por voz activada' : 'Guía por voz desactivada'}
+            </button>
+
             <div className="scan-frame mt-10" style={{ padding: 0, overflow: 'hidden', position: 'relative' }}>
               <video ref={videoRef} playsInline muted style={{ display: 'none' }} />
               <canvas
@@ -253,6 +313,7 @@ export default function ProxMedicionPage() {
                   <strong style={{ display: 'block', marginTop: 8 }}>Cámara lista</strong>
                   <span className="p">
                     Vas a hacer 4 pruebas cortas: salto, reacción, movimiento lateral y footwork libre.
+                    Activa la guía por voz para escuchar cada instrucción sin tener que leer la pantalla.
                   </span>
                 </div>
               )}
@@ -262,7 +323,7 @@ export default function ProxMedicionPage() {
                   <p className="p">Revisa los permisos de cámara de tu navegador e inténtalo de nuevo.</p>
                 </div>
               )}
-              {showOverlay && (
+              {showOverlay && !isCountdown && (
                 <div
                   style={{
                     position: 'absolute',
@@ -270,14 +331,39 @@ export default function ProxMedicionPage() {
                     left: 10,
                     right: 10,
                     textAlign: 'center',
-                    background: 'rgba(15,38,71,0.72)',
+                    background: 'rgba(15,38,71,0.88)',
                     color: '#fff',
-                    borderRadius: 12,
-                    padding: '8px 10px',
-                    fontWeight: 700,
+                    borderRadius: 16,
+                    padding: '18px 14px',
+                    fontWeight: 800,
+                    fontSize: 'clamp(22px, 6.5vw, 38px)',
+                    lineHeight: 1.15,
                   }}
                 >
-                  {phase === 'countdown' ? countdownText : PHASE_LABEL[phase]}
+                  {PHASE_LABEL[phase]}
+                </div>
+              )}
+              {showOverlay && isCountdown && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    inset: 0,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    background: 'rgba(15,38,71,0.55)',
+                  }}
+                >
+                  <span
+                    style={{
+                      color: '#fff',
+                      fontWeight: 900,
+                      fontSize: 'clamp(64px, 24vw, 140px)',
+                      textShadow: '0 4px 18px rgba(0,0,0,0.45)',
+                    }}
+                  >
+                    {countdownText}
+                  </span>
                 </div>
               )}
             </div>
