@@ -2,8 +2,8 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
-import { ChevronLeft, Mail, Phone, ShieldCheck, UserRound } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { ChevronLeft, Camera, Mail, Phone, ShieldCheck, UserRound } from 'lucide-react';
 import { avatarOptions } from '@/lib/demo';
 import { supabase } from '@/lib/supabase';
 
@@ -27,6 +27,9 @@ export default function RegisterPage() {
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [photoDataUrl, setPhotoDataUrl] = useState<string | null>(null);
+  const [photoError, setPhotoError] = useState('');
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const raw = window.localStorage.getItem('prokicks_profile');
@@ -42,6 +45,9 @@ export default function RegisterPage() {
         avatarId: existing.avatar_id || prev.avatarId,
         heightCm: existing.height_cm ? String(existing.height_cm) : '',
       }));
+      if (existing.avatar_name === 'Foto de perfil' && existing.avatar_image) {
+        setPhotoDataUrl(existing.avatar_image);
+      }
       setIsEditing(true);
     } catch {
       // perfil local invalido, se ignora y se deja el formulario vacio
@@ -49,6 +55,8 @@ export default function RegisterPage() {
   }, []);
 
   const selectedAvatar = avatarOptions.find((avatar) => avatar.id === form.avatarId) || avatarOptions[0];
+  const previewImage = photoDataUrl || selectedAvatar.image;
+  const previewLabel = photoDataUrl ? 'Tu foto' : selectedAvatar.name;
   const canSubmit =
     form.name.trim().length >= 3 &&
     emailPattern.test(form.email.trim()) &&
@@ -61,6 +69,30 @@ export default function RegisterPage() {
     setForm((prev) => ({ ...prev, [key]: value }));
   }
 
+  function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setPhotoError('');
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      setPhotoError('Selecciona un archivo de imagen válido.');
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setPhotoError('La foto debe pesar menos de 5MB.');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => setPhotoDataUrl(reader.result as string);
+    reader.onerror = () => setPhotoError('No pudimos leer esa foto, intenta con otra.');
+    reader.readAsDataURL(file);
+  }
+
+  function clearPhoto() {
+    setPhotoDataUrl(null);
+    setPhotoError('');
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  }
+
   async function sendProfileEmail() {
     await fetch('/api/profile-registration-email', {
       method: 'POST',
@@ -70,7 +102,7 @@ export default function RegisterPage() {
         email: form.email.trim(),
         whatsapp: form.whatsapp.trim(),
         nickname: form.nickname.trim(),
-        avatarName: selectedAvatar.name,
+        avatarName: previewLabel,
       }),
     }).catch(() => null);
   }
@@ -90,8 +122,8 @@ export default function RegisterPage() {
       whatsapp: form.whatsapp.trim(),
       nickname: form.nickname.trim(),
       avatar_id: selectedAvatar.id,
-      avatar_name: selectedAvatar.name,
-      avatar_image: selectedAvatar.image,
+      avatar_name: photoDataUrl ? 'Foto de perfil' : selectedAvatar.name,
+      avatar_image: photoDataUrl || selectedAvatar.image,
       height_cm: heightCmNumber >= 120 && heightCmNumber <= 220 ? heightCmNumber : null,
     };
 
@@ -146,20 +178,52 @@ export default function RegisterPage() {
         <p className="legal-note">La usamos para calibrar tus mediciones ProX con la cámara. Puedes dejarlo en blanco y agregarlo después.</p>
 
         <div className="avatar-section">
-          <h2 className="card-title">Elige tu avatar</h2>
-          <div className="avatar-grid">
-            {avatarOptions.map((avatar) => (
-              <button
-                type="button"
-                key={avatar.id}
-                className={`avatar-choice ${form.avatarId === avatar.id ? 'selected' : ''}`}
-                onClick={() => update('avatarId', avatar.id)}
-              >
-                <img src={avatar.image} alt={avatar.name} />
-                <strong>{avatar.name}</strong>
-              </button>
-            ))}
-          </div>
+          <h2 className="card-title">Foto de perfil</h2>
+          <p className="p" style={{ marginTop: 0 }}>Usa una foto real tuya o elige un avatar.</p>
+
+          {photoDataUrl ? (
+            <div className="card" style={{ textAlign: 'center' }}>
+              <img className="avatar-preview" src={photoDataUrl} alt="Tu foto" />
+              <button type="button" className="btn btn-soft btn-full" onClick={clearPhoto}>Quitar foto y usar avatar</button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              className="btn btn-soft btn-full"
+              onClick={() => fileInputRef.current?.click()}
+              style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
+            >
+              <Camera size={18} /> Tomar o subir foto real
+            </button>
+          )}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            capture="user"
+            onChange={handlePhotoChange}
+            style={{ display: 'none' }}
+          />
+          {photoError && <div className="alert error">{photoError}</div>}
+
+          {!photoDataUrl && (
+            <>
+              <h2 className="card-title" style={{ marginTop: 16 }}>O elige tu avatar</h2>
+              <div className="avatar-grid">
+                {avatarOptions.map((avatar) => (
+                  <button
+                    type="button"
+                    key={avatar.id}
+                    className={`avatar-choice ${form.avatarId === avatar.id ? 'selected' : ''}`}
+                    onClick={() => update('avatarId', avatar.id)}
+                  >
+                    <img src={avatar.image} alt={avatar.name} />
+                    <strong>{avatar.name}</strong>
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
         </div>
 
         <label className="field-label">Contraseña</label>
@@ -168,9 +232,9 @@ export default function RegisterPage() {
 
         <label className="check"><input type="checkbox" checked={form.accepted} onChange={(e) => update('accepted', e.target.checked)} /> Acepto el reglamento, privacidad y uso de imagen ProKicks.</label>
         <div className="card">
-          <img className="avatar-preview" src={selectedAvatar.image} alt={selectedAvatar.name} />
+          <img className="avatar-preview" src={previewImage} alt={previewLabel} />
           <h3 className="card-title">{form.nickname || 'Tu nickname'}</h3>
-          <p className="p">{selectedAvatar.name}</p>
+          <p className="p">{previewLabel}</p>
         </div>
         {message && <div className={message.includes('creado') || message.includes('actualizado') ? 'alert ok' : 'alert warn'}>{message}</div>}
         {message && <div className="grid section">
