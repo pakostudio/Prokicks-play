@@ -1,9 +1,8 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import Link from 'next/link';
 import { FileSpreadsheet, FileText, Pencil, Save, Trash2, X } from 'lucide-react';
-import { AppShell } from '@/components/AppShell';
+import { AdminShell } from '@/components/AdminShell';
 import { supabase } from '@/lib/supabase';
 import { trackEvent } from '@/lib/analytics';
 import { captureError } from '@/lib/monitoring';
@@ -248,7 +247,7 @@ export default function AdminRegistrosTorneosPage() {
   }, []);
 
   return (
-    <AppShell active="perfil">
+    <AdminShell active="registros">
       <section className="hero section">
         <div className="kicker">Admin · Registros</div>
         <h1 className="h1">Registros a Torneos</h1>
@@ -343,7 +342,6 @@ export default function AdminRegistrosTorneosPage() {
         </div>
         {!rows.length && <p className="p">Aún no hay registros.</p>}
       </section>
-      <section className="section"><Link className="btn btn-soft btn-full" href="/admin">Volver a Admin</Link></section>
-    </AppShell>
+    </AdminShell>
   );
 }
