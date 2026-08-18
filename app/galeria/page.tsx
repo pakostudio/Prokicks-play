@@ -5,7 +5,7 @@ import { AppShell } from '@/components/AppShell';
 import { supabase } from '@/lib/supabase';
 import { captureError } from '@/lib/monitoring';
 import { trackEvent } from '@/lib/analytics';
-import { mediaCategories } from '@/lib/media';
+import { isVideoUrl, mediaCategories } from '@/lib/media';
 import { Share2 } from 'lucide-react';
 
 type GalleryItem = {
@@ -76,7 +76,7 @@ export default function GaleriaPage() {
       <section className="hero section">
         <div className="kicker">Galería</div>
         <h1 className="h1">Galería ProKicks</h1>
-        <p className="p">Fotos publicadas de torneos, comunidad, spots y highlights.</p>
+        <p className="p">Fotos y videos publicados de torneos, comunidad, spots y highlights.</p>
       </section>
 
       <section className="media-filters section">
@@ -90,34 +90,45 @@ export default function GaleriaPage() {
       {msg && <div className="alert warn section">{msg}</div>}
 
       <section className="media-grid section detail-bottom-safe">
-        {filtered.map((item) => (
-          <div key={item.id} className="media-card-wrap">
-            <button className="media-card" onClick={() => setSelected(item)}>
-              <img src={item.image_url} alt={item.title} />
-              <span className="tag tag-blue">{item.category || 'galería'}</span>
-              <h2 className="card-title">{item.title}</h2>
-              {item.description && <p className="p">{item.description}</p>}
-            </button>
-            <button
-              className="media-share-btn"
-              aria-label="Compartir"
-              onClick={(event) => {
-                event.stopPropagation();
-                shareItem(item);
-              }}
-            >
-              <Share2 size={16} />
-            </button>
-          </div>
-        ))}
-        {!filtered.length && <div className="card"><h2 className="card-title">Sin fotos publicadas</h2><p className="p">Las fotos aparecerán aquí cuando Admin las publique.</p></div>}
+        {filtered.map((item) => {
+          const video = isVideoUrl(item.image_url);
+          return (
+            <div key={item.id} className="media-card-wrap">
+              <button className="media-card" onClick={() => setSelected(item)}>
+                {video ? (
+                  <video src={item.image_url} muted playsInline preload="metadata" />
+                ) : (
+                  <img src={item.image_url} alt={item.title} />
+                )}
+                <span className="tag tag-blue">{item.category || 'galería'}</span>
+                <h2 className="card-title">{item.title}</h2>
+                {item.description && <p className="p">{item.description}</p>}
+              </button>
+              <button
+                className="media-share-btn"
+                aria-label="Compartir"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  shareItem(item);
+                }}
+              >
+                <Share2 size={16} />
+              </button>
+            </div>
+          );
+        })}
+        {!filtered.length && <div className="card"><h2 className="card-title">Sin fotos publicadas</h2><p className="p">Las fotos y videos aparecerán aquí cuando Admin las publique.</p></div>}
       </section>
 
       {selected && (
         <div className="modal-backdrop" onClick={() => setSelected(null)}>
           <button className="modal-close" onClick={() => setSelected(null)}>Cerrar</button>
           <div className="media-modal" onClick={(event) => event.stopPropagation()}>
-            <img src={selected.image_url} alt={selected.title} />
+            {isVideoUrl(selected.image_url) ? (
+              <video src={selected.image_url} controls autoPlay playsInline />
+            ) : (
+              <img src={selected.image_url} alt={selected.title} />
+            )}
             <h2>{selected.title}</h2>
             {selected.description && <p>{selected.description}</p>}
             <button className="btn btn-warm btn-full section" onClick={() => shareItem(selected)}>
