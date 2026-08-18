@@ -1,135 +1,335 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { Plus, Save, Trash2 } from 'lucide-react';
-import { AppShell } from '@/components/AppShell';
+import { AdminShell } from '@/components/AdminShell';
 import { supabase } from '@/lib/supabase';
 import { captureError } from '@/lib/monitoring';
+import { Plus, Trash2, Upload } from 'lucide-react';
 
-type Tournament = { id: string; title: string };
-type Result = {
-  id?: string;
+type TournamentOption = { id: string; title: string };
+
+type Match = {
+  id: string;
   tournament_id: string;
-  position: number;
-  participant_name: string;
-  team_name: string;
-  category: string;
+  team_a_name: string;
+  team_b_name: string;
+  score_a: number | null;
+  score_b: number | null;
+  created_at?: string | null;
+};
+
+type Standing = {
+  team: string;
   played: number;
   wins: number;
   losses: number;
+  pointsFor: number;
+  pointsAgainst: number;
+  diff: number;
   points: number;
-  status: string;
-  notes: string;
-  published: boolean;
 };
 
-function emptyResult(tournament_id = ''): Result {
-  return { tournament_id, position: 1, participant_name: '', team_name: '', category: 'libre', played: 0, wins: 0, losses: 0, points: 0, status: 'participante', notes: '', published: false };
-}
+const emptyMatch = { team_a_name: '', team_b_name: '', score_a: '', score_b: '' };
 
 export default function AdminResultadosPage() {
-  const [tournaments, setTournaments] = useState<Tournament[]>([]);
-  const [items, setItems] = useState<Result[]>([]);
-  const [form, setForm] = useState<Result>(emptyResult());
-  const [selectedTournament, setSelectedTournament] = useState('');
+  const [tournaments, setTournaments] = useState<TournamentOption[]>([]);
+  const [tournamentId, setTournamentId] = useState('');
+  const [matches, setMatches] = useState<Match[]>([]);
+  const [form, setForm] = useState(emptyMatch);
+  const [saving, setSaving] = useState(false);
+  const [publishing, setPublishing] = useState(false);
   const [msg, setMsg] = useState('');
-  const editing = Boolean(form.id);
-  const sorted = useMemo(() => items.slice().sort((a, b) => a.position - b.position), [items]);
 
-  async function load(tournamentId = selectedTournament) {
-    const tournamentResult = await supabase.from('prokicks_tournaments').select('id,title').order('starts_at', { ascending: true });
-    setTournaments((tournamentResult.data || []) as Tournament[]);
-    const nextTournamentId = tournamentId || tournamentResult.data?.[0]?.id || '';
-    if (!selectedTournament && nextTournamentId) setSelectedTournament(nextTournamentId);
-    if (!nextTournamentId) return;
-    const { data, error } = await supabase.from('prokicks_tournament_results').select('*').eq('tournament_id', nextTournamentId).order('position', { ascending: true });
+  useEffect(() => {
+    async function loadTournaments() {
+      const { data, error } = await supabase
+        .from('prokicks_tournaments')
+        .select('id,title')
+        .order('starts_at', { ascending: false });
+      if (error) {
+        captureError(error, { area: 'admin-resultados-tournaments' });
+        return;
+      }
+      const rows = (data || []) as TournamentOption[];
+      setTournaments(rows);
+      if (rows.length && !tournamentId) setTournamentId(rows[0].id);
+    }
+    loadTournaments();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (!tournamentId) return;
+    loadMatches(tournamentId);
+  }, [tournamentId]);
+
+  async function loadMatches(id: string) {
+    setMsg('');
+    const { data, error } = await supabase
+      .from('prokicks_tournament_matches')
+      .select('id,tournament_id,team_a_name,team_b_name,score_a,score_b,created_at')
+      .eq('tournament_id', id)
+      .order('created_at', { ascending: true });
     if (error) {
-      captureError(error, { area: 'admin-results-select' });
-      setMsg(error.message);
-    }
-    setItems((data || []) as Result[]);
-  }
-
-  useEffect(() => { load(); }, []);
-
-  function update<K extends keyof Result>(key: K, value: Result[K]) {
-    setForm((prev) => ({ ...prev, [key]: value }));
-  }
-
-  async function save() {
-    if (!selectedTournament || !form.participant_name.trim()) {
-      setMsg('Selecciona torneo y captura participante.');
+      captureError(error, { area: 'admin-resultados-matches' });
+      setMsg('No pudimos cargar los partidos.');
       return;
     }
-    setMsg('Guardando...');
-    const { id: _id, ...cleanForm } = form;
-    const payload = { ...cleanForm, tournament_id: selectedTournament, updated_at: new Date().toISOString() };
-    const result = editing
-      ? await supabase.from('prokicks_tournament_results').update(payload).eq('id', form.id)
-      : await supabase.from('prokicks_tournament_results').insert(payload);
-    if (result.error) {
-      captureError(result.error, { area: 'admin-results-save', editing });
-      setMsg(result.error.message);
+    setMatches((data || []) as Match[]);
+  }
+
+  async function addMatch() {
+    if (!tournamentId) return;
+    const teamA = form.team_a_name.trim();
+    const teamB = form.team_b_name.trim();
+    if (!teamA || !teamB) {
+      setMsg('Escribe el nombre del capitán/equipo A y B.');
       return;
     }
-    setMsg(editing ? 'Resultado actualizado.' : 'Resultado creado.');
-    setForm(emptyResult(selectedTournament));
-    load(selectedTournament);
-  }
-
-  async function publishAll(published: boolean) {
-    if (!selectedTournament) return;
-    const { error } = await supabase.from('prokicks_tournament_results').update({ published, updated_at: new Date().toISOString() }).eq('tournament_id', selectedTournament);
-    if (error) setMsg(error.message);
-    else {
-      setMsg(published ? 'Resultados publicados.' : 'Resultados guardados como borrador.');
-      load(selectedTournament);
+    setSaving(true);
+    try {
+      const { error } = await supabase.from('prokicks_tournament_matches').insert({
+        tournament_id: tournamentId,
+        team_a_name: teamA,
+        team_b_name: teamB,
+        score_a: form.score_a === '' ? null : Number(form.score_a),
+        score_b: form.score_b === '' ? null : Number(form.score_b),
+      });
+      if (error) throw error;
+      setForm(emptyMatch);
+      await loadMatches(tournamentId);
+    } catch (error) {
+      captureError(error, { area: 'admin-resultados-add-match', tournamentId });
+      setMsg('No pudimos guardar el partido.');
+    } finally {
+      setSaving(false);
     }
   }
 
-  async function remove(id?: string) {
-    if (!id || !window.confirm('¿Eliminar este resultado?')) return;
-    const { error } = await supabase.from('prokicks_tournament_results').delete().eq('id', id);
-    if (error) setMsg(error.message);
-    else {
-      setMsg('Resultado eliminado.');
-      setForm(emptyResult(selectedTournament));
-      load(selectedTournament);
+  async function updateScore(matchId: string, field: 'score_a' | 'score_b', value: string) {
+    setMatches((prev) => prev.map((m) => (m.id === matchId ? { ...m, [field]: value === '' ? null : Number(value) } : m)));
+    try {
+      await supabase
+        .from('prokicks_tournament_matches')
+        .update({ [field]: value === '' ? null : Number(value), updated_at: new Date().toISOString() })
+        .eq('id', matchId);
+    } catch (error) {
+      captureError(error, { area: 'admin-resultados-update-score', matchId });
+    }
+  }
+
+  async function removeMatch(matchId: string) {
+    try {
+      await supabase.from('prokicks_tournament_matches').delete().eq('id', matchId);
+      setMatches((prev) => prev.filter((m) => m.id !== matchId));
+    } catch (error) {
+      captureError(error, { area: 'admin-resultados-remove-match', matchId });
+    }
+  }
+
+  const standings = useMemo(() => computeStandings(matches), [matches]);
+
+  async function publishStandings() {
+    if (!tournamentId || !standings.length) return;
+    setPublishing(true);
+    setMsg('');
+    try {
+      await supabase.from('prokicks_tournament_results').delete().eq('tournament_id', tournamentId);
+
+      const rows = standings.map((row, index) => ({
+        tournament_id: tournamentId,
+        position: index + 1,
+        participant_name: row.team,
+        team_name: row.team,
+        played: row.played,
+        wins: row.wins,
+        losses: row.losses,
+        points: row.points,
+        status: index === 0 ? 'campeón' : 'participante',
+        published: true,
+      }));
+
+      const { error } = await supabase.from('prokicks_tournament_results').insert(rows);
+      if (error) throw error;
+      setMsg('Clasificación publicada. Ya se ve en "Ver resultados" del torneo.');
+    } catch (error) {
+      captureError(error, { area: 'admin-resultados-publish', tournamentId });
+      setMsg('No pudimos publicar la clasificación.');
+    } finally {
+      setPublishing(false);
     }
   }
 
   return (
-    <AppShell active="perfil">
-      <section className="hero section"><div className="kicker">Admin · Resultados</div><h1 className="h1">Resultados de torneos</h1><p className="p">Crea podio y tabla simple. Brackets quedan para después.</p></section>
-      <section className="card form section">
-        <select className="input" value={selectedTournament} onChange={(event) => { setSelectedTournament(event.target.value); setForm(emptyResult(event.target.value)); load(event.target.value); }}>
-          {tournaments.map((tournament) => <option key={tournament.id} value={tournament.id}>{tournament.title}</option>)}
-        </select>
-        <div className="row"><button className="btn btn-soft" onClick={() => setForm(emptyResult(selectedTournament))}><Plus size={16} /> Agregar resultado</button><button className="btn btn-primary" onClick={() => publishAll(true)}>Publicar resultados</button><button className="btn btn-soft" onClick={() => publishAll(false)}>Guardar borrador</button></div>
-        {msg && <p className="p">{msg}</p>}
+    <AdminShell active="resultados">
+      <section className="hero section">
+        <div className="kicker">Resultados</div>
+        <h1 className="h1">Captura de resultados</h1>
+        <p className="p">Cada torneo empieza en cero. Registra los partidos y publica la clasificación cuando esté lista.</p>
       </section>
-      <section className="grid-2 section">
-        <div className="card form">
-          <h2 className="card-title">{editing ? 'Editar resultado' : 'Nuevo resultado'}</h2>
-          <div className="grid-2 tight"><input className="input" type="number" min="1" placeholder="Posición" value={form.position} onChange={(event) => update('position', Number(event.target.value))} /><select className="input" value={form.status} onChange={(event) => update('status', event.target.value)}><option value="campeon">campeon</option><option value="segundo">segundo</option><option value="tercero">tercero</option><option value="participante">participante</option><option value="eliminado">eliminado</option></select></div>
-          <input className="input" placeholder="Participante" value={form.participant_name} onChange={(event) => update('participant_name', event.target.value)} />
-          <input className="input" placeholder="Equipo" value={form.team_name} onChange={(event) => update('team_name', event.target.value)} />
-          <input className="input" placeholder="Categoría" value={form.category} onChange={(event) => update('category', event.target.value)} />
-          <div className="grid-2 tight"><input className="input" type="number" placeholder="Jugados" value={form.played} onChange={(event) => update('played', Number(event.target.value))} /><input className="input" type="number" placeholder="Puntos" value={form.points} onChange={(event) => update('points', Number(event.target.value))} /></div>
-          <div className="grid-2 tight"><input className="input" type="number" placeholder="Ganados" value={form.wins} onChange={(event) => update('wins', Number(event.target.value))} /><input className="input" type="number" placeholder="Perdidos" value={form.losses} onChange={(event) => update('losses', Number(event.target.value))} /></div>
-          <textarea className="input textarea" placeholder="Notas" value={form.notes} onChange={(event) => update('notes', event.target.value)} />
-          <label className="check-row"><input type="checkbox" checked={form.published} onChange={(event) => update('published', event.target.checked)} /><span>Publicado</span></label>
-          <button className="btn btn-primary btn-full" onClick={save}><Save size={16} /> Guardar</button>
-          {editing && <button className="btn btn-soft btn-full" onClick={() => remove(form.id)}><Trash2 size={16} /> Eliminar</button>}
-        </div>
-        <div className="card form">
-          <h2 className="card-title">Tabla editable</h2>
-          <div className="list compact-list">
-            {sorted.map((item) => <button className="admin-row" key={item.id} onClick={() => setForm({ ...emptyResult(selectedTournament), ...item })}><strong>#{item.position} · {item.participant_name}</strong><span>{item.category} · {item.status} · {item.published ? 'publicado' : 'borrador'}</span></button>)}
-            {!sorted.length && <p className="p">No hay resultados todavía.</p>}
+
+      <section className="card form section">
+        <div className="card-head">
+          <div>
+            <h2>Torneo</h2>
+            <p>Elige el torneo activo para capturar sus partidos.</p>
           </div>
         </div>
+        <select className="input" value={tournamentId} onChange={(e) => setTournamentId(e.target.value)}>
+          {tournaments.map((t) => (
+            <option key={t.id} value={t.id}>{t.title}</option>
+          ))}
+        </select>
       </section>
-    </AppShell>
+
+      <section className="card form section">
+        <div className="card-head">
+          <div>
+            <h2>Nuevo partido</h2>
+            <p>Nombre del capitán o equipo de cada lado (puede ser distinto al registro).</p>
+          </div>
+        </div>
+        <input
+          className="input"
+          placeholder="Equipo / capitán A"
+          value={form.team_a_name}
+          onChange={(e) => setForm((f) => ({ ...f, team_a_name: e.target.value }))}
+        />
+        <input
+          className="input"
+          placeholder="Equipo / capitán B"
+          value={form.team_b_name}
+          onChange={(e) => setForm((f) => ({ ...f, team_b_name: e.target.value }))}
+        />
+        <div className="row">
+          <input
+            className="input"
+            type="number"
+            placeholder="Puntos A"
+            value={form.score_a}
+            onChange={(e) => setForm((f) => ({ ...f, score_a: e.target.value }))}
+          />
+          <input
+            className="input"
+            type="number"
+            placeholder="Puntos B"
+            value={form.score_b}
+            onChange={(e) => setForm((f) => ({ ...f, score_b: e.target.value }))}
+          />
+        </div>
+        {msg && <div className="alert warn">{msg}</div>}
+        <button className="btn btn-primary btn-full" disabled={saving} onClick={addMatch}>
+          <Plus size={16} /> {saving ? 'Guardando...' : 'Agregar partido'}
+        </button>
+      </section>
+
+      <section className="card section">
+        <div className="card-head">
+          <div>
+            <h2>Partidos capturados</h2>
+            <p>Edita el marcador directamente en la tabla.</p>
+          </div>
+        </div>
+        <table className="admin-table">
+          <thead>
+            <tr><th>Equipo A</th><th>Pts A</th><th>Equipo B</th><th>Pts B</th><th></th></tr>
+          </thead>
+          <tbody>
+            {matches.map((m) => (
+              <tr key={m.id}>
+                <td>{m.team_a_name}</td>
+                <td>
+                  <input className="input" type="number" value={m.score_a ?? ''} onChange={(e) => updateScore(m.id, 'score_a', e.target.value)} />
+                </td>
+                <td>{m.team_b_name}</td>
+                <td>
+                  <input className="input" type="number" value={m.score_b ?? ''} onChange={(e) => updateScore(m.id, 'score_b', e.target.value)} />
+                </td>
+                <td>
+                  <button className="tag tag-warm" onClick={() => removeMatch(m.id)}><Trash2 size={14} /></button>
+                </td>
+              </tr>
+            ))}
+            {!matches.length && (
+              <tr><td colSpan={5}>Sin partidos capturados todavía.</td></tr>
+            )}
+          </tbody>
+        </table>
+      </section>
+
+      <section className="card section">
+        <div className="card-head">
+          <div>
+            <h2>Clasificación (automática)</h2>
+            <p>1 punto por victoria, 0 por derrota. Empate se resuelve por diferencia de puntos.</p>
+          </div>
+        </div>
+        <table className="admin-table">
+          <thead>
+            <tr><th>Pos</th><th>Equipo</th><th>J</th><th>G</th><th>P</th><th>PF</th><th>PC</th><th>Dif</th><th>Pts</th></tr>
+          </thead>
+          <tbody>
+            {standings.map((row, index) => (
+              <tr key={row.team}>
+                <td>{index + 1}</td>
+                <td>{row.team}</td>
+                <td>{row.played}</td>
+                <td>{row.wins}</td>
+                <td>{row.losses}</td>
+                <td>{row.pointsFor}</td>
+                <td>{row.pointsAgainst}</td>
+                <td>{row.diff}</td>
+                <td>{row.points}</td>
+              </tr>
+            ))}
+            {!standings.length && (
+              <tr><td colSpan={9}>Captura al menos un partido con marcador para ver la tabla.</td></tr>
+            )}
+          </tbody>
+        </table>
+        <button className="btn btn-warm btn-full section" disabled={publishing || !standings.length} onClick={publishStandings}>
+          <Upload size={16} /> {publishing ? 'Publicando...' : 'Publicar clasificación'}
+        </button>
+      </section>
+    </AdminShell>
   );
+}
+
+function computeStandings(matches: Match[]): Standing[] {
+  const table = new Map<string, Standing>();
+
+  function ensure(team: string) {
+    if (!table.has(team)) {
+      table.set(team, { team, played: 0, wins: 0, losses: 0, pointsFor: 0, pointsAgainst: 0, diff: 0, points: 0 });
+    }
+    return table.get(team)!;
+  }
+
+  matches.forEach((m) => {
+    if (m.score_a === null || m.score_b === null || m.score_a === undefined || m.score_b === undefined) return;
+
+    const a = ensure(m.team_a_name);
+    const b = ensure(m.team_b_name);
+
+    a.played += 1;
+    b.played += 1;
+    a.pointsFor += m.score_a;
+    a.pointsAgainst += m.score_b;
+    b.pointsFor += m.score_b;
+    b.pointsAgainst += m.score_a;
+
+    if (m.score_a > m.score_b) {
+      a.wins += 1;
+      a.points += 1;
+      b.losses += 1;
+    } else if (m.score_b > m.score_a) {
+      b.wins += 1;
+      b.points += 1;
+      a.losses += 1;
+    }
+  });
+
+  const rows = Array.from(table.values()).map((row) => ({ ...row, diff: row.pointsFor - row.pointsAgainst }));
+  rows.sort((x, y) => y.points - x.points || y.diff - x.diff || y.pointsFor - x.pointsFor);
+  return rows;
 }
