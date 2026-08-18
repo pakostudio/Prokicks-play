@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { Save, Trash2 } from 'lucide-react';
+import { Play, Save, Trash2 } from 'lucide-react';
 import { AdminShell } from '@/components/AdminShell';
 import { supabase } from '@/lib/supabase';
 import { captureError } from '@/lib/monitoring';
@@ -124,7 +124,16 @@ export default function AdminVideosPage() {
         <div className="card form">
           <div className="row"><h2 className="card-title">{editing ? 'Editar video' : 'Nuevo video'}</h2><button className="btn btn-soft" onClick={() => setForm(empty)}>Nuevo</button></div>
           <input className="input" placeholder="URL de YouTube" value={form.youtube_url} onChange={(event) => update('youtube_url', event.target.value)} />
-          {form.embed_url && <iframe className="video-preview" src={form.embed_url} title="Preview" allowFullScreen />}
+          {form.embed_url && (
+            <a className="video-thumb-link" href={form.youtube_url} target="_blank" rel="noopener noreferrer">
+              {form.thumbnail_url ? (
+                <img className="video-thumb" src={form.thumbnail_url} alt="Preview" />
+              ) : (
+                <div className="video-thumb video-thumb-empty" />
+              )}
+              <span className="video-play-btn"><Play size={22} fill="#fff" /></span>
+            </a>
+          )}
           <input className="input" placeholder="Título" value={form.title} onChange={(event) => update('title', event.target.value)} />
           <textarea className="input textarea" placeholder="Descripción" value={form.description} onChange={(event) => update('description', event.target.value)} />
           <select className="input" value={form.tournament_id} onChange={(event) => update('tournament_id', event.target.value)}>
