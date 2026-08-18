@@ -5,7 +5,7 @@ import { Play, Save, Trash2 } from 'lucide-react';
 import { AdminShell } from '@/components/AdminShell';
 import { supabase } from '@/lib/supabase';
 import { captureError } from '@/lib/monitoring';
-import { mediaCategories, youtubeEmbedUrl, youtubeThumbnailUrl, youtubeVideoId } from '@/lib/media';
+import { isYoutubeShorts, mediaCategories, youtubeEmbedUrl, youtubeThumbnailUrl, youtubeVideoId } from '@/lib/media';
 
 type Tournament = { id: string; title: string };
 type VideoItem = {
@@ -125,14 +125,18 @@ export default function AdminVideosPage() {
           <div className="row"><h2 className="card-title">{editing ? 'Editar video' : 'Nuevo video'}</h2><button className="btn btn-soft" onClick={() => setForm(empty)}>Nuevo</button></div>
           <input className="input" placeholder="URL de YouTube" value={form.youtube_url} onChange={(event) => update('youtube_url', event.target.value)} />
           {form.embed_url && (
-            <a className="video-thumb-link" href={form.youtube_url} target="_blank" rel="noopener noreferrer">
-              {form.thumbnail_url ? (
-                <img className="video-thumb" src={form.thumbnail_url} alt="Preview" />
-              ) : (
-                <div className="video-thumb video-thumb-empty" />
-              )}
-              <span className="video-play-btn"><Play size={22} fill="#fff" /></span>
-            </a>
+            isYoutubeShorts(form.youtube_url) ? (
+              <a className="video-thumb-link" href={form.youtube_url} target="_blank" rel="noopener noreferrer">
+                {form.thumbnail_url ? (
+                  <img className="video-thumb" src={form.thumbnail_url} alt="Preview" />
+                ) : (
+                  <div className="video-thumb video-thumb-empty" />
+                )}
+                <span className="video-play-btn"><Play size={22} fill="#fff" /></span>
+              </a>
+            ) : (
+              <iframe className="video-preview" src={form.embed_url} title="Preview" allowFullScreen />
+            )
           )}
           <input className="input" placeholder="Título" value={form.title} onChange={(event) => update('title', event.target.value)} />
           <textarea className="input textarea" placeholder="Descripción" value={form.description} onChange={(event) => update('description', event.target.value)} />
