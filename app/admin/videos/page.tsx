@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { Save, Trash2 } from 'lucide-react';
-import { AppShell } from '@/components/AppShell';
+import { AdminShell } from '@/components/AdminShell';
 import { supabase } from '@/lib/supabase';
 import { captureError } from '@/lib/monitoring';
 import { mediaCategories, youtubeEmbedUrl, youtubeThumbnailUrl, youtubeVideoId } from '@/lib/media';
@@ -118,7 +118,7 @@ export default function AdminVideosPage() {
   }
 
   return (
-    <AppShell active="perfil">
+    <AdminShell active="dashboard">
       <section className="hero section"><div className="kicker">Admin · Videos</div><h1 className="h1">Videos YouTube</h1><p className="p">Pega links públicos de YouTube. Sin API.</p></section>
       <section className="grid-2 section">
         <div className="card form">
@@ -148,6 +148,6 @@ export default function AdminVideosPage() {
           </div>
         </div>
       </section>
-    </AppShell>
+    </AdminShell>
   );
 }
