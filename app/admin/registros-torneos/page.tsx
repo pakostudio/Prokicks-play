@@ -77,21 +77,53 @@ async function exportExcel(rows: Record<string, unknown>[], filename: string) {
   XLSX.writeFile(workbook, filename);
 }
 
+// Columnas curadas y en español para el PDF: el Excel ya lleva el detalle
+// completo (24 campos), aquí solo mostramos lo esencial para que la tabla
+// quepa legible en una hoja horizontal, sin encabezados partidos letra por letra.
+const PDF_COLUMNS: { header: string; key: string }[] = [
+  { header: 'Torneo', key: 'torneo' },
+  { header: 'Modalidad', key: 'modalidad' },
+  { header: 'Participante 1', key: 'participante_1' },
+  { header: 'WhatsApp 1', key: 'whatsapp_1' },
+  { header: 'Participante 2', key: 'participante_2' },
+  { header: 'WhatsApp 2', key: 'whatsapp_2' },
+  { header: 'Email de contacto', key: 'email_contacto' },
+  { header: 'Costo', key: 'costo' },
+  { header: 'Pago', key: 'payment_status' },
+  { header: 'Estatus', key: 'registration_status' },
+];
+
 async function exportPDF(rows: Record<string, unknown>[], filename: string) {
   if (!rows.length) return;
   const { default: jsPDF } = await import('jspdf');
   const autoTable = (await import('jspdf-autotable')).default;
-  const headers = Object.keys(rows[0]);
-  const doc = new jsPDF({ orientation: 'landscape' });
-  doc.setFontSize(14);
-  doc.text('ProKicks Play · Registros a Torneos', 14, 14);
+
+  const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
+  const pageWidth = doc.internal.pageSize.getWidth();
+
+  doc.setFontSize(16);
+  doc.setTextColor(23, 59, 99);
+  doc.text('ProKicks Play · Registros a Torneos', 32, 32);
+  doc.setFontSize(9);
+  doc.setTextColor(100, 100, 100);
+  doc.text(`${rows.length} registro${rows.length === 1 ? '' : 's'} · generado ${new Date().toLocaleDateString('es-MX')}`, 32, 46);
+
   autoTable(doc, {
-    startY: 20,
-    head: [headers],
-    body: rows.map((row) => headers.map((h) => String(row[h] ?? ''))),
-    styles: { fontSize: 6.5, cellPadding: 2 },
-    headStyles: { fillColor: [23, 59, 99] },
+    startY: 60,
+    margin: { left: 24, right: 24 },
+    tableWidth: pageWidth - 48,
+    head: [PDF_COLUMNS.map((c) => c.header)],
+    body: rows.map((row) => PDF_COLUMNS.map((c) => String(row[c.key] ?? '-'))),
+    styles: { fontSize: 8.5, cellPadding: 5, overflow: 'linebreak', valign: 'middle' },
+    headStyles: { fillColor: [23, 59, 99], textColor: 255, fontStyle: 'bold', fontSize: 8.5 },
+    alternateRowStyles: { fillColor: [244, 246, 248] },
+    columnStyles: {
+      2: { cellWidth: 90 },
+      4: { cellWidth: 90 },
+      6: { cellWidth: 110 },
+    },
   });
+
   doc.save(filename);
 }
 
