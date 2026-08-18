@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { Download, Pencil, Save, Trash2, X } from 'lucide-react';
+import { FileSpreadsheet, FileText, Pencil, Save, Trash2, X } from 'lucide-react';
 import { AppShell } from '@/components/AppShell';
 import { supabase } from '@/lib/supabase';
 import { trackEvent } from '@/lib/analytics';
@@ -58,23 +58,6 @@ type EditForm = {
   team_name: string;
 };
 
-function toCSV(rows: Record<string, unknown>[]) {
-  if (!rows.length) return '';
-  const headers = Array.from(new Set(rows.flatMap((r) => Object.keys(r))));
-  const esc = (v: unknown) => `"${String(v ?? '').replace(/"/g, '""')}"`;
-  return [headers.join(','), ...rows.map((r) => headers.map((h) => esc(r[h])).join(','))].join('\n');
-}
-
-function download(filename: string, content: string) {
-  const blob = new Blob([content], { type: 'text/csv;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = filename;
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
 function label(value?: string | null) {
   if (!value) return '-';
   return value.replace(/_/g, ' ');
@@ -83,6 +66,33 @@ function label(value?: string | null) {
 function money(value?: number | null, currency = 'MXN') {
   if (!value) return 'Sin costo';
   return new Intl.NumberFormat('es-MX', { style: 'currency', currency }).format(Number(value));
+}
+
+async function exportExcel(rows: Record<string, unknown>[], filename: string) {
+  if (!rows.length) return;
+  const XLSX = await import('xlsx');
+  const worksheet = XLSX.utils.json_to_sheet(rows);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'Registros');
+  XLSX.writeFile(workbook, filename);
+}
+
+async function exportPDF(rows: Record<string, unknown>[], filename: string) {
+  if (!rows.length) return;
+  const { default: jsPDF } = await import('jspdf');
+  const autoTable = (await import('jspdf-autotable')).default;
+  const headers = Object.keys(rows[0]);
+  const doc = new jsPDF({ orientation: 'landscape' });
+  doc.setFontSize(14);
+  doc.text('ProKicks Play · Registros a Torneos', 14, 14);
+  autoTable(doc, {
+    startY: 20,
+    head: [headers],
+    body: rows.map((row) => headers.map((h) => String(row[h] ?? ''))),
+    styles: { fontSize: 6.5, cellPadding: 2 },
+    headStyles: { fillColor: [23, 59, 99] },
+  });
+  doc.save(filename);
 }
 
 export default function AdminRegistrosTorneosPage() {
@@ -218,9 +228,23 @@ export default function AdminRegistrosTorneosPage() {
           <strong>{loading ? 'Cargando...' : `${rows.length} registros`}</strong>
           <button className="btn btn-soft" onClick={load}>Actualizar</button>
         </div>
-        <button className="btn btn-primary btn-full" onClick={() => download('prokicks_registros_torneos.csv', toCSV(flat))}>
-          <Download size={16} /> Exportar registros CSV
-        </button>
+
+        <div className="grid-2 tight">
+          <button
+            className="btn btn-primary"
+            onClick={() => exportExcel(flat, 'prokicks_registros_torneos.xlsx')}
+            style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
+          >
+            <FileSpreadsheet size={18} color="#21A366" /> Exportar Excel
+          </button>
+          <button
+            className="btn btn-primary"
+            onClick={() => exportPDF(flat, 'prokicks_registros_torneos.pdf')}
+            style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
+          >
+            <FileText size={18} color="#E13B3B" /> Exportar PDF
+          </button>
+        </div>
         {msg && <p className="p">{msg}</p>}
 
         {edit && (
@@ -265,23 +289,23 @@ export default function AdminRegistrosTorneosPage() {
                 if (!r) return null;
 
                 return (
-                <tr key={row.id}>
-                  <td>{r.torneo}</td>
-                  <td>{r.modalidad}<br /><small>{r.rama}</small></td>
-                  <td>{r.participante_1}<br /><small>{r.whatsapp_1}</small></td>
-                  <td>{r.participante_2 || '-'}<br /><small>{r.whatsapp_2}</small></td>
-                  <td>{r.email_contacto}<br /><small>{r.whatsapp_contacto}</small></td>
-                  <td>{r.costo}<br /><small>{r.payment_status}</small></td>
-                  <td>Reglas: {r.reglamento_aceptado}<br />Imagen: {r.imagen_aceptada}<br /><small>Tutor: {r.requiere_tutor} {r.tutor ? `· ${r.tutor}` : ''}</small></td>
-                  <td>{r.registration_status}<br /><small>{formatDateTimeEs(r.fecha)}</small></td>
-                  <td>
-                    <div className="admin-actions">
-                      <button className="btn btn-soft" onClick={() => startEdit(row)}><Pencil size={14} /> Editar</button>
-                      <button className="btn btn-soft" onClick={() => remove(row.id)}><Trash2 size={14} /> Eliminar</button>
-                    </div>
-                  </td>
-                </tr>
-              )})}
+                  <tr key={row.id}>
+                    <td>{r.torneo}</td>
+                    <td>{r.modalidad}<br /><small>{r.rama}</small></td>
+                    <td>{r.participante_1}<br /><small>{r.whatsapp_1}</small></td>
+                    <td>{r.participante_2 || '-'}<br /><small>{r.whatsapp_2}</small></td>
+                    <td>{r.email_contacto}<br /><small>{r.whatsapp_contacto}</small></td>
+                    <td>{r.costo}<br /><small>{r.payment_status}</small></td>
+                    <td>Reglas: {r.reglamento_aceptado}<br />Imagen: {r.imagen_aceptada}<br /><small>Tutor: {r.requiere_tutor} {r.tutor ? `· ${r.tutor}` : ''}</small></td>
+                    <td>{r.registration_status}<br /><small>{formatDateTimeEs(r.fecha)}</small></td>
+                    <td>
+                      <div className="admin-actions">
+                        <button className="btn btn-soft" onClick={() => startEdit(row)}><Pencil size={14} /> Editar</button>
+                        <button className="btn btn-soft" onClick={() => remove(row.id)}><Trash2 size={14} /> Eliminar</button>
+                      </div>
+                    </td>
+                  </tr>
+                )})}
             </tbody>
           </table>
         </div>
