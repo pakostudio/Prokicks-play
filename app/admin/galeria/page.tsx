@@ -5,7 +5,7 @@ import { ImagePlus, Save, Trash2 } from 'lucide-react';
 import { AdminShell } from '@/components/AdminShell';
 import { supabase } from '@/lib/supabase';
 import { captureError } from '@/lib/monitoring';
-import { CLOUDINARY_CLOUD_NAME, CLOUDINARY_UPLOAD_PRESET, mediaCategories } from '@/lib/media';
+import { CLOUDINARY_CLOUD_NAME, CLOUDINARY_UPLOAD_PRESET, isVideoUrl, mediaCategories } from '@/lib/media';
 
 type Tournament = { id: string; title: string };
 type GalleryItem = {
@@ -36,6 +36,7 @@ export default function AdminGaleriaPage() {
   const [tournaments, setTournaments] = useState<Tournament[]>([]);
   const [form, setForm] = useState<GalleryItem>(empty);
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [msg, setMsg] = useState('');
   const editing = Boolean(form.id);
   const sorted = useMemo(() => items.slice().sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0)), [items]);
@@ -63,23 +64,33 @@ export default function AdminGaleriaPage() {
 
   async function upload(file?: File) {
     if (!file) return;
-    setMsg('Subiendo foto...');
+    const isVideo = file.type.startsWith('video/');
+    setUploading(true);
+    setMsg(isVideo ? 'Subiendo video...' : 'Subiendo foto...');
     const body = new FormData();
     body.append('file', file);
     body.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
-    const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, { method: 'POST', body });
-    const result = await response.json();
-    if (!response.ok) {
-      setMsg(result?.error?.message || 'No se pudo subir la foto.');
-      return;
+    const resourceType = isVideo ? 'video' : 'image';
+    try {
+      const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/${resourceType}/upload`, { method: 'POST', body });
+      const result = await response.json();
+      if (!response.ok) {
+        setMsg(result?.error?.message || (isVideo ? 'No se pudo subir el video.' : 'No se pudo subir la foto.'));
+        return;
+      }
+      setForm((prev) => ({ ...prev, image_url: result.secure_url, cloudinary_public_id: result.public_id }));
+      setMsg(isVideo ? 'Video subido. Completa metadata y guarda.' : 'Foto subida. Completa metadata y guarda.');
+    } catch (error) {
+      captureError(error, { area: 'admin-gallery-upload', isVideo });
+      setMsg('No se pudo subir el archivo. Intenta de nuevo.');
+    } finally {
+      setUploading(false);
     }
-    setForm((prev) => ({ ...prev, image_url: result.secure_url, cloudinary_public_id: result.public_id }));
-    setMsg('Foto subida. Completa metadata y guarda.');
   }
 
   async function save() {
     if (!form.title.trim() || !form.image_url.trim()) {
-      setMsg('Faltan título e imagen.');
+      setMsg('Faltan título e imagen o video.');
       return;
     }
     setMsg('Guardando...');
@@ -102,31 +113,40 @@ export default function AdminGaleriaPage() {
       setMsg(result.error.message);
       return;
     }
-    setMsg(editing ? 'Foto actualizada.' : 'Foto guardada.');
+    setMsg(editing ? 'Actualizado.' : 'Guardado.');
     setForm(empty);
     load();
   }
 
   async function remove(id?: string) {
-    if (!id || !window.confirm('¿Eliminar este registro de galería?')) return;
+    if (!id || !window.confirm('¿Eliminar este registrodegalería?')) return;
     const { error } = await supabase.from('prokicks_gallery_items').delete().eq('id', id);
     if (error) {
       setMsg(error.message);
       return;
     }
-    setMsg('Foto eliminada.');
+    setMsg('Eliminado.');
     setForm(empty);
     load();
   }
 
+  const previewIsVideo = isVideoUrl(form.image_url);
+
   return (
     <AdminShell active="dashboard">
-      <section className="hero section"><div className="kicker">Admin · Galería</div><h1 className="h1">Fotos ProKicks</h1><p className="p">Sube fotos con Cloudinary unsigned y publica solo lo aprobado.</p></section>
+      <section className="hero section"><div className="kicker">Admin · Galería</div><h1 className="h1">Fotos y videos ProKicks</h1><p className="p">Sube fotos o videos con Cloudinary unsigned y publica solo lo aprobado.</p></section>
       <section className="grid-2 section">
         <div className="card form">
-          <div className="row"><h2 className="card-title">{editing ? 'Editar foto' : 'Nueva foto'}</h2><button className="btn btn-soft" onClick={() => setForm(empty)}>Nueva</button></div>
-          <label className="btn btn-soft btn-full"><ImagePlus size={16} /> Subir foto<input type="file" accept="image/*" hidden onChange={(event) => upload(event.target.files?.[0])} /></label>
-          {form.image_url && <img className="media-preview" src={form.image_url} alt={form.title || 'Foto'} />}
+          <div className="row"><h2 className="card-title">{editing ? 'Editar' : 'Nuevo'}</h2><button className="btn btn-soft" onClick={() => setForm(empty)}>Nueva</button></div>
+          <label className="btn btn-soft btn-full">
+            <ImagePlus size={16} /> {uploading ? 'Subiendo...' : 'Subir foto o video'}
+            <input type="file" accept="image/*,video/*" hidden disabled={uploading} onChange={(event) => upload(event.target.files?.[0])} />
+          </label>
+          {form.image_url && (
+            previewIsVideo
+              ? <video className="media-preview" src={form.image_url} controls />
+              : <img className="media-preview" src={form.image_url} alt={form.title || 'Foto'} />
+          )}
           <input className="input" placeholder="Título" value={form.title} onChange={(event) => update('title', event.target.value)} />
           <textarea className="input textarea" placeholder="Descripción opcional" value={form.description} onChange={(event) => update('description', event.target.value)} />
           <select className="input" value={form.tournament_id} onChange={(event) => update('tournament_id', event.target.value)}>
@@ -138,15 +158,15 @@ export default function AdminGaleriaPage() {
           </select>
           <input className="input" type="number" placeholder="Orden" value={form.sort_order} onChange={(event) => update('sort_order', Number(event.target.value))} />
           <label className="check-row"><input type="checkbox" checked={form.published} onChange={(event) => update('published', event.target.checked)} /><span>Publicado</span></label>
-          <button className="btn btn-primary btn-full" onClick={save}><Save size={16} /> Guardar</button>
+          <button className="btn btn-primary btn-full" disabled={uploading} onClick={save}><Save size={16} /> Guardar</button>
           {editing && <button className="btn btn-soft btn-full" onClick={() => remove(form.id)}><Trash2 size={16} /> Eliminar</button>}
           {msg && <p className="p">{msg}</p>}
         </div>
         <div className="card form">
-          <div className="row"><h2 className="card-title">Fotos existentes</h2><button className="btn btn-soft" onClick={load}>{loading ? 'Cargando...' : 'Actualizar'}</button></div>
+          <div className="row"><h2 className="card-title">Elementos existentes</h2><button className="btn btn-soft" onClick={load}>{loading ? 'Cargando...' : 'Actualizar'}</button></div>
           <div className="list compact-list">
-            {sorted.map((item) => <button key={item.id} className="admin-row" onClick={() => setForm({ ...empty, ...item, tournament_id: item.tournament_id || '', description: item.description || '', cloudinary_public_id: item.cloudinary_public_id || '' })}><strong>{item.title}</strong><span>{item.category} · {item.published ? 'publicada' : 'oculta'}</span></button>)}
-            {!sorted.length && <p className="p">No hay fotos todavía.</p>}
+            {sorted.map((item) => <button key={item.id} className="admin-row" onClick={() => setForm({ ...empty, ...item, tournament_id: item.tournament_id || '', description: item.description || '', cloudinary_public_id: item.cloudinary_public_id || '' })}><strong>{item.title}</strong><span>{isVideoUrl(item.image_url) ? '🎬 video' : '🖼 foto'} · {item.category} · {item.published ? 'publicada' : 'oculta'}</span></button>)}
+            {!sorted.length && <p className="p">No hay elementos todavía.</p>}
           </div>
         </div>
       </section>
