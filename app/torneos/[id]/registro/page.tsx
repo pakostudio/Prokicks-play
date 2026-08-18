@@ -79,9 +79,7 @@ function isValidWhatsapp(value: string) {
 }
 
 function makeCheckInCode() {
-  const timePart = Date.now().toString(36).toUpperCase();
-  const randomPart = Math.random().toString(36).slice(2, 7).toUpperCase();
-  return `PKC-${timePart}-${randomPart}`;
+  return String(Math.floor(100000 + Math.random() * 900000));
 }
 
 function isValidEmail(value: string) {
@@ -111,6 +109,7 @@ export default function TournamentRegistration() {
   const [emailMessage, setEmailMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [lastCheckInCode, setLastCheckInCode] = useState('');
 
   useEffect(() => {
     trackEvent('Tournament Registration Started', {
@@ -313,6 +312,8 @@ export default function TournamentRegistration() {
       return;
     }
 
+    setLastCheckInCode(checkInCode);
+
     const emailResponse = await fetch('/api/tournament-registration-email', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -333,6 +334,7 @@ export default function TournamentRegistration() {
         participants: cleanParticipants,
         acceptedRules: form.acceptedRules,
         acceptedImageRelease: form.acceptedImageRelease,
+        checkInCode,
         guardian: hasMinor ? {
           name: form.guardianName.trim(),
           whatsapp: normalizeWhatsapp(form.guardianWhatsapp),
@@ -371,9 +373,16 @@ export default function TournamentRegistration() {
           <h1 className="h1">Registro recibido</h1>
           <p className="p">{message}</p>
           {emailMessage && <div className={emailMessage.includes('También') ? 'alert ok' : 'alert warn'}>{emailMessage}</div>}
+          {lastCheckInCode && (
+            <div className="checkin-code-box">
+              <p className="field-label">Tu código de check-in</p>
+              <p className="checkin-code-big">{lastCheckInCode}</p>
+              <p className="helper-text">Guárdalo o toma captura. También puedes hacer check-in solo con tu nombre y apellido el día del torneo.</p>
+            </div>
+          )}
           <div className="confirmation-actions">
             <Link className="btn btn-primary btn-full" href="/torneos">Volver a torneos</Link>
-            <button className="btn btn-secondary btn-full" onClick={() => { setSubmitted(false); setMessage(''); setEmailMessage(''); }}>Hacer otro registro</button>
+            <button className="btn btn-secondary btn-full" onClick={() => { setSubmitted(false); setMessage(''); setEmailMessage(''); setLastCheckInCode(''); }}>Hacer otro registro</button>
           </div>
         </section>
       </AppShell>
