@@ -776,3 +776,46 @@ button.media-card{
 @media(max-width:380px){
 .next-tournament-countdown .countdown-unit strong{font-size:16px}
 }
+
+
+/* Check-in code display (registration confirmation) */
+.checkin-code-box {
+  margin-top: 16px;
+  padding: 20px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #173B63 0%, #0f2846 100%);
+  text-align: center;
+  color: #fff;
+}
+
+.checkin-code-box .field-label {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 13px;
+  margin: 0 0 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.checkin-code-big {
+  font-size: 40px;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  margin: 0 0 8px;
+  color: #fff;
+}
+
+.checkin-code-box .helper-text {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 13px;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.checkin-candidate {
+  text-align: left;
+  margin-bottom: 8px;
+}
+
+.checkin-candidate:last-child {
+  margin-bottom: 0;
+}
