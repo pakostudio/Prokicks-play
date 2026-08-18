@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
+import { Play } from 'lucide-react';
 import { AppShell } from '@/components/AppShell';
 import { supabase } from '@/lib/supabase';
 import { captureError } from '@/lib/monitoring';
@@ -13,6 +14,7 @@ type VideoItem = {
   description?: string | null;
   embed_url: string;
   youtube_url: string;
+  thumbnail_url?: string | null;
   category?: string | null;
   published?: boolean | null;
 };
@@ -26,7 +28,7 @@ export default function VideosPage() {
     async function load() {
       const { data, error } = await supabase
         .from('prokicks_videos')
-        .select('id,title,description,embed_url,youtube_url,category,published')
+        .select('id,title,description,embed_url,youtube_url,thumbnail_url,category,published')
         .eq('published', true)
         .order('sort_order', { ascending: true })
         .order('created_at', { ascending: false });
@@ -43,19 +45,40 @@ export default function VideosPage() {
     load();
   }, []);
 
-  const filtered = useMemo(() => category === 'todas' ? items : items.filter((item) => item.category === category), [category, items]);
+  const filtered = useMemo(() => (
+    category === 'todas' ? items : items.filter((item) => item.category === category)
+  ), [category, items]);
 
   return (
     <AppShell active="play">
-      <section className="hero section"><div className="kicker">Videos</div><h1 className="h1">Videos ProKicks</h1><p className="p">Highlights, comunidad y contenido oficial desde YouTube.</p><Link className="btn btn-soft btn-full section" href={YOUTUBE_CHANNEL_URL} target="_blank">Ver canal oficial</Link></section>
-      <section className="media-filters section">
-        {['todas', ...mediaCategories].map((item) => <button key={item} className={`tag ${category === item ? 'tag-blue' : ''}`} onClick={() => setCategory(item)}>{item}</button>)}
+      <section className="hero section">
+        <div className="kicker">Videos</div>
+        <h1 className="h1">Videos ProKicks</h1>
+        <p className="p">Highlights, comunidad y contenido oficial desde YouTube.</p>
+        <Link className="btn btn-soft btn-full section" href={YOUTUBE_CHANNEL_URL} target="_blank">Ver canal oficial</Link>
       </section>
+
+      <section className="media-filters section">
+        {['todas', ...mediaCategories].map((item) => (
+          <button key={item} className={`tag ${category === item ? 'tag-blue' : ''}`} onClick={() => setCategory(item)}>
+            {item}
+          </button>
+        ))}
+      </section>
+
       {msg && <div className="alert warn section">{msg}</div>}
+
       <section className="grid section detail-bottom-safe">
         {filtered.map((item) => (
           <article className="card video-card" key={item.id}>
-            <iframe src={item.embed_url} title={item.title} allowFullScreen loading="lazy" />
+            <a className="video-thumb-link" href={item.youtube_url} target="_blank" rel="noopener noreferrer">
+              {item.thumbnail_url ? (
+                <img className="video-thumb" src={item.thumbnail_url} alt={item.title} />
+              ) : (
+                <div className="video-thumb video-thumb-empty" />
+              )}
+              <span className="video-play-btn"><Play size={22} fill="#fff" /></span>
+            </a>
             <span className="tag tag-blue">{item.category || 'video'}</span>
             <h2 className="card-title">{item.title}</h2>
             {item.description && <p className="p">{item.description}</p>}
