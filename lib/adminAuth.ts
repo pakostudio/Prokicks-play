@@ -14,27 +14,35 @@ async function sha256(value: string) {
   return toBase64Url(new Uint8Array(hash));
 }
 
+export function getAdminUsername() {
+  return process.env.PROKICKS_ADMIN_USER || '';
+}
+
 export function getAdminPasscode() {
   return process.env.PROKICKS_ADMIN_PASSCODE || '';
 }
 
-export async function createAdminSession(passcode: string) {
-  const secret = getAdminPasscode();
-  if (!secret || passcode !== secret) return null;
+export async function createAdminSession(username: string, passcode: string) {
+  const secretUser = getAdminUsername();
+  const secretPass = getAdminPasscode();
+  if (!secretPass) return null;
+  if (secretUser && username !== secretUser) return null;
+  if (passcode !== secretPass) return null;
 
   const expiresAt = Date.now() + SESSION_TTL_MS;
-  const signature = await sha256(`${expiresAt}.${secret}`);
+  const signature = await sha256(`${expiresAt}.${secretUser}.${secretPass}`);
   return `${expiresAt}.${signature}`;
 }
 
 export async function verifyAdminSession(session: string | undefined) {
-  const secret = getAdminPasscode();
-  if (!secret || !session) return false;
+  const secretUser = getAdminUsername();
+  const secretPass = getAdminPasscode();
+  if (!secretPass || !session) return false;
 
   const [expiresAt, signature] = session.split('.');
   const expiresAtNumber = Number(expiresAt);
   if (!expiresAtNumber || expiresAtNumber < Date.now() || !signature) return false;
 
-  const expected = await sha256(`${expiresAt}.${secret}`);
+  const expected = await sha256(`${expiresAt}.${secretUser}.${secretPass}`);
   return expected === signature;
 }
