@@ -3,11 +3,12 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { ChevronLeft, AtSign, MapPinCheck, ShieldCheck } from 'lucide-react';
+import { ChevronLeft, AtSign, MapPinCheck, ShieldCheck, Award } from 'lucide-react';
 import { AppShell } from '@/components/AppShell';
 import { supabase } from '@/lib/supabase';
 import { trackEvent } from '@/lib/analytics';
 import { captureError } from '@/lib/monitoring';
+import { downloadTournamentCertificate } from '@/lib/certificate';
 
 const INSTAGRAM_URL = 'https://www.instagram.com/prokicksoficial?igsh=MTQyZDgwcTUwcTdxOQ==';
 
@@ -19,6 +20,12 @@ type Registration = {
   contact_email: string | null;
   check_in_status: string | null;
   ig_followed: boolean | null;
+};
+
+type TournamentInfo = {
+  title: string | null;
+  venue: string | null;
+  starts_at: string | null;
 };
 
 export default function TournamentCheckIn() {
@@ -33,6 +40,8 @@ export default function TournamentCheckIn() {
   const [igConfirmed, setIgConfirmed] = useState(false);
   const [checkingIn, setCheckingIn] = useState(false);
   const [checkedIn, setCheckedIn] = useState(false);
+  const [tournament, setTournament] = useState<TournamentInfo | null>(null);
+  const [downloadingCert, setDownloadingCert] = useState(false);
 
   useEffect(() => {
     trackEvent('Tournament CheckIn Viewed', { tournament_id: tournamentId });
@@ -48,6 +57,20 @@ export default function TournamentCheckIn() {
     } catch {
       // ignore
     }
+
+    (async () => {
+      try {
+        const { data, error } = await supabase
+          .from('prokicks_tournaments')
+          .select('title, venue, starts_at')
+          .eq('id', tournamentId)
+          .maybeSingle();
+        if (error) throw error;
+        if (data) setTournament(data as TournamentInfo);
+      } catch (error) {
+        captureError(error, { area: 'tournament-checkin-tournament-info', tournamentId });
+      }
+    })();
   }, [tournamentId]);
 
   function pickCandidate(candidate: Registration) {
@@ -136,6 +159,27 @@ export default function TournamentCheckIn() {
       setLookupError('No pudimos registrar tu check-in. Intenta de nuevo.');
     } finally {
       setCheckingIn(false);
+    }
+  }
+
+  async function handleDownloadCertificate() {
+    if (!registration || downloadingCert) return;
+    setDownloadingCert(true);
+    try {
+      const dateLabel = tournament?.starts_at
+        ? new Date(tournament.starts_at).toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' })
+        : null;
+      await downloadTournamentCertificate({
+        participantName: registration.participant_1_name || 'Participante',
+        tournamentTitle: tournament?.title || 'Torneo ProKicks',
+        venue: tournament?.venue,
+        dateLabel,
+      });
+      trackEvent('Tournament Certificate Downloaded', { tournament_id: tournamentId, registration_id: registration.id });
+    } catch (error) {
+      captureError(error, { area: 'tournament-checkin-certificate', tournamentId });
+    } finally {
+      setDownloadingCert(false);
     }
   }
 
@@ -230,6 +274,9 @@ export default function TournamentCheckIn() {
       {registration && checkedIn && (
         <section className="card section confirmation-hero">
           <div className="alert ok">¡Check-in confirmado! Ya estás dentro del torneo.</div>
+          <button className="btn btn-warm btn-full section" disabled={downloadingCert} onClick={handleDownloadCertificate}>
+            <Award size={16} /> {downloadingCert ? 'Generando...' : 'Descargar mi reconocimiento'}
+          </button>
           <Link className="btn btn-soft btn-full section" href={`/torneos/${tournamentId}`}>Volver al torneo</Link>
         </section>
       )}
