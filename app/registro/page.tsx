@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
-import { ChevronLeft, Camera, Mail, Phone, ShieldCheck, UserRound } from 'lucide-react';
+import { ChevronLeft, Camera, Mail, Phone, ShieldCheck, UserRound, X } from 'lucide-react';
 import { avatarOptions } from '@/lib/demo';
 import { supabase } from '@/lib/supabase';
 
@@ -30,6 +30,10 @@ export default function RegisterPage() {
   const [photoDataUrl, setPhotoDataUrl] = useState<string | null>(null);
   const [photoError, setPhotoError] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [cameraOpen, setCameraOpen] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const streamRef = useRef<MediaStream | null>(null);
 
   useEffect(() => {
     const raw = window.localStorage.getItem('prokicks_profile');
@@ -54,6 +58,12 @@ export default function RegisterPage() {
     }
   }, []);
 
+  useEffect(() => {
+    return () => {
+      streamRef.current?.getTracks().forEach((track) => track.stop());
+    };
+  }, []);
+
   const selectedAvatar = avatarOptions.find((avatar) => avatar.id === form.avatarId) || avatarOptions[0];
   const previewImage = photoDataUrl || selectedAvatar.image;
   const previewLabel = photoDataUrl ? 'Tu foto' : selectedAvatar.name;
@@ -67,6 +77,50 @@ export default function RegisterPage() {
 
   function update(key: keyof typeof form, value: string | boolean) {
     setForm((prev) => ({ ...prev, [key]: value }));
+  }
+
+  async function openCamera() {
+    setPhotoError('');
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'user', width: { ideal: 720 }, height: { ideal: 720 } },
+        audio: false,
+      });
+      streamRef.current = stream;
+      setCameraOpen(true);
+      requestAnimationFrame(() => {
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+          videoRef.current.play().catch(() => null);
+        }
+      });
+    } catch {
+      setPhotoError('No pudimos abrir la cámara. Revisa los permisos o sube una foto desde tu galería.');
+    }
+  }
+
+  function stopCamera() {
+    streamRef.current?.getTracks().forEach((track) => track.stop());
+    streamRef.current = null;
+    setCameraOpen(false);
+  }
+
+  function capturePhoto() {
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    if (!video || !canvas) return;
+    const size = Math.min(video.videoWidth, video.videoHeight) || 480;
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    const offsetX = (video.videoWidth - size) / 2;
+    const offsetY = (video.videoHeight - size) / 2;
+    ctx.translate(size, 0);
+    ctx.scale(-1, 1);
+    ctx.drawImage(video, offsetX, offsetY, size, size, 0, 0, size, size);
+    setPhotoDataUrl(canvas.toDataURL('image/jpeg', 0.9));
+    stopCamera();
   }
 
   function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -181,32 +235,56 @@ export default function RegisterPage() {
           <h2 className="card-title">Foto de perfil</h2>
           <p className="p" style={{ marginTop: 0 }}>Usa una foto real tuya o elige un avatar.</p>
 
-          {photoDataUrl ? (
+          {cameraOpen ? (
+            <div className="card" style={{ textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+              <video
+                ref={videoRef}
+                autoPlay
+                playsInline
+                muted
+                style={{ width: '100%', maxWidth: 360, borderRadius: 16, transform: 'scaleX(-1)' }}
+              />
+              <canvas ref={canvasRef} style={{ display: 'none' }} />
+              <div className="grid-2 tight" style={{ marginTop: 12 }}>
+                <button type="button" className="btn btn-primary" onClick={capturePhoto}><Camera size={18} /> Capturar foto</button>
+                <button type="button" className="btn btn-soft" onClick={stopCamera}><X size={18} /> Cancelar</button>
+              </div>
+            </div>
+          ) : photoDataUrl ? (
             <div className="card" style={{ textAlign: 'center' }}>
               <img className="avatar-preview" src={photoDataUrl} alt="Tu foto" />
               <button type="button" className="btn btn-soft btn-full" onClick={clearPhoto}>Quitar foto y usar avatar</button>
             </div>
           ) : (
-            <button
-              type="button"
-              className="btn btn-soft btn-full"
-              onClick={() => fileInputRef.current?.click()}
-              style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
-            >
-              <Camera size={18} /> Tomar o subir foto real
-            </button>
+            <>
+              <button
+                type="button"
+                className="btn btn-soft btn-full"
+                onClick={openCamera}
+                style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
+              >
+                <Camera size={18} /> Tomar foto con la cámara
+              </button>
+              <button
+                type="button"
+                className="btn btn-soft btn-full"
+                onClick={() => fileInputRef.current?.click()}
+                style={{ marginTop: 8 }}
+              >
+                Subir foto desde archivos
+              </button>
+            </>
           )}
           <input
             ref={fileInputRef}
             type="file"
             accept="image/*"
-            capture="user"
             onChange={handlePhotoChange}
             style={{ display: 'none' }}
           />
           {photoError && <div className="alert error">{photoError}</div>}
 
-          {!photoDataUrl && (
+          {!photoDataUrl && !cameraOpen && (
             <>
               <h2 className="card-title" style={{ marginTop: 16 }}>O elige tu avatar</h2>
               <div className="avatar-grid">
