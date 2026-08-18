@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { MapPin, Plus, Save } from 'lucide-react';
-import { AppShell } from '@/components/AppShell';
+import { AdminShell } from '@/components/AdminShell';
 import { supabase } from '@/lib/supabase';
 import { captureError } from '@/lib/monitoring';
 
@@ -100,7 +100,7 @@ export default function AdminSpots() {
   }
 
   return (
-    <AppShell active="perfil">
+    <AdminShell active="spots">
       <section className="hero section">
         <div className="kicker">Admin · Spots</div>
         <h1 className="h1">Spots / QR</h1>
@@ -152,6 +152,6 @@ export default function AdminSpots() {
           <Link className="btn btn-soft btn-full" href="/spots">Ver spots públicos</Link>
         </div>
       </section>
-    </AppShell>
+    </AdminShell>
   );
 }
