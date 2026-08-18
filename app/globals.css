@@ -4,11 +4,12 @@
 .admin-shell .top-actions{display:flex;align-items:center;gap:8px}
 .admin-shell .top-actions .tag{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
 .admin-logout{border:0;cursor:pointer;font:inherit}
-.admin-nav{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 18px;padding:0}
-.admin-nav-item{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:9px 14px;color:#5e6675;font-size:13px;font-weight:800;white-space:nowrap;text-decoration:none}
-.admin-nav-item.active{background:#eef4ff;color:var(--navy);border-color:#cfe0f7}
+.admin-nav{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 20px;padding:0}
+.admin-nav-item{display:flex;align-items:center;justify-content:center;gap:7px;background:linear-gradient(135deg,#f4f7fd,#eaf0fb);border:1px solid #dbe6fa;border-radius:14px;padding:12px 10px;color:#3d4a63;font-size:13px;font-weight:800;white-space:nowrap;text-decoration:none;text-align:center;transition:background .15s ease,color .15s ease,border-color .15s ease,transform .1s ease}
+.admin-nav-item:hover{transform:translateY(-1px);border-color:#b9cdf2}
+.admin-nav-item.active{background:linear-gradient(135deg,var(--navy),#2a5aa8);color:#fff;border-color:var(--navy);box-shadow:0 4px 12px rgba(23,59,99,.25)}
 @media(max-width:480px){
-.admin-nav{overflow-x:auto;flex-wrap:nowrap;padding-bottom:4px}
+.admin-nav{grid-template-columns:repeat(2,1fr)}
 }
 /* Sprint 2.1 - Foto sin recorte, jerarquia de color e info social real */
 .entry-hero-image{object-fit:contain !important;background:#F4F6F8 !important;max-height:16dvh !important}
