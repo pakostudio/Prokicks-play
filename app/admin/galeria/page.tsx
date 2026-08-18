@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { ImagePlus, Save, Trash2 } from 'lucide-react';
-import { AppShell } from '@/components/AppShell';
+import { AdminShell } from '@/components/AdminShell';
 import { supabase } from '@/lib/supabase';
 import { captureError } from '@/lib/monitoring';
 import { CLOUDINARY_CLOUD_NAME, CLOUDINARY_UPLOAD_PRESET, mediaCategories } from '@/lib/media';
@@ -120,7 +120,7 @@ export default function AdminGaleriaPage() {
   }
 
   return (
-    <AppShell active="perfil">
+    <AdminShell active="dashboard">
       <section className="hero section"><div className="kicker">Admin · Galería</div><h1 className="h1">Fotos ProKicks</h1><p className="p">Sube fotos con Cloudinary unsigned y publica solo lo aprobado.</p></section>
       <section className="grid-2 section">
         <div className="card form">
@@ -150,6 +150,6 @@ export default function AdminGaleriaPage() {
           </div>
         </div>
       </section>
-    </AppShell>
+    </AdminShell>
   );
 }
