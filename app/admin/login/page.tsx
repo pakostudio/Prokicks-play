@@ -2,11 +2,12 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Lock } from 'lucide-react';
+import { Lock, User } from 'lucide-react';
 import { AppShell } from '@/components/AppShell';
 
 export default function AdminLoginPage() {
   const router = useRouter();
+  const [username, setUsername] = useState('');
   const [passcode, setPasscode] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
@@ -24,7 +25,7 @@ export default function AdminLoginPage() {
     const response = await fetch('/api/admin-login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ passcode }),
+      body: JSON.stringify({ username, passcode }),
     });
 
     if (!response.ok) {
@@ -42,7 +43,7 @@ export default function AdminLoginPage() {
       <section className="hero section">
         <div className="kicker">Admin seguro</div>
         <h1 className="h1">Acceso operativo</h1>
-        <p className="p">Ingresa el código interno para abrir el panel ProKicks.</p>
+        <p className="p">Ingresa tu usuario y código interno para abrir el panel ProKicks.</p>
       </section>
 
       <section className="card form section">
@@ -53,6 +54,20 @@ export default function AdminLoginPage() {
             <p>Sesión privada por 12 horas.</p>
           </div>
         </div>
+        <label className="field-label"><User size={16} /> Usuario</label>
+        <input
+          className="input"
+          type="text"
+          autoCapitalize="none"
+          autoCorrect="off"
+          placeholder="Usuario admin"
+          value={username}
+          onChange={(event) => setUsername(event.target.value)}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') submit();
+          }}
+        />
+        <label className="field-label"><Lock size={16} /> Contraseña</label>
         <input
           className="input"
           type="password"
@@ -63,7 +78,7 @@ export default function AdminLoginPage() {
             if (event.key === 'Enter') submit();
           }}
         />
-        <button className="btn btn-primary btn-full" disabled={loading || !passcode.trim()} onClick={submit}>
+        <button className="btn btn-primary btn-full" disabled={loading || !passcode.trim() || !username.trim()} onClick={submit}>
           {loading ? 'Validando...' : 'Entrar'}
         </button>
         {message && <p className="p">{message}</p>}
