@@ -45,3 +45,13 @@ export function youtubeThumbnailUrl(value: string) {
   const id = youtubeVideoId(value);
   return id ? `https://img.youtube.com/vi/${id}/hqdefault.jpg` : '';
 }
+
+export function isYoutubeShorts(value?: string | null) {
+  if (!value) return false;
+  try {
+    const url = new URL(value.trim());
+    return url.pathname.startsWith('/shorts/');
+  } catch {
+    return false;
+  }
+}
