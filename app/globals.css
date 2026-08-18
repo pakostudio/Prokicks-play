@@ -874,3 +874,39 @@ button.media-card{
 .media-share-btn:hover {
   background: #173B63;
 }
+
+
+/* Fix 1.9 - Video thumbnail link (evita error de embed en Shorts) */
+.video-thumb-link{
+  position:relative;
+  display:block;
+  border-radius:18px;
+  overflow:hidden;
+  background:#0F172A;
+}
+.video-thumb{
+  width:100%;
+  aspect-ratio:16/9;
+  object-fit:cover;
+  background:#0F172A;
+  display:block;
+}
+.video-thumb-empty{
+  aspect-ratio:16/9;
+  background:#0F172A;
+}
+.video-play-btn{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  width:56px;
+  height:56px;
+  border-radius:50%;
+  background:rgba(23,59,99,.85);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#fff;
+  box-shadow:0 8px 20px rgba(0,0,0,.3);
+}
