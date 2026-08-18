@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { CalendarDays, Copy, Download, Plus, QrCode, Save, Trash2 } from 'lucide-react';
-import { AppShell } from '@/components/AppShell';
+import { AdminShell } from '@/components/AdminShell';
 import { supabase } from '@/lib/supabase';
 import { captureError } from '@/lib/monitoring';
 import { qrImageUrl, tournamentUrl } from '@/lib/media';
@@ -130,7 +130,7 @@ export default function AdminTorneosPage(){
     setMsg('Link copiado.');
   }
 
-  return <AppShell active="perfil">
+  return <AdminShell active="torneos">
     <section className="hero section"><div className="kicker">Admin · Torneos</div><h1 className="h1">Crear y editar torneos</h1><p className="p">Configura sede, cupo, costo y base futura para pagos.</p></section>
 
     <section className="grid-2 section">
@@ -208,5 +208,5 @@ export default function AdminTorneosPage(){
         <button className="btn btn-primary btn-full" onClick={()=>copyTournamentLink(qrTournament.id)}>Copiar link</button>
       </div>
     </div>}
-  </AppShell>
+  </AdminShell>
 }
