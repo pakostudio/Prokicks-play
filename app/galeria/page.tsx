@@ -4,7 +4,9 @@ import { useEffect, useMemo, useState } from 'react';
 import { AppShell } from '@/components/AppShell';
 import { supabase } from '@/lib/supabase';
 import { captureError } from '@/lib/monitoring';
+import { trackEvent } from '@/lib/analytics';
 import { mediaCategories } from '@/lib/media';
+import { Share2 } from 'lucide-react';
 
 type GalleryItem = {
   id: string;
@@ -16,6 +18,27 @@ type GalleryItem = {
   published?: boolean | null;
   created_at?: string | null;
 };
+
+function shareCaption(item: GalleryItem) {
+  return `${item.title} · ProKicks Play ⚽\nMira más en prokicksplay.com`;
+}
+
+async function shareItem(item: GalleryItem) {
+  const caption = shareCaption(item);
+  trackEvent('Gallery Item Shared', { item_id: item.id, category: item.category });
+
+  if (typeof navigator !== 'undefined' && navigator.share) {
+    try {
+      await navigator.share({ title: item.title, text: caption, url: item.image_url });
+      return;
+    } catch {
+      // usuario canceló o el navegador no pudo compartir; usamos el fallback
+    }
+  }
+
+  const waUrl = `https://wa.me/?text=${encodeURIComponent(`${caption}\n${item.image_url}`)}`;
+  window.open(waUrl, '_blank', 'noopener,noreferrer');
+}
 
 export default function GaleriaPage() {
   const [items, setItems] = useState<GalleryItem[]>([]);
@@ -68,12 +91,24 @@ export default function GaleriaPage() {
 
       <section className="media-grid section detail-bottom-safe">
         {filtered.map((item) => (
-          <button key={item.id} className="media-card" onClick={() => setSelected(item)}>
-            <img src={item.image_url} alt={item.title} />
-            <span className="tag tag-blue">{item.category || 'galería'}</span>
-            <h2 className="card-title">{item.title}</h2>
-            {item.description && <p className="p">{item.description}</p>}
-          </button>
+          <div key={item.id} className="media-card-wrap">
+            <button className="media-card" onClick={() => setSelected(item)}>
+              <img src={item.image_url} alt={item.title} />
+              <span className="tag tag-blue">{item.category || 'galería'}</span>
+              <h2 className="card-title">{item.title}</h2>
+              {item.description && <p className="p">{item.description}</p>}
+            </button>
+            <button
+              className="media-share-btn"
+              aria-label="Compartir"
+              onClick={(event) => {
+                event.stopPropagation();
+                shareItem(item);
+              }}
+            >
+              <Share2 size={16} />
+            </button>
+          </div>
         ))}
         {!filtered.length && <div className="card"><h2 className="card-title">Sin fotos publicadas</h2><p className="p">Las fotos aparecerán aquí cuando Admin las publique.</p></div>}
       </section>
@@ -85,6 +120,9 @@ export default function GaleriaPage() {
             <img src={selected.image_url} alt={selected.title} />
             <h2>{selected.title}</h2>
             {selected.description && <p>{selected.description}</p>}
+            <button className="btn btn-warm btn-full section" onClick={() => shareItem(selected)}>
+              <Share2 size={16} /> Compartir
+            </button>
           </div>
         </div>
       )}
