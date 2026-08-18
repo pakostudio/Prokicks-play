@@ -1,8 +1,8 @@
 import Link from 'next/link';
-import { AppShell } from '@/components/AppShell';
+import { AdminShell } from '@/components/AdminShell';
 
 export default function AdminPage(){
-  return <AppShell active="perfil">
+  return <AdminShell active="dashboard">
     <section className="hero section">
       <div className="kicker">Admin</div>
       <h1 className="h1">Control ProKicks</h1>
@@ -27,5 +27,5 @@ export default function AdminPage(){
       <Link className="btn btn-soft" href="/admin/export">Exportar base CSV / Excel / PDF</Link>
       <Link className="btn btn-warm" href="/torneos">Ver torneos públicos</Link>
     </section>
-  </AppShell>
+  </AdminShell>
 }
