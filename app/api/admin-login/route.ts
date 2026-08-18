@@ -4,15 +4,15 @@ import { captureError } from '@/lib/monitoring';
 
 export async function POST(request: Request) {
   try {
-    const { passcode } = await request.json();
+    const { username, passcode } = await request.json();
 
     if (!getAdminPasscode()) {
       return NextResponse.json({ ok: false, error: 'Admin passcode not configured' }, { status: 503 });
     }
 
-    const session = await createAdminSession(String(passcode || ''));
+    const session = await createAdminSession(String(username || ''), String(passcode || ''));
     if (!session) {
-      return NextResponse.json({ ok: false, error: 'Invalid passcode' }, { status: 401 });
+      return NextResponse.json({ ok: false, error: 'Invalid credentials' }, { status: 401 });
     }
 
     const response = NextResponse.json({ ok: true });
