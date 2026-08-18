@@ -28,6 +28,54 @@ function SoccerBallLoader() {
   );
 }
 
+function getTimeLeft(target: string) {
+  const total = new Date(target).getTime() - Date.now();
+  if (total <= 0) return { total: 0, days: 0, hours: 0, minutes: 0, seconds: 0 };
+  const days = Math.floor(total / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((total / (1000 * 60 * 60)) % 24);
+  const minutes = Math.floor((total / (1000 * 60)) % 60);
+  const seconds = Math.floor((total / 1000) % 60);
+  return { total, days, hours, minutes, seconds };
+}
+
+function pad(value: number) {
+  return String(value).padStart(2, '0');
+}
+
+function TournamentCountdown({ target }: { target: string }) {
+  const [timeLeft, setTimeLeft] = useState(() => getTimeLeft(target));
+
+  useEffect(() => {
+    const id = setInterval(() => setTimeLeft(getTimeLeft(target)), 1000);
+    return () => clearInterval(id);
+  }, [target]);
+
+  if (timeLeft.total <= 0) {
+    return <span className="next-tournament-live">¡El torneo ya comenzó!</span>;
+  }
+
+  return (
+    <div className="next-tournament-countdown">
+      <div className="countdown-unit">
+        <strong>{timeLeft.days}</strong>
+        <span>días</span>
+      </div>
+      <div className="countdown-unit">
+        <strong>{pad(timeLeft.hours)}</strong>
+        <span>hrs</span>
+      </div>
+      <div className="countdown-unit">
+        <strong>{pad(timeLeft.minutes)}</strong>
+        <span>min</span>
+      </div>
+      <div className="countdown-unit">
+        <strong>{pad(timeLeft.seconds)}</strong>
+        <span>seg</span>
+      </div>
+    </div>
+  );
+}
+
 export default function EntryPage() {
   const [profile, setProfile] = useState<LocalProfile | null>(null);
   const [loading, setLoading] = useState(true);
@@ -95,13 +143,14 @@ export default function EntryPage() {
       )}
 
       {nextTournament && (
-        <Link href={`/torneos/${nextTournament.id}/registro`} className="entry-stat-card">
-          <CalendarDays size={16} />
-          <div>
-            <strong>{formatDateShortEs(nextTournament.starts_at as string)}</strong>
-            <span>Próximo torneo: {nextTournament.title}</span>
-            <span className="entry-stat-cta"><ArrowRight size={12} /> Inscríbete aquí</span>
+        <Link href={`/torneos/${nextTournament.id}/registro`} className="next-tournament-card">
+          <div className="next-tournament-top">
+            <span className="next-tournament-badge"><CalendarDays size={14} /> Próximo torneo</span>
+            <span className="next-tournament-date">{formatDateShortEs(nextTournament.starts_at as string)}</span>
           </div>
+          <h3 className="next-tournament-title">{nextTournament.title}</h3>
+          {nextTournament.starts_at && <TournamentCountdown target={nextTournament.starts_at} />}
+          <span className="next-tournament-cta"><ArrowRight size={14} /> Inscríbete aquí</span>
         </Link>
       )}
 
