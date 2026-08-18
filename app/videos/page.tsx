@@ -6,7 +6,7 @@ import { Play } from 'lucide-react';
 import { AppShell } from '@/components/AppShell';
 import { supabase } from '@/lib/supabase';
 import { captureError } from '@/lib/monitoring';
-import { mediaCategories, YOUTUBE_CHANNEL_URL } from '@/lib/media';
+import { isYoutubeShorts, mediaCategories, YOUTUBE_CHANNEL_URL } from '@/lib/media';
 
 type VideoItem = {
   id: string;
@@ -71,14 +71,18 @@ export default function VideosPage() {
       <section className="grid section detail-bottom-safe">
         {filtered.map((item) => (
           <article className="card video-card" key={item.id}>
-            <a className="video-thumb-link" href={item.youtube_url} target="_blank" rel="noopener noreferrer">
-              {item.thumbnail_url ? (
-                <img className="video-thumb" src={item.thumbnail_url} alt={item.title} />
-              ) : (
-                <div className="video-thumb video-thumb-empty" />
-              )}
-              <span className="video-play-btn"><Play size={22} fill="#fff" /></span>
-            </a>
+            {isYoutubeShorts(item.youtube_url) ? (
+              <a className="video-thumb-link" href={item.youtube_url} target="_blank" rel="noopener noreferrer">
+                {item.thumbnail_url ? (
+                  <img className="video-thumb" src={item.thumbnail_url} alt={item.title} />
+                ) : (
+                  <div className="video-thumb video-thumb-empty" />
+                )}
+                <span className="video-play-btn"><Play size={22} fill="#fff" /></span>
+              </a>
+            ) : (
+              <iframe src={item.embed_url} title={item.title} allowFullScreen loading="lazy" />
+            )}
             <span className="tag tag-blue">{item.category || 'video'}</span>
             <h2 className="card-title">{item.title}</h2>
             {item.description && <p className="p">{item.description}</p>}
