@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { CheckCircle2, Search } from 'lucide-react';
-import { AppShell } from '@/components/AppShell';
+import { AdminShell } from '@/components/AdminShell';
 import { supabase } from '@/lib/supabase';
 import { captureError } from '@/lib/monitoring';
 import { formatDateTimeEs } from '@/lib/format';
@@ -82,7 +82,7 @@ function CheckInTool() {
   }, []);
 
   return (
-    <AppShell active="perfil">
+    <AdminShell active="dashboard">
       <section className="hero section">
         <div className="kicker">Admin · Check-in</div>
         <h1 className="h1">Validar QR de torneo</h1>
@@ -104,10 +104,10 @@ function CheckInTool() {
           <button className="btn btn-warm btn-full" disabled={loading || item.check_in_status === 'checked_in'} onClick={markCheckedIn}><CheckCircle2 size={16} /> Confirmar asistencia</button>
         </section>
       )}
-    </AppShell>
+    </AdminShell>
   );
 }
 
 export default function AdminCheckInPage() {
-  return <Suspense fallback={<AppShell active="perfil"><section className="card section"><p className="p">Cargando check-in...</p></section></AppShell>}><CheckInTool /></Suspense>;
+  return <Suspense fallback={<AdminShell active="dashboard"><section className="card section"><p className="p">Cargando check-in...</p></section></AdminShell>}><CheckInTool /></Suspense>;
 }
