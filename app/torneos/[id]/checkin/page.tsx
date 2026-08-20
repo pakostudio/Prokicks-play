@@ -205,6 +205,9 @@ export default function TournamentCheckIn() {
               <p>Escribe tu nombre igual que en tu inscripción al torneo.</p>
             </div>
           </div>
+          <Link className="btn btn-soft btn-full" href={`/torneos/${tournamentId}/registro`} onClick={() => trackEvent('Tournament CheckIn Register Now Clicked', { tournament_id: tournamentId, from: 'top' })}>
+            <UserPlus size={16} /> ¿Aún no te registras? Inscríbete aquí
+          </Link>
           <input
             className="input"
             placeholder="Nombre y apellido"
@@ -217,7 +220,7 @@ export default function TournamentCheckIn() {
             {loading ? 'Buscando...' : 'Buscar mi registro'}
           </button>
           {notFound && (
-            <Link className="btn btn-soft btn-full" href={`/torneos/${tournamentId}/registro`} onClick={() => trackEvent('Tournament CheckIn Register Now Clicked', { tournament_id: tournamentId })}>
+            <Link className="btn btn-soft btn-full" href={`/torneos/${tournamentId}/registro`} onClick={() => trackEvent('Tournament CheckIn Register Now Clicked', { tournament_id: tournamentId, from: 'not_found' })}>
               <UserPlus size={16} /> Inscríbete aquí
             </Link>
           )}
