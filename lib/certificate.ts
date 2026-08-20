@@ -44,7 +44,7 @@ export async function downloadTournamentCertificate(opts: {
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(34);
   doc.setTextColor(23, 59, 99);
-  wrapCentered(doc, opts.participantName || 'Participante', 448, width - 100, centerX, 40);
+  wrapCentered(doc, opts.participantName || 'Participante', 472, width - 100, centerX, 40);
 
   const safeName = (opts.participantName || 'participante').trim().toLowerCase().replace(/[^a-z0-9]+/g, '-');
   doc.save(opts.fileName || `reconocimiento-${safeName}.pdf`);
