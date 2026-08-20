@@ -101,7 +101,7 @@ export default function TournamentCheckIn() {
         .from('prokicks_tournament_registrations')
         .select('id, tournament_id, participant_1_name, participant_2_name, contact_email, check_in_status, ig_followed')
         .eq('tournament_id', tournamentId)
-        .or(`participant1_name.ilike.%${cleanName}%,participant2_name.ilike.%${cleanName}%`)
+        .or(`participant_1_name.ilike.%${cleanName}%,participant_2_name.ilike.%${cleanName}%`)
         .limit(10);
 
       if (error) throw error;
