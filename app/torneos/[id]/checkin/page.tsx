@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { ChevronLeft, AtSign, MapPinCheck, ShieldCheck, Award } from 'lucide-react';
+import { ChevronLeft, AtSign, MapPinCheck, ShieldCheck, Award, UserPlus } from 'lucide-react';
 import { AppShell } from '@/components/AppShell';
 import { supabase } from '@/lib/supabase';
 import { trackEvent } from '@/lib/analytics';
@@ -35,6 +35,7 @@ export default function TournamentCheckIn() {
   const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
   const [lookupError, setLookupError] = useState('');
+  const [notFound, setNotFound] = useState(false);
   const [candidates, setCandidates] = useState<Registration[]>([]);
   const [registration, setRegistration] = useState<Registration | null>(null);
   const [igConfirmed, setIgConfirmed] = useState(false);
@@ -82,6 +83,7 @@ export default function TournamentCheckIn() {
 
   async function findRegistration() {
     setLookupError('');
+    setNotFound(false);
     setRegistration(null);
     setCandidates([]);
     setCheckedIn(false);
@@ -106,7 +108,8 @@ export default function TournamentCheckIn() {
 
       const results = (data || []) as Registration[];
       if (results.length === 0) {
-        setLookupError('No encontramos tu registro. Revisa que escribiste tu nombre igual que en tu inscripción.');
+        setLookupError('No encontramos tu registro. Revisa que escribiste tu nombre igual que en tu inscripción, o inscríbete aquí mismo.');
+        setNotFound(true);
         return;
       }
       if (results.length === 1) {
@@ -213,6 +216,11 @@ export default function TournamentCheckIn() {
           <button className="btn btn-primary btn-full" disabled={loading} onClick={findRegistration}>
             {loading ? 'Buscando...' : 'Buscar mi registro'}
           </button>
+          {notFound && (
+            <Link className="btn btn-soft btn-full" href={`/torneos/${tournamentId}/registro`} onClick={() => trackEvent('Tournament CheckIn Register Now Clicked', { tournament_id: tournamentId })}>
+              <UserPlus size={16} /> Inscríbete aquí
+            </Link>
+          )}
         </section>
       )}
 
