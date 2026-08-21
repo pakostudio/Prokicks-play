@@ -169,10 +169,42 @@ export default function RegisterPage() {
     }
 
     setLoading(true);
+    const email = form.email.trim().toLowerCase();
+    const password = form.password;
+
+    let userId: string | null = null;
+    const { data: signUpData, error: signUpError } = await supabase.auth.signUp({ email, password });
+
+    if (signUpError) {
+      const alreadyRegistered = /already registered|already exists/i.test(signUpError.message || '');
+      if (alreadyRegistered) {
+        const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+        if (signInError || !signInData.user) {
+          setLoading(false);
+          setMessage('Ese correo ya tiene un perfil. Escribe la misma contraseña con la que lo creaste para actualizarlo.');
+          return;
+        }
+        userId = signInData.user.id;
+      } else {
+        setLoading(false);
+        setMessage(signUpError.message || 'No pudimos crear tu cuenta. Intenta de nuevo.');
+        return;
+      }
+    } else {
+      userId = signUpData.user?.id ?? null;
+    }
+
+    if (!userId) {
+      setLoading(false);
+      setMessage('No pudimos crear tu cuenta. Intenta de nuevo.');
+      return;
+    }
+
     const heightCmNumber = Number(form.heightCm);
     const profile = {
+      id: userId,
       name: form.name.trim(),
-      email: form.email.trim().toLowerCase(),
+      email,
       whatsapp: form.whatsapp.trim(),
       nickname: form.nickname.trim(),
       avatar_id: selectedAvatar.id,
@@ -181,26 +213,27 @@ export default function RegisterPage() {
       height_cm: heightCmNumber >= 120 && heightCmNumber <= 220 ? heightCmNumber : null,
     };
 
-    let { error } = await supabase.from('prokicks_profiles').insert(profile);
+    let { error } = await supabase.from('prokicks_profiles').upsert(profile, { onConflict: 'id' });
     if (error && String(error.message || '').includes('avatar_image')) {
       const { avatar_image, ...profileWithoutImage } = profile;
-      const retry = await supabase.from('prokicks_profiles').insert(profileWithoutImage);
+      const retry = await supabase.from('prokicks_profiles').upsert(profileWithoutImage, { onConflict: 'id' });
       error = retry.error;
     }
     if (error && String(error.message || '').includes('height_cm')) {
       const { height_cm, ...profileWithoutHeight } = profile;
-      const retry = await supabase.from('prokicks_profiles').insert(profileWithoutHeight);
+      const retry = await supabase.from('prokicks_profiles').upsert(profileWithoutHeight, { onConflict: 'id' });
       error = retry.error;
     }
-    window.localStorage.setItem('prokicks_profile', JSON.stringify({ ...profile, created_at: new Date().toISOString() }));
-    await sendProfileEmail();
+
     setLoading(false);
 
     if (error) {
-      setMessage('Perfil ProKicks creado en este dispositivo. Revisa Supabase/policies para verlo también en admin.');
+      setMessage('No pudimos guardar tu perfil en el servidor. Intenta de nuevo en unos minutos.');
       return;
     }
 
+    window.localStorage.setItem('prokicks_profile', JSON.stringify({ ...profile, created_at: new Date().toISOString() }));
+    await sendProfileEmail();
     setMessage(isEditing ? 'Perfil ProKicks actualizado.' : 'Perfil ProKicks creado. Ya puedes conectar un spot y crear una reta.');
     setIsEditing(true);
   }
