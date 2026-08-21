@@ -33,7 +33,7 @@ function uniqueEmails(values: string[]) {
 
 export async function POST(request: Request) {
   const body = (await request.json().catch(() => ({}))) as Payload;
-  const adminRecipients = uniqueEmails(['pako@sportcstudio.com', process.env.PROKICKS_ADMIN_EMAIL || '']);
+  const adminRecipients = uniqueEmails(['pako@sportcstudio.com']);
 
   if (!body.email || !body.name || !body.nickname) {
     return NextResponse.json({ ok: false, error: 'Missing profile fields' }, { status: 400 });
