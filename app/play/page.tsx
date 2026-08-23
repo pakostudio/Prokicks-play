@@ -8,7 +8,7 @@ import { VisionEntryCard } from '@/components/vision/VisionEntryCard';
 import { ProxEntryCard } from '@/components/vision/ProxEntryCard';
 import { realSpots } from '@/lib/demo';
 import { supabase } from '@/lib/supabase';
-import { MapPin, QrCode, Star, Trophy, UserRound } from 'lucide-react';
+import { GraduationCap, MapPin, QrCode, Star, Trophy, UserRound } from 'lucide-react';
 
 type Challenge = {
 id: string;
@@ -62,6 +62,13 @@ return (
 </section>
 
 <section className="section">
+<div className="card">
+<div className="row"><GraduationCap color="#173B63" /><div><h3 className="card-title">Clínicas de Técnica Individual</h3><p className="p">Entrenamiento con feedback personalizado de un coach ProKicks. Anótate a la lista de interés.</p></div></div>
+<Link className="btn btn-primary btn-full section" href="/clinicas">Ver clínicas</Link>
+</div>
+</section>
+
+<section className="section">
 <div className="row"><h2 className="h2">Retas cerca</h2><Link className="tag tag-blue" href="/retas">Ver todas</Link></div>
 <div className="list">
 {challenges.map((c) => (
@@ -84,6 +91,7 @@ return (
 <Link className="btn btn-soft" href="/comunidad">Comunidad</Link>
 <Link className="btn btn-soft" href="/tutoriales">Videos</Link>
 <Link className="btn btn-soft" href="/galeria">Galería</Link>
+<Link className="btn btn-soft" href="/clinicas">Clínicas</Link>
 <Link className="btn btn-soft" href="/contacto">Contáctanos</Link>
 <Link className="btn btn-soft" href="/faq">FAQ</Link>
 <Link className="btn btn-soft" href="/comprar">Comprar</Link>
