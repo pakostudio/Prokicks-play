@@ -1,48 +1,54 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react';
 import { useParams } from 'next/navigation';
-import { ChevronLeft, AtSign, MapPinCheck, ShieldCheck, Award, UserPlus } from 'lucide-react';
+import { ChevronLeft, AtSign, Eraser, FileSignature, MapPinCheck, QrCode, ShieldCheck } from 'lucide-react';
 import { AppShell } from '@/components/AppShell';
 import { supabase } from '@/lib/supabase';
 import { trackEvent } from '@/lib/analytics';
 import { captureError } from '@/lib/monitoring';
-import { downloadTournamentCertificate } from '@/lib/certificate';
 
 const INSTAGRAM_URL = 'https://www.instagram.com/prokicksoficial?igsh=MTQyZDgwcTUwcTdxOQ==';
+const RULES_VERSION = 'prokicks-rules-v1';
 
 type Registration = {
   id: string;
   tournament_id: string;
   participant_1_name: string | null;
-  participant_2_name: string | null;
   contact_email: string | null;
   check_in_status: string | null;
+  check_in_code: string | null;
   ig_followed: boolean | null;
+  signed_at: string | null;
 };
 
-type TournamentInfo = {
-  title: string | null;
-  venue: string | null;
-  starts_at: string | null;
-};
+function getPoint(canvas: HTMLCanvasElement, event: ReactPointerEvent<HTMLCanvasElement>) {
+  const rect = canvas.getBoundingClientRect();
+  return {
+    x: ((event.clientX - rect.left) / rect.width) * canvas.width,
+    y: ((event.clientY - rect.top) / rect.height) * canvas.height,
+  };
+}
 
 export default function TournamentCheckIn() {
   const params = useParams<{ id: string }>();
   const tournamentId = params.id;
 
-  const [name, setName] = useState('');
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const drawingRef = useRef(false);
+  const hasStrokeRef = useRef(false);
+
+  const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [lookupError, setLookupError] = useState('');
-  const [notFound, setNotFound] = useState(false);
-  const [candidates, setCandidates] = useState<Registration[]>([]);
   const [registration, setRegistration] = useState<Registration | null>(null);
   const [igConfirmed, setIgConfirmed] = useState(false);
+  const [hasSignature, setHasSignature] = useState(false);
+  const [signed, setSigned] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [checkingIn, setCheckingIn] = useState(false);
   const [checkedIn, setCheckedIn] = useState(false);
-  const [tournament, setTournament] = useState<TournamentInfo | null>(null);
-  const [downloadingCert, setDownloadingCert] = useState(false);
 
   useEffect(() => {
     trackEvent('Tournament CheckIn Viewed', { tournament_id: tournamentId });
@@ -51,47 +57,42 @@ export default function TournamentCheckIn() {
       const raw = window.localStorage.getItem('prokicks_last_tournament_registration');
       if (raw) {
         const saved = JSON.parse(raw);
-        if (saved?.tournament_id === tournamentId && saved?.participant_1_name) {
-          setName(saved.participant_1_name);
+        if (saved?.tournament_id === tournamentId && saved?.contact_email) {
+          setEmail(saved.contact_email);
         }
       }
     } catch {
       // ignore
     }
-
-    (async () => {
-      try {
-        const { data, error } = await supabase
-          .from('prokicks_tournaments')
-          .select('title, venue, starts_at')
-          .eq('id', tournamentId)
-          .maybeSingle();
-        if (error) throw error;
-        if (data) setTournament(data as TournamentInfo);
-      } catch (error) {
-        captureError(error, { area: 'tournament-checkin-tournament-info', tournamentId });
-      }
-    })();
   }, [tournamentId]);
 
-  function pickCandidate(candidate: Registration) {
-    setCandidates([]);
-    setRegistration(candidate);
-    setIgConfirmed(Boolean(candidate.ig_followed));
-    setCheckedIn(candidate.check_in_status === 'checked_in');
+  function setupCanvas() {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.lineWidth = 3;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.strokeStyle = '#111827';
   }
+
+  useEffect(() => {
+    if (registration && !signed) setupCanvas();
+  }, [registration, signed]);
 
   async function findRegistration() {
     setLookupError('');
-    setNotFound(false);
     setRegistration(null);
-    setCandidates([]);
     setCheckedIn(false);
     setIgConfirmed(false);
+    setSigned(false);
+    setHasSignature(false);
 
-    const cleanName = name.trim();
-    if (!cleanName) {
-      setLookupError('Escribe tu nombre y apellido.');
+    if (!email.trim()) {
+      setLookupError('Escribe el correo con el que te registraste.');
       return;
     }
 
@@ -99,25 +100,25 @@ export default function TournamentCheckIn() {
     try {
       const { data, error } = await supabase
         .from('prokicks_tournament_registrations')
-        .select('id, tournament_id, participant_1_name, participant_2_name, contact_email, check_in_status, ig_followed')
+        .select('id, tournament_id, participant_1_name, contact_email, check_in_status, check_in_code, ig_followed, signed_at')
         .eq('tournament_id', tournamentId)
-        .or(`participant_1_name.ilike.%${cleanName}%,participant_2_name.ilike.%${cleanName}%`)
-        .limit(10);
+        .eq('contact_email', email.trim().toLowerCase())
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
 
       if (error) throw error;
 
-      const results = (data || []) as Registration[];
-      if (results.length === 0) {
-        setLookupError('No encontramos tu registro. Revisa que escribiste tu nombre igual que en tu inscripción, o inscríbete aquí mismo.');
-        setNotFound(true);
+      if (!data) {
+        setLookupError('No encontramos un registro con ese correo para este torneo.');
         return;
       }
-      if (results.length === 1) {
-        pickCandidate(results[0]);
-        return;
-      }
-      setCandidates(results);
-      setLookupError(`Encontramos ${results.length} coincidencias. Toca la tuya (si hace falta, escribe tu nombre con los dos apellidos).`);
+
+      const reg = data as Registration;
+      setRegistration(reg);
+      setIgConfirmed(Boolean(reg.ig_followed));
+      setSigned(Boolean(reg.signed_at));
+      setCheckedIn(reg.check_in_status === 'checked_in');
     } catch (error) {
       captureError(error, { area: 'tournament-checkin-lookup', tournamentId });
       setLookupError('No pudimos buscar tu registro. Intenta de nuevo.');
@@ -137,6 +138,73 @@ export default function TournamentCheckIn() {
       trackEvent('Tournament CheckIn IG Confirmed', { tournament_id: tournamentId, registration_id: registration.id });
     } catch (error) {
       captureError(error, { area: 'tournament-checkin-ig', tournamentId });
+    }
+  }
+
+  function startDraw(event: ReactPointerEvent<HTMLCanvasElement>) {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    drawingRef.current = true;
+    hasStrokeRef.current = true;
+    const { x, y } = getPoint(canvas, event);
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+  }
+
+  function draw(event: ReactPointerEvent<HTMLCanvasElement>) {
+    if (!drawingRef.current) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    const { x, y } = getPoint(canvas, event);
+    ctx.lineTo(x, y);
+    ctx.stroke();
+    setHasSignature(true);
+  }
+
+  function endDraw() {
+    drawingRef.current = false;
+  }
+
+  function clearSignature() {
+    setupCanvas();
+    setHasSignature(false);
+    hasStrokeRef.current = false;
+  }
+
+  async function saveSignature() {
+    if (!registration || !canvasRef.current || saving) return;
+    if (!hasStrokeRef.current) {
+      setLookupError('Dibuja tu firma antes de continuar.');
+      return;
+    }
+
+    setSaving(true);
+    setLookupError('');
+    try {
+      const dataUrl = canvasRef.current.toDataURL('image/png');
+      const { error } = await supabase
+        .from('prokicks_tournament_registrations')
+        .update({
+          signature_data_url: dataUrl,
+          signed_at: new Date().toISOString(),
+          accepted_rules: true,
+          rules_version: RULES_VERSION,
+        })
+        .eq('id', registration.id);
+
+      if (error) throw error;
+
+      setSigned(true);
+      trackEvent('Tournament Signature Saved', { tournament_id: tournamentId, registration_id: registration.id });
+    } catch (error) {
+      captureError(error, { area: 'tournament-signature-save', tournamentId });
+      setLookupError('No pudimos guardar tu firma. Intenta de nuevo.');
+    } finally {
+      setSaving(false);
     }
   }
 
@@ -165,26 +233,8 @@ export default function TournamentCheckIn() {
     }
   }
 
-  async function handleDownloadCertificate() {
-    if (!registration || downloadingCert) return;
-    setDownloadingCert(true);
-    try {
-      const dateLabel = tournament?.starts_at
-        ? new Date(tournament.starts_at).toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' })
-        : null;
-      await downloadTournamentCertificate({
-        participantName: registration.participant_1_name || 'Participante',
-        tournamentTitle: tournament?.title || 'Torneo ProKicks',
-        venue: tournament?.venue,
-        dateLabel,
-      });
-      trackEvent('Tournament Certificate Downloaded', { tournament_id: tournamentId, registration_id: registration.id });
-    } catch (error) {
-      captureError(error, { area: 'tournament-checkin-certificate', tournamentId });
-    } finally {
-      setDownloadingCert(false);
-    }
-  }
+  const qrValue = registration?.check_in_code || registration?.id || '';
+  const qrUrl = qrValue ? `https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=8&data=${encodeURIComponent(qrValue)}` : '';
 
   return (
     <AppShell active="torneos">
@@ -193,7 +243,7 @@ export default function TournamentCheckIn() {
       <section className="hero section">
         <div className="kicker">Check-in del torneo</div>
         <h1 className="h1">Confirma tu llegada</h1>
-        <p className="p">Hazlo desde tu propio celular, sin filas ni tablet del admin. Solo necesitas tu nombre y apellido.</p>
+        <p className="p">Hazlo desde tu propio celular, sin filas ni tablet del admin. Solo necesitas el correo con el que te registraste.</p>
       </section>
 
       {!registration && (
@@ -202,39 +252,21 @@ export default function TournamentCheckIn() {
             <ShieldCheck />
             <div>
               <h2>Busca tu registro</h2>
-              <p>Escribe tu nombre igual que en tu inscripción al torneo.</p>
+              <p>Usa el mismo correo de tu inscripción al torneo.</p>
             </div>
           </div>
-          <Link className="btn btn-soft btn-full" href={`/torneos/${tournamentId}/registro`} onClick={() => trackEvent('Tournament CheckIn Register Now Clicked', { tournament_id: tournamentId, from: 'top' })}>
-            <UserPlus size={16} /> ¿Aún no te registras? Inscríbete aquí
-          </Link>
           <input
             className="input"
-            placeholder="Nombre y apellido"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && findRegistration()}
+            type="email"
+            placeholder="Correo de contacto"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
           {lookupError && <div className="alert warn">{lookupError}</div>}
           <button className="btn btn-primary btn-full" disabled={loading} onClick={findRegistration}>
             {loading ? 'Buscando...' : 'Buscar mi registro'}
           </button>
-          {notFound && (
-            <Link className="btn btn-soft btn-full" href={`/torneos/${tournamentId}/registro`} onClick={() => trackEvent('Tournament CheckIn Register Now Clicked', { tournament_id: tournamentId, from: 'not_found' })}>
-              <UserPlus size={16} /> Inscríbete aquí
-            </Link>
-          )}
-        </section>
-      )}
-
-      {candidates.length > 0 && (
-        <section className="card form section">
-          {candidates.map((candidate) => (
-            <button key={candidate.id} className="btn btn-soft btn-full checkin-candidate" onClick={() => pickCandidate(candidate)}>
-              <strong>{candidate.participant_1_name || 'Participante'}</strong>
-              {candidate.participant_2_name ? ` · ${candidate.participant_2_name}` : ''}
-            </button>
-          ))}
+          <Link href={`/torneos/${tournamentId}/registro`} className="inline-link">¿Aún no te registras? Inscríbete aquí</Link>
         </section>
       )}
 
@@ -245,7 +277,7 @@ export default function TournamentCheckIn() {
               <MapPinCheck color="#173B63" />
               <div>
                 <h3 className="card-title">Hola, {registration.participant_1_name || 'jugador'}</h3>
-                <p className="p">Sigue estos 2 pasos para completar tu check-in.</p>
+                <p className="p">Sigue estos 3 pasos para completar tu check-in.</p>
               </div>
             </div>
           </section>
@@ -267,17 +299,52 @@ export default function TournamentCheckIn() {
             </label>
           </section>
 
+          <section className="card form section">
+            <div className="card-head">
+              <FileSignature />
+              <div>
+                <h2>Paso 2 · Firma tu responsiva</h2>
+                <p>Declaro que leí y acepto el Reglamento Oficial de Competencia ProKicks y autorizo mi participación bajo estos términos.</p>
+              </div>
+            </div>
+
+            {!signed ? (
+              <>
+                <canvas
+                  ref={canvasRef}
+                  width={600}
+                  height={220}
+                  className="signature-canvas"
+                  onPointerDown={startDraw}
+                  onPointerMove={draw}
+                  onPointerUp={endDraw}
+                  onPointerLeave={endDraw}
+                />
+                <div className="grid-2">
+                  <button className="btn btn-soft" onClick={clearSignature}><Eraser size={16} /> Borrar</button>
+                  <button className="btn btn-primary" disabled={saving || !hasSignature} onClick={saveSignature}>
+                    {saving ? 'Guardando...' : 'Guardar firma'}
+                  </button>
+                </div>
+                <Link href="/legal/reglamento" className="inline-link">Ver reglamento completo</Link>
+              </>
+            ) : (
+              <div className="alert ok">Firma guardada. Ya puedes continuar al paso 3.</div>
+            )}
+          </section>
+
           <section className="card section">
             <div className="card-head">
               <ShieldCheck />
               <div>
-                <h2>Paso 2 · Confirma tu llegada</h2>
-                <p>Este botón registra tu check-in en el torneo, hoy mismo.</p>
+                <h2>Paso 3 · Confirma tu llegada</h2>
+                <p>{signed ? 'Este botón registra tu check-in en el torneo, hoy mismo.' : 'Primero firma tu responsiva en el paso 2.'}</p>
               </div>
             </div>
-            <button className="btn btn-primary btn-full" disabled={checkingIn} onClick={doCheckIn}>
+            <button className="btn btn-primary btn-full" disabled={checkingIn || !signed} onClick={doCheckIn}>
               {checkingIn ? 'Registrando...' : 'Ya estoy aquí'}
             </button>
+            {lookupError && <div className="alert warn">{lookupError}</div>}
           </section>
         </>
       )}
@@ -285,9 +352,16 @@ export default function TournamentCheckIn() {
       {registration && checkedIn && (
         <section className="card section confirmation-hero">
           <div className="alert ok">¡Check-in confirmado! Ya estás dentro del torneo.</div>
-          <button className="btn btn-warm btn-full section" disabled={downloadingCert} onClick={handleDownloadCertificate}>
-            <Award size={16} /> {downloadingCert ? 'Generando...' : 'Descargar mi reconocimiento'}
-          </button>
+          {qrUrl && (
+            <div className="card" style={{ textAlign: 'center', marginTop: 16 }}>
+              <div className="row" style={{ justifyContent: 'center', gap: 8, marginBottom: 8 }}>
+                <QrCode size={18} color="#173B63" />
+                <strong>Tu código de acceso</strong>
+              </div>
+              <img src={qrUrl} alt="Código QR de check-in" style={{ width: 180, height: 180, margin: '0 auto', borderRadius: 12 }} />
+              <p className="p" style={{ marginTop: 8 }}>Muéstralo en la mesa de staff si te lo piden. También queda ligado a tu registro.</p>
+            </div>
+          )}
           <Link className="btn btn-soft btn-full section" href={`/torneos/${tournamentId}`}>Volver al torneo</Link>
         </section>
       )}
