@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Award, FileText, LogOut, MapPin, ShieldCheck, Trophy, Users, Zap } from 'lucide-react';
+import { FileText, GraduationCap, LogOut, MapPin, ShieldCheck, Trophy, Users, Zap } from 'lucide-react';
 
 export function AdminShell({ children, active = 'dashboard' }: { children: React.ReactNode; active?: string }) {
   const router = useRouter();
@@ -17,8 +17,8 @@ export function AdminShell({ children, active = 'dashboard' }: { children: React
     { key: 'dashboard', href: '/admin', label: 'Panel', icon: ShieldCheck },
     { key: 'torneos', href: '/admin/torneos', label: 'Torneos', icon: Trophy },
     { key: 'registros', href: '/admin/registros-torneos', label: 'Registros', icon: FileText },
-    { key: 'resultados', href: '/admin/resultados', label: 'Resultados', icon: Award },
     { key: 'usuarios', href: '/admin/usuarios', label: 'Usuarios', icon: Users },
+    { key: 'clinicas', href: '/admin/clinicas', label: 'Clínicas', icon: GraduationCap },
     { key: 'retas', href: '/admin/retas', label: 'Retas', icon: Zap },
     { key: 'spots', href: '/admin/spots', label: 'Spots', icon: MapPin }
   ];
