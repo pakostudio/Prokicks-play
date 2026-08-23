@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { FileSpreadsheet, FileText, Pencil, Plus, Save, Trash2, X } from 'lucide-react';
+import { FileSpreadsheet, FileText, Pencil, Plus, Save, Search, Trash2, X } from 'lucide-react';
 import { AdminShell } from '@/components/AdminShell';
 import { supabase } from '@/lib/supabase';
 import { trackEvent } from '@/lib/analytics';
@@ -124,7 +124,9 @@ function normalizeWhatsapp(value: string) {
 }
 
 function makeCheckInCode() {
-  return String(Math.floor(100000 + Math.random() * 900000));
+  const timePart = Date.now().toString(36).toUpperCase();
+  const randomPart = Math.random().toString(36).slice(2, 7).toUpperCase();
+  return `PKC-${timePart}-${randomPart}`;
 }
 
 async function exportExcel(rows: Record<string, unknown>[], filename: string) {
@@ -196,8 +198,35 @@ export default function AdminRegistrosTorneosPage() {
   const [newReg, setNewReg] = useState<NewRegForm>(emptyNewReg);
   const [savingNew, setSavingNew] = useState(false);
   const [newMsg, setNewMsg] = useState('');
+  const [search, setSearch] = useState('');
 
-  const flat = useMemo(() => rows.map((r) => ({
+  const filteredRows = useMemo(() => {
+    const term = search.trim().toLowerCase();
+    if (!term) return rows;
+    return rows.filter((row) => {
+      const haystack = [
+        row.tournament?.title,
+        row.participant_1_name,
+        row.participant_name,
+        row.player_name,
+        row.participant_2_name,
+        row.team_name,
+        row.nickname,
+        row.contact_email,
+        row.participant_email,
+        row.player_email,
+        row.contact_whatsapp,
+        row.participant_1_whatsapp,
+        row.participant_2_whatsapp,
+      ]
+        .filter(Boolean)
+        .join(' ')
+        .toLowerCase();
+      return haystack.includes(term);
+    });
+  }, [rows, search]);
+
+  const flat = useMemo(() => filteredRows.map((r) => ({
     id: r.id,
     torneo: r.tournament?.title || r.tournament_id || 'Demo',
     modalidad: label(r.modality),
@@ -223,7 +252,7 @@ export default function AdminRegistrosTorneosPage() {
     email_tutor: r.guardian_email || '',
     autorizacion_tutor: r.guardian_accepted ? 'Sí' : 'No',
     fecha: r.created_at,
-  })), [rows]);
+  })), [filteredRows]);
 
   async function load() {
     setLoading(true);
@@ -422,13 +451,25 @@ export default function AdminRegistrosTorneosPage() {
 
       <section className="card form section">
         <div className="row">
-          <strong>{loading ? 'Cargando...' : `${rows.length} registros`}</strong>
+          <strong>{loading ? 'Cargando...' : `${filteredRows.length} de ${rows.length} registros`}</strong>
           <div className="admin-actions">
             <button className="btn btn-soft" onClick={load}>Actualizar</button>
             <button className="btn btn-primary" onClick={() => setShowNew((prev) => !prev)}>
               {showNew ? <X size={16} /> : <Plus size={16} />} {showNew ? 'Cancelar' : 'Nuevo registro'}
             </button>
           </div>
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <Search size={16} style={{ flexShrink: 0, opacity: 0.6 }} />
+          <input
+            className="input"
+            style={{ flex: 1 }}
+            placeholder="Buscar por nombre, nickname, email o WhatsApp..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+          {search && <button className="btn btn-soft" onClick={() => setSearch('')}><X size={14} /></button>}
         </div>
 
         {showNew && (
@@ -563,7 +604,7 @@ export default function AdminRegistrosTorneosPage() {
               </tr>
             </thead>
             <tbody>
-              {rows.map((row) => {
+              {filteredRows.map((row) => {
                 const r = flat.find((item) => item.id === row.id);
                 if (!r) return null;
 
@@ -588,7 +629,7 @@ export default function AdminRegistrosTorneosPage() {
             </tbody>
           </table>
         </div>
-        {!rows.length && <p className="p">Aún no hay registros.</p>}
+        {!filteredRows.length && <p className="p">{search ? 'Sin coincidencias para tu búsqueda.' : 'Aún no hay registros.'}</p>}
       </section>
     </AdminShell>
   );
