@@ -131,7 +131,7 @@ export default function TournamentDetail() {
         </div>
         <div className="grid section">
           <Link className="btn btn-soft btn-full" href={`/torneos/${item.id}/resultados`}>Ver resultados</Link>
-          <Link className="btn btn-soft btn-full" href={`/torneos/${item.id}/galeria`}>Ver galería</Link>
+          <Link className="btn btn-soft btn-full" href="/galeria">Ver galería</Link>
           <Link className="btn btn-soft btn-full" href={`/torneos/${item.id}/videos`}>Ver videos</Link>
         </div>
       </section>
