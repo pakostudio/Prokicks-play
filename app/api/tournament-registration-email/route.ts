@@ -85,7 +85,7 @@ export async function POST(request: Request) {
     const apiKey = process.env.RESEND_API_KEY;
     const from = process.env.PROKICKS_EMAIL_FROM || 'ProKicks Play <pako@sportcstudio.com>';
     const primaryAdminEmail = 'pako@sportcstudio.com';
-    const adminRecipients = uniqueEmails([primaryAdminEmail, process.env.PROKICKS_ADMIN_EMAIL || '']);
+    const adminRecipients = uniqueEmails([primaryAdminEmail]);
 
     if (!apiKey) {
       await enqueueEmailAttempt({
