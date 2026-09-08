@@ -347,6 +347,19 @@ export default function TournamentRegistration() {
       return { ok: false };
     });
 
+        fetch('/api/tournament-registration-whatsapp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                          whatsapp: normalizeWhatsapp(form.participant1.whatsapp),
+                          name: form.participant1.name.trim(),
+                          tournamentTitle: tournament?.title || indoorTournament.title,
+                          checkInCode,
+                }),
+        }).catch((error) => {
+                captureError(error, { area: 'tournament-registration-whatsapp', tournamentId });
+        });
+
     setSubmitted(true);
     trackEvent('Tournament Registration Completed', {
       tournament_id: tournamentId,
