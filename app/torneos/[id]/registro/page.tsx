@@ -78,8 +78,17 @@ function isValidWhatsapp(value: string) {
   return digits.length === 10 || (digits.length === 12 && digits.startsWith('52')) || (digits.length === 13 && digits.startsWith('521'));
 }
 
-function makeCheckInCode() {
-  return String(Math.floor(100000 + Math.random() * 900000));
+async function makeCheckInCode() {
+    try {
+          const { count, error } = await supabase
+            .from('prokicks_tournament_registrations')
+            .select('id', { count: 'exact', head: true });
+          if (error) throw error;
+          return String((count || 0) + 10);
+    } catch (error) {
+          captureError(error, { area: 'make-checkin-code' });
+          return String(Math.floor(10 + Math.random() * 90));
+    }
 }
 
 function isValidEmail(value: string) {
@@ -226,7 +235,7 @@ export default function TournamentRegistration() {
 
     const paymentStatus = isPaidTournament ? 'pago_pendiente' : 'sin_costo';
     const registrationStatus = isPaidTournament ? 'pendiente' : 'confirmado';
-    const checkInCode = makeCheckInCode();
+    const checkInCode = await makeCheckInCode();
 
     const payload = {
       tournament_id: isUuid(tournamentId) ? tournamentId : null,
