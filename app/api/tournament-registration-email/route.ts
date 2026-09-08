@@ -120,7 +120,7 @@ export async function POST(request: Request) {
     const participants = Array.isArray(body.participants) ? body.participants : [];
     const guardian = body.guardian && typeof body.guardian === 'object' ? body.guardian as Record<string, unknown> : null;
     const paymentText = hasCost ? 'Pago pendiente' : 'Registro sin costo';
-    const prokicksContact = primaryAdminEmail;
+    const prokicksContact = primaryAdminEmail;    const checkInCode = safe(body.checkInCode || '');
 
     const userSubject = 'Registro recibido — ProKicks Play';
 
@@ -138,7 +138,7 @@ export async function POST(request: Request) {
         <strong>WhatsApp:</strong> ${whatsapp}</p>
         <p><strong>${paymentText}</strong>${hasCost ? ` · ${costText}` : ''}</p>
         <p>Te recomendamos revisar el reglamento antes del torneo.</p>
-        <p><strong>Contacto ProKicks:</strong> ${safe(prokicksContact)}</p>
+        ${checkInCode ? `<div style="margin:18px 0;padding:16px 18px;border-radius:12px;background:linear-gradient(135deg,#173B63,#0f2846);text-align:center;color:#fff"><p style="margin:0 0 6px;font-size:12px;text-transform:uppercase;letter-spacing:.06em;opacity:.8">Tu código de check-in</p><p style="margin:0;font-size:32px;font-weight:800;letter-spacing:.1em">${checkInCode}</p><p style="margin:8px 0 0;font-size:12px;opacity:.7">Dilo o muéstralo en la mesa de registro el día del torneo.</p></div>` : ''}        <p><strong>Contacto ProKicks:</strong> ${safe(prokicksContact)}</p>
         <p style="margin-top:24px;color:#64748B">ProKicks Play</p>
       </div>
     `;
