@@ -154,21 +154,26 @@ export default function EntryPage() {
         </Link>
       )}
 
-      <section className="grid section entry-actions">
-        {profile ? (
-          <Link className="btn btn-primary btn-full" href="/play"><UserRound size={18} /> Continuar como {profile.nickname || 'jugador ProKicks'}</Link>
-        ) : (
-          <Link className="btn btn-primary btn-full" href="/registro"><UserRound size={18} /> Crear perfil</Link>
-        )}
-        <Link className="btn btn-outline btn-full" href={profile ? '/registro' : '/login'}>{profile ? 'Crear otro perfil' : 'Ya tengo cuenta'}</Link>
-
-        <div className="entry-divider"><span /> o <span /></div>
-
-        <Link className="link-muted" href="/play?mode=guest"><Users size={16} /> Entrar como invitado</Link>
-        {profile && <button className="link-muted" onClick={clearProfile}>Cambiar usuario / borrar perfil local</button>}
-      </section>
-
-      <Link className="admin-link" href="/admin/login"><ShieldCheck size={14} /> Acceso admin</Link>
+<section className="entry-tabs">
+          <Link className="entry-tab entry-tab-primary" href={profile ? '/play' : '/registro'}>
+                      <UserRound size={20} />
+                      <span>{profile ? 'Continuar' : 'Crear perfil'}</span>
+          </Link>
+          <Link className="entry-tab" href={profile ? '/registro' : '/login'}>
+                      <ShieldCheck size={20} />
+                      <span>{profile ? 'Crear otro' : 'Ya tengo cuenta'}</span>
+          </Link>
+          <Link className="entry-tab" href="/play?mode=guest">
+                      <Users size={20} />
+                      <span>Invitado</span>
+          </Link>
+          <Link className="entry-tab" href="/admin/login">
+                      <ShieldCheck size={20} />
+                      <span>Admin</span>
+          </Link>
+</section>
+    
+      {profile && <button className="link-muted entry-clear" onClick={clearProfile}>Cambiar usuario / borrar perfil local</button>}
     </main>
   );
 }
