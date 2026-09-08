@@ -65,10 +65,10 @@ video.media-preview{
 /* Sprint check-in code: entry tabs (4 CTAs unificados, animados, colores dinamicos) */
 .entry-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:18px 0 10px}
 .entry-tab{position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:14px 6px;border-radius:14px;color:#fff;font-size:11px;font-weight:800;text-align:center;text-decoration:none;border:1px solid transparent;background-size:220% 220%;animation:entryTabGlow 6s ease-in-out infinite;transition:transform .18s ease,box-shadow .18s ease}
-.entry-tab:nth-child(1){background-image:linear-gradient(135deg,#FF6B6B,#F0134D)}
-.entry-tab:nth-child(2){background-image:linear-gradient(135deg,#2563EB,#173B63)}
-.entry-tab:nth-child(3){background-image:linear-gradient(135deg,#16A34A,#0F7A3D)}
-.entry-tab:nth-child(4){background-image:linear-gradient(135deg,#8B5CF6,#504080)}
+.entry-tab:nth-child(1){background-image:linear-gradient(135deg,#0F2846,#173B63)}
+.entry-tab:nth-child(2){background-image:linear-gradient(135deg,#173B63,#2A4E72)}
+.entry-tab:nth-child(3){background-image:linear-gradient(135deg,#2A4E72,#5B7FA6)}
+.entry-tab:nth-child(4){background-image:linear-gradient(135deg,#5B7FA6,#8FA8C2)}
 .entry-tab:hover,.entry-tab:active{transform:translateY(-4px) scale(1.05);box-shadow:0 12px 26px rgba(23,59,99,.28)}
 .entry-tab-primary{animation:entryTabGlow 6s ease-in-out infinite,entryTabPulse 2.6s ease-in-out infinite}
 @keyframes entryTabGlow{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
