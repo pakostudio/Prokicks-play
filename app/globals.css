@@ -62,15 +62,20 @@ video.media-preview{
 /* Sprint 2.0 - Centrar contenido y arreglar recorte de imagen */
 .entry-screen{justify-content:center !important}
 .entry-hero-image{object-position:center 22% !important;max-height:14dvh !important}
-/* Sprint check-in code: entry tabs (4 CTAs unificados, animados) */
+/* Sprint check-in code: entry tabs (4 CTAs unificados, animados, colores dinamicos) */
 .entry-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:18px 0 10px}
-.entry-tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:14px 6px;border-radius:14px;background:#F3F5F8;color:#173B63;font-size:11px;font-weight:800;text-align:center;text-decoration:none;border:1px solid transparent;transition:transform .18s ease,box-shadow .18s ease,background .18s ease}
-.entry-tab:hover,.entry-tab:active{transform:translateY(-3px) scale(1.03);box-shadow:0 10px 22px rgba(23,59,99,.16);background:#EAF0F8}
-.entry-tab-primary{background:linear-gradient(135deg,#173B63,#0F2846);color:#fff;border-color:transparent}
-.entry-tab-primary:hover,.entry-tab-primary:active{box-shadow:0 10px 24px rgba(15,38,70,.35)}
+.entry-tab{position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:14px 6px;border-radius:14px;color:#fff;font-size:11px;font-weight:800;text-align:center;text-decoration:none;border:1px solid transparent;background-size:220% 220%;animation:entryTabGlow 6s ease-in-out infinite;transition:transform .18s ease,box-shadow .18s ease}
+.entry-tab:nth-child(1){background-image:linear-gradient(135deg,#FF6B6B,#F0134D)}
+.entry-tab:nth-child(2){background-image:linear-gradient(135deg,#2563EB,#173B63)}
+.entry-tab:nth-child(3){background-image:linear-gradient(135deg,#16A34A,#0F7A3D)}
+.entry-tab:nth-child(4){background-image:linear-gradient(135deg,#8B5CF6,#504080)}
+.entry-tab:hover,.entry-tab:active{transform:translateY(-4px) scale(1.05);box-shadow:0 12px 26px rgba(23,59,99,.28)}
+.entry-tab-primary{animation:entryTabGlow 6s ease-in-out infinite,entryTabPulse 2.6s ease-in-out infinite}
+@keyframes entryTabGlow{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes entryTabPulse{0%,100%{box-shadow:0 0 0 0 rgba(37,99,235,.35)}50%{box-shadow:0 0 0 8px rgba(37,99,235,0)}}
 .entry-clear{display:block;margin:6px auto 0;text-align:center}
 @media(max-width:380px){
-  .entry-tab{font-size:10px;padding:12px 4px}
+    .entry-tab{font-size:10px;padding:12px 4px}
 }
 
 /* Sprint 1.9 - Fix overflow entry-screen */
