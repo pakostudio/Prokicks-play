@@ -10,6 +10,7 @@ import { formatDateTimeEs } from '@/lib/format';
 
 type Registration = {
   id: string;
+    check_in_code?: string | null;
   tournament_id: string | null;
   user_id: string | null;
   participant_name?: string | null;
