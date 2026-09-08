@@ -217,6 +217,7 @@ export default function AdminRegistrosTorneosPage() {
         row.player_email,
         row.contact_whatsapp,
         row.participant_1_whatsapp,
+                row.check_in_code,
         row.participant_2_whatsapp,
       ]
         .filter(Boolean)
@@ -465,7 +466,7 @@ export default function AdminRegistrosTorneosPage() {
           <input
             className="input"
             style={{ flex: 1 }}
-            placeholder="Buscar por nombre, nickname, email o WhatsApp..."
+            placeholder="Buscar o escanear código de check-in..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
