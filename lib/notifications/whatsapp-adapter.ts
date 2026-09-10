@@ -42,8 +42,9 @@ export async function sendWhatsappTemplate(input: SendTemplateInput): Promise<Wh
           return { ok: false, status: null, error: 'Invalid destination phone number', skippedReason: 'invalid_phone' };
     }
 
-  const templateName = input.templateName || process.env.WHATSAPP_TEMPLATE_NAME || 'hello_world';
-    const templateLang = input.templateLang || process.env.WHATSAPP_TEMPLATE_LANG || 'en_US';
+  const templateName =
+        input.templateName || process.env.WHATSAPP_TEMPLATE_NAME || 'prokicks_registro_confirmado_v2';
+    const templateLang = input.templateLang || process.env.WHATSAPP_TEMPLATE_LANG || 'es_MX';
 
   const body: Record<string, unknown> = {
         messaging_product: 'whatsapp',

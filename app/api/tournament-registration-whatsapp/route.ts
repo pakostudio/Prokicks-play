@@ -23,9 +23,22 @@ export async function POST(req: Request) {
                           );
                 }
 
+          // Variables de la plantilla aprobada (prokicks_registro_confirmado_v2):
+          // {{1}} = nombre del torneo, {{2}} = folio/numero de check-in.
+          const components = [
+                  {
+                          type: 'body',
+                          parameters: [
+                                  { type: 'text', text: tournamentTitle || 'tu torneo' },
+                                  { type: 'text', text: checkInCode },
+                          ],
+                  },
+          ];
+
           const result = await notifyWhatsapp({
                   to,
                   eventType: 'tournament_registration',
+                  components,
                   payload: { name: participantName, tournamentTitle, checkInCode },
                 });
 
