@@ -232,7 +232,7 @@ export default function AdminRegistrosTorneosPage() {
         .toLowerCase();
       return haystack.includes(term);
     });
-  }, [rows, search]);
+  }, [byTournament, search]);
 
   const flat = useMemo(() => filteredRows.map((r) => ({
     id: r.id,
