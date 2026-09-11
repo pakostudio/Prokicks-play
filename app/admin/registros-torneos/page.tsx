@@ -200,11 +200,17 @@ export default function AdminRegistrosTorneosPage() {
   const [savingNew, setSavingNew] = useState(false);
   const [newMsg, setNewMsg] = useState('');
   const [search, setSearch] = useState('');
+  const [tournamentFilter, setTournamentFilter] = useState('');
+
+  const byTournament = useMemo(() => {
+    if (!tournamentFilter) return rows;
+    return rows.filter((row) => row.tournament_id === tournamentFilter);
+  }, [rows, tournamentFilter]);
 
   const filteredRows = useMemo(() => {
     const term = search.trim().toLowerCase();
-    if (!term) return rows;
-    return rows.filter((row) => {
+    if (!term) return byTournament;
+    return byTournament.filter((row) => {
       const haystack = [
         row.tournament?.title,
         row.participant_1_name,
@@ -255,6 +261,20 @@ export default function AdminRegistrosTorneosPage() {
     autorizacion_tutor: r.guardian_accepted ? 'Sí' : 'No',
     fecha: r.created_at,
   })), [filteredRows]);
+
+  const tournamentCounts = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const row of rows) {
+      const key = row.tournament_id || '';
+      counts.set(key, (counts.get(key) || 0) + 1);
+    }
+    return counts;
+  }, [rows]);
+
+  const selectedTournamentTitle = useMemo(() => {
+    if (!tournamentFilter) return '';
+    return tournaments.find((t) => t.id === tournamentFilter)?.title || 'Torneo';
+  }, [tournamentFilter, tournaments]);
 
   async function load() {
     setLoading(true);
@@ -453,7 +473,13 @@ export default function AdminRegistrosTorneosPage() {
 
       <section className="card form section">
         <div className="row">
-          <strong>{loading ? 'Cargando...' : `${filteredRows.length} de ${rows.length} registros`}</strong>
+          <strong>
+            {loading
+              ? 'Cargando...'
+              : tournamentFilter
+                ? `${filteredRows.length} de ${byTournament.length} registros · ${selectedTournamentTitle}`
+                : `${filteredRows.length} de ${rows.length} registros · todos los torneos`}
+          </strong>
           <div className="admin-actions">
             <button className="btn btn-soft" onClick={load}>Actualizar</button>
             <button className="btn btn-primary" onClick={() => setShowNew((prev) => !prev)}>
@@ -462,16 +488,30 @@ export default function AdminRegistrosTorneosPage() {
           </div>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <Search size={16} style={{ flexShrink: 0, opacity: 0.6 }} />
-          <input
+        <div className="grid-2 tight">
+          <select
             className="input"
-            style={{ flex: 1 }}
-            placeholder="Buscar o escanear código de check-in..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-          {search && <button className="btn btn-soft" onClick={() => setSearch('')}><X size={14} /></button>}
+            value={tournamentFilter}
+            onChange={(e) => setTournamentFilter(e.target.value)}
+          >
+            <option value="">Todos los torneos ({rows.length})</option>
+            {tournaments.map((t) => (
+              <option key={t.id} value={t.id}>
+                {t.title} ({tournamentCounts.get(t.id) || 0})
+              </option>
+            ))}
+          </select>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <Search size={16} style={{ flexShrink: 0, opacity: 0.6 }} />
+            <input
+              className="input"
+              style={{ flex: 1 }}
+              placeholder="Buscar o escanear código de check-in..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+            {search && <button className="btn btn-soft" onClick={() => setSearch('')}><X size={14} /></button>}
+          </div>
         </div>
 
         {showNew && (
