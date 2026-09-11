@@ -440,6 +440,15 @@ body{
   gap:8px;
   min-width:126px;
 }
+.admin-table-actions-col{
+  position:sticky;
+  right:0;
+  background:#fff;
+  box-shadow:-6px 0 8px -6px rgba(15,23,42,.15);
+}
+.admin-table th.admin-table-actions-col{
+  background:#F8FAFC;
+}
 .admin-actions .btn{
   min-height:38px;
   padding:9px 10px;
