@@ -310,14 +310,19 @@ export default function TournamentRegistration() {
 
     if (error) {
       captureError(error, { area: 'tournament-registration-insert', tournamentId, modality: form.modality });
+      const isDuplicate = error.code === '23505' || error.message?.toLowerCase().includes('duplicate') || error.message?.toLowerCase().includes('unique');
       trackEvent('Tournament Registration Error', {
         tournament_id: tournamentId,
-        reason: 'supabase_insert',
+        reason: isDuplicate ? 'duplicate_registration' : 'supabase_insert',
         modality: form.modality,
       });
-      setSubmitted(true);
-      setMessage('Registro recibido para la presentación. Ejecuta el SQL del sprint para verlo también en admin/Supabase.');
-      setEmailMessage('El correo de confirmación quedó pendiente.');
+      setSubmitted(false);
+      if (isDuplicate) {
+        setMessage('Ya existe un registro con este correo para este torneo. Si crees que es un error o necesitas actualizar tus datos, contáctanos directamente.');
+      } else {
+        setMessage('No pudimos guardar tu registro. Por favor intenta de nuevo en unos minutos.');
+      }
+      setEmailMessage('');
       return;
     }
 
