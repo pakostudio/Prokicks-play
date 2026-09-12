@@ -21,7 +21,13 @@ export type WhatsappSendResult =
   | { ok: false; status: number | null; error: string; raw?: unknown; skippedReason?: string };
 
 function normalizePhone(raw: string) {
-    return String(raw || '').replace(/[^\d]/g, '');
+    const digits = String(raw || '').replace(/[^\d]/g, '');
+    // Numeros mexicanos capturados a 10 digitos (sin lada de pais) necesitan
+    // el codigo de pais 52 para que la API de Meta los acepte como validos.
+    if (digits.length === 10) {
+          return `52${digits}`;
+    }
+    return digits;
 }
 
 export async function sendWhatsappTemplate(input: SendTemplateInput): Promise<WhatsappSendResult> {
