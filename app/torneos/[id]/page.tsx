@@ -33,6 +33,7 @@ type Tournament = {
   maps_url?: string | null;
   flyer_url?: string | null;
   pdf_url?: string | null;
+  youtube_live_id?: string | null;
 };
 
 const fallbackTournament: Tournament = {
@@ -135,6 +136,24 @@ export default function TournamentDetail() {
           <Link className="btn btn-soft btn-full" href={`/torneos/${item.id}/videos`}>Ver videos</Link>
         </div>
       </section>
+
+      {item.youtube_live_id && (
+        <section className="card section detail-grid-safe live-stream-card">
+          <div className="row">
+            <span className="live-dot" aria-hidden="true" />
+            <h2 className="card-title">Transmisión en vivo</h2>
+          </div>
+          <div className="live-stream-embed">
+            <iframe
+              src={`https://www.youtube.com/embed/${item.youtube_live_id}?autoplay=0`}
+              title={`Transmisión en vivo ${item.title}`}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              loading="lazy"
+            />
+          </div>
+        </section>
+      )}
 
       {flyerOpen && item.flyer_url && (
         <div className="modal-backdrop" onClick={() => setFlyerOpen(false)}>

@@ -934,3 +934,43 @@ button.media-card{
   color:#fff;
   box-shadow:0 8px 20px rgba(0,0,0,.3);
 }
+
+/* Transmision en vivo del torneo */
+.live-stream-card .row {
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.live-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: #DC2626;
+  box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.6);
+  animation: live-pulse 1.6s infinite;
+  flex-shrink: 0;
+}
+
+@keyframes live-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.55); }
+  70% { box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+}
+
+.live-stream-embed {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #0F172A;
+}
+
+.live-stream-embed iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}

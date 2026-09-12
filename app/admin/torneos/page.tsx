@@ -33,12 +33,14 @@ type Tournament = {
   payment_url: string;
   payment_instructions: string;
   rules: string;
+  youtube_live_id: string;
 };
 
 const empty:Tournament = {
   title:'', description:'', city:'CDMX', state:'Ciudad de México', venue:'', address:'', maps_url:'', flyer_url:'', pdf_url:'', format:'1v1', level:'abierto', status:'open',
   starts_at:'', ends_at:'', capacity:32, is_free:true, cost:0, currency:'MXN', payment_method:'pendiente_configurar', payment_url:'',
   payment_instructions:'',
+  youtube_live_id:'',
   rules:'Registro sujeto a disponibilidad. El participante debe aceptar reglamento y autorización de uso de imagen.'
 };
 
@@ -102,6 +104,7 @@ export default function AdminTorneosPage(){
       payment_url: form.payment_url || null,
       payment_instructions: form.payment_instructions || null,
       rules: form.rules,
+      youtube_live_id: form.youtube_live_id?.trim() || null,
       updated_at: new Date().toISOString()
     };
     const result = editing
@@ -148,6 +151,8 @@ export default function AdminTorneosPage(){
         <input className="input" placeholder="/tournaments/flyer.jpeg" value={form.flyer_url} onChange={e=>update('flyer_url', e.target.value)} />
         <input className="input" placeholder="/docs/reglamento.pdf" value={form.pdf_url} onChange={e=>update('pdf_url', e.target.value)} />
         {form.flyer_url && <img className="tournament-thumb" src={form.flyer_url} alt={`Flyer ${form.title || 'torneo'}`} />}
+        <input className="input" placeholder="ID de video de YouTube en vivo (ej. dQw4w9WgXcQ)" value={form.youtube_live_id} onChange={e=>update('youtube_live_id', e.target.value)} />
+        <p className="p" style={{marginTop:-8, fontSize:13, color:'#64748B'}}>Opcional. Es el código que va después de watch?v= en la URL de YouTube. Aparece como "Transmisión en vivo" en la pantalla del torneo mientras esté cargado aquí.</p>
         <div className="grid-2 tight">
           <select className="input" value={form.format} onChange={e=>update('format', e.target.value as Tournament['format'])}><option value="1v1">1v1</option><option value="2v2">2v2</option><option value="3v3">3v3 futuro</option><option value="mixto">Mixto</option></select>
           <select className="input" value={form.level} onChange={e=>update('level', e.target.value as Tournament['level'])}><option value="principiante">Principiante</option><option value="intermedio">Intermedio</option><option value="avanzado">Avanzado</option><option value="abierto">Abierto</option></select>

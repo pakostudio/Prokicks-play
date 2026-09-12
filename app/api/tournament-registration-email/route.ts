@@ -159,6 +159,7 @@ export async function POST(request: Request) {
         <strong>Aceptó reglamento:</strong> ${yesNo(body.acceptedRules)}<br />
         <strong>Aceptó uso de imagen:</strong> ${yesNo(body.acceptedImageRelease)}</p>
         <p><strong>Pago:</strong> ${hasCost ? `Pendiente · ${costText}` : 'Sin costo'}</p>
+        ${checkInCode ? `<div style="margin:14px 0;padding:12px 16px;border-radius:10px;background:#F1F5F9;border:1px solid #CBD5E1"><p style="margin:0 0 4px;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#64748B">Código de check-in del participante</p><p style="margin:0;font-size:24px;font-weight:800;color:#173B63;letter-spacing:.08em">${checkInCode}</p></div>` : ''}
         ${guardian ? `<p><strong>Tutor:</strong> ${safe(guardian.name)}<br /><strong>WhatsApp tutor:</strong> ${safe(guardian.whatsapp)}<br /><strong>Email tutor:</strong> ${safe(guardian.email)}<br /><strong>Aceptación tutor:</strong> ${yesNo(guardian.accepted)}</p>` : ''}
       </div>
     `;
