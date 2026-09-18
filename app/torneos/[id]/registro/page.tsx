@@ -79,12 +79,25 @@ function isValidWhatsapp(value: string) {
 }
 
 async function makeCheckInCode() {
+    // Codigo corto de 2 digitos (10-99). Buscamos el primer numero libre en ese
+    // rango en vez de usar el total de registros, para que nunca se pase de 2 digitos
+    // aunque ya haya mas de 90 inscripciones en la base.
     try {
-          const { count, error } = await supabase
+          const { data, error } = await supabase
             .from('prokicks_tournament_registrations')
-            .select('id', { count: 'exact', head: true });
+            .select('check_in_code')
+            .not('check_in_code', 'is', null);
           if (error) throw error;
-          return String((count || 0) + 10);
+          const used = new Set(
+            (data || [])
+              .map((r) => Number(r.check_in_code))
+              .filter((n) => Number.isInteger(n) && n >= 10 && n <= 99)
+          );
+          for (let n = 10; n <= 99; n++) {
+                if (!used.has(n)) return String(n);
+          }
+          // Rango de 2 digitos agotado (90 codigos en uso): fallback aleatorio.
+          return String(Math.floor(10 + Math.random() * 90));
     } catch (error) {
           captureError(error, { area: 'make-checkin-code' });
           return String(Math.floor(10 + Math.random() * 90));
