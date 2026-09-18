@@ -992,3 +992,129 @@ button.media-card{
     max-width:1320px;
   }
 }
+
+/* Admin — rediseno de tarjetas y botones: menos generico, mas angular, con movimiento en hover.
+   Solo afecta .admin-shell, no toca la app movil de jugadores. */
+.admin-shell .stat{
+  border-radius:4px;
+  position:relative;
+  overflow:hidden;
+  border:1px solid var(--line);
+  background:#fff;
+  transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+.admin-shell .stat:before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:0;
+  bottom:0;
+  width:3px;
+  background:var(--navy);
+  transform:scaleY(.3);
+  transform-origin:top;
+  transition:transform .22s cubic-bezier(.2,.8,.2,1);
+}
+.admin-shell .stat:hover{
+  transform:translateX(4px);
+  border-color:#cfd8e6;
+  box-shadow:0 10px 22px rgba(15,23,42,.08);
+}
+.admin-shell .stat:hover:before{
+  transform:scaleY(1);
+}
+.admin-shell .stat .muted{
+  font-size:11px;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.09em;
+  color:#8592a8;
+}
+.admin-shell .stat strong{
+  font-size:18px;
+  letter-spacing:-.01em;
+}
+
+.admin-shell .btn{
+  border-radius:4px;
+  position:relative;
+  overflow:hidden;
+  isolation:isolate;
+  font-size:14px;
+  transition:transform .16s cubic-bezier(.2,.8,.2,1), box-shadow .16s ease;
+}
+.admin-shell .btn:after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(100deg, transparent 30%, rgba(255,255,255,.18) 45%, transparent 60%);
+  transform:translateX(-130%);
+  transition:transform .5s ease;
+  z-index:1;
+  pointer-events:none;
+}
+.admin-shell .btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 10px 20px rgba(15,23,42,.14);
+}
+.admin-shell .btn:hover:after{
+  transform:translateX(130%);
+}
+.admin-shell .btn.btn-soft{
+  border-radius:4px;
+  border:1px solid var(--line);
+  padding-left:18px;
+}
+.admin-shell .btn.btn-soft:before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:0;
+  bottom:0;
+  width:0;
+  background:var(--navy);
+  transition:width .2s ease;
+}
+.admin-shell .btn.btn-soft:hover{
+  border-color:var(--navy);
+  color:var(--navy);
+}
+.admin-shell .btn.btn-soft:hover:before{
+  width:3px;
+}
+.admin-shell .btn.btn-primary,
+.admin-shell .btn.btn-warm{
+  border-radius:4px;
+}
+
+.admin-shell .admin-nav-item{
+  border-radius:4px;
+  position:relative;
+  transition:transform .16s ease, color .16s ease, border-color .16s ease, background .16s ease;
+}
+.admin-shell .admin-nav-item:hover{
+  transform:translateY(-2px);
+}
+.admin-shell .admin-nav-item.active{
+  border-radius:4px;
+}
+.admin-shell .admin-nav-item.active:after{
+  content:"";
+  position:absolute;
+  left:12px;
+  right:12px;
+  bottom:-6px;
+  height:3px;
+  border-radius:2px;
+  background:var(--navy);
+}
+
+.admin-shell .admin-edit-box,
+.admin-shell .table-wrap,
+.admin-shell .card{
+  border-radius:6px;
+}
+.admin-shell .input,
+.admin-shell select.input{
+  border-radius:4px;
+}
