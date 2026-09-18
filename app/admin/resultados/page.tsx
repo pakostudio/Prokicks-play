@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { AdminShell } from '@/components/AdminShell';
 import { supabase } from '@/lib/supabase';
 import { captureError } from '@/lib/monitoring';
-import { Plus, Trash2, Upload } from 'lucide-react';
+import { FileSpreadsheet, FileText, Plus, Trash2, Upload } from 'lucide-react';
 
 type TournamentOption = { id: string; title: string };
 
@@ -30,6 +30,68 @@ type Standing = {
 };
 
 const emptyMatch = { team_a_name: '', team_b_name: '', score_a: '', score_b: '' };
+
+async function exportExcel(rows: Record<string, unknown>[], sheetName: string, filename: string) {
+  if (!rows.length) return;
+  const XLSX = await import('xlsx');
+  const worksheet = XLSX.utils.json_to_sheet(rows);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
+  XLSX.writeFile(workbook, filename);
+}
+
+async function exportPDF(
+  title: string,
+  columns: { header: string; key: string }[],
+  rows: Record<string, unknown>[],
+  filename: string
+) {
+  if (!rows.length) return;
+  const { default: jsPDF } = await import('jspdf');
+  const autoTable = (await import('jspdf-autotable')).default;
+
+  const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
+  const pageWidth = doc.internal.pageSize.getWidth();
+
+  doc.setFontSize(16);
+  doc.setTextColor(23, 59, 99);
+  doc.text(`ProKicks Play · ${title}`, 32, 32);
+  doc.setFontSize(9);
+  doc.setTextColor(100, 100, 100);
+  doc.text(`${rows.length} fila${rows.length === 1 ? '' : 's'} · generado ${new Date().toLocaleDateString('es-MX')}`, 32, 46);
+
+  autoTable(doc, {
+    startY: 60,
+    margin: { left: 24, right: 24 },
+    tableWidth: pageWidth - 48,
+    head: [columns.map((c) => c.header)],
+    body: rows.map((row) => columns.map((c) => String(row[c.key] ?? '-'))),
+    styles: { fontSize: 9, cellPadding: 5, overflow: 'linebreak', valign: 'middle' },
+    headStyles: { fillColor: [23, 59, 99], textColor: 255, fontStyle: 'bold', fontSize: 9 },
+    alternateRowStyles: { fillColor: [244, 246, 248] },
+  });
+
+  doc.save(filename);
+}
+
+const MATCHES_PDF_COLUMNS = [
+  { header: 'Equipo A', key: 'equipo_a' },
+  { header: 'Pts A', key: 'pts_a' },
+  { header: 'Equipo B', key: 'equipo_b' },
+  { header: 'Pts B', key: 'pts_b' },
+];
+
+const STANDINGS_PDF_COLUMNS = [
+  { header: 'Pos', key: 'pos' },
+  { header: 'Equipo', key: 'equipo' },
+  { header: 'J', key: 'j' },
+  { header: 'G', key: 'g' },
+  { header: 'P', key: 'p' },
+  { header: 'PF', key: 'pf' },
+  { header: 'PC', key: 'pc' },
+  { header: 'Dif', key: 'dif' },
+  { header: 'Pts', key: 'pts' },
+];
 
 export default function AdminResultadosPage() {
   const [tournaments, setTournaments] = useState<TournamentOption[]>([]);
@@ -128,6 +190,38 @@ export default function AdminResultadosPage() {
   }
 
   const standings = useMemo(() => computeStandings(matches), [matches]);
+
+  const selectedTournamentTitle = useMemo(
+    () => tournaments.find((t) => t.id === tournamentId)?.title || 'torneo',
+    [tournaments, tournamentId]
+  );
+
+  const matchesFlat = useMemo(
+    () =>
+      matches.map((m) => ({
+        equipo_a: m.team_a_name,
+        pts_a: m.score_a ?? '-',
+        equipo_b: m.team_b_name,
+        pts_b: m.score_b ?? '-',
+      })),
+    [matches]
+  );
+
+  const standingsFlat = useMemo(
+    () =>
+      standings.map((row, index) => ({
+        pos: index + 1,
+        equipo: row.team,
+        j: row.played,
+        g: row.wins,
+        p: row.losses,
+        pf: row.pointsFor,
+        pc: row.pointsAgainst,
+        dif: row.diff,
+        pts: row.points,
+      })),
+    [standings]
+  );
 
   async function publishStandings() {
     if (!tournamentId || !standings.length) return;
@@ -230,6 +324,24 @@ export default function AdminResultadosPage() {
             <p>Edita el marcador directamente en la tabla.</p>
           </div>
         </div>
+        <div className="grid-2 tight">
+          <button
+            className="btn btn-primary"
+            disabled={!matches.length}
+            onClick={() => exportExcel(matchesFlat, 'Partidos', `prokicks_partidos_${selectedTournamentTitle}.xlsx`)}
+            style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
+          >
+            <FileSpreadsheet size={18} color="#21A366" /> Exportar partidos Excel
+          </button>
+          <button
+            className="btn btn-primary"
+            disabled={!matches.length}
+            onClick={() => exportPDF('Partidos', MATCHES_PDF_COLUMNS, matchesFlat, `prokicks_partidos_${selectedTournamentTitle}.pdf`)}
+            style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
+          >
+            <FileText size={18} color="#E13B3B" /> Exportar partidos PDF
+          </button>
+        </div>
         <table className="admin-table">
           <thead>
             <tr><th>Equipo A</th><th>Pts A</th><th>Equipo B</th><th>Pts B</th><th></th></tr>
@@ -263,6 +375,24 @@ export default function AdminResultadosPage() {
             <h2>Clasificación (automática)</h2>
             <p>1 punto por victoria, 0 por derrota. Empate se resuelve por diferencia de puntos.</p>
           </div>
+        </div>
+        <div className="grid-2 tight">
+          <button
+            className="btn btn-primary"
+            disabled={!standings.length}
+            onClick={() => exportExcel(standingsFlat, 'Clasificacion', `prokicks_clasificacion_${selectedTournamentTitle}.xlsx`)}
+            style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
+          >
+            <FileSpreadsheet size={18} color="#21A366" /> Exportar clasificación Excel
+          </button>
+          <button
+            className="btn btn-primary"
+            disabled={!standings.length}
+            onClick={() => exportPDF('Clasificación', STANDINGS_PDF_COLUMNS, standingsFlat, `prokicks_clasificacion_${selectedTournamentTitle}.pdf`)}
+            style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
+          >
+            <FileText size={18} color="#E13B3B" /> Exportar clasificación PDF
+          </button>
         </div>
         <table className="admin-table">
           <thead>
