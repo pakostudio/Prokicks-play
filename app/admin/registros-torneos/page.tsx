@@ -10,7 +10,7 @@ import { formatDateTimeEs } from '@/lib/format';
 
 type Registration = {
   id: string;
-    check_in_code?: string | null;
+  check_in_code?: string | null;
   tournament_id: string | null;
   user_id: string | null;
   participant_name?: string | null;
@@ -56,6 +56,7 @@ type EditForm = {
   branch: string;
   age_category: string;
   team_name: string;
+  check_in_code: string;
 };
 
 type TournamentOption = {
@@ -224,7 +225,7 @@ export default function AdminRegistrosTorneosPage() {
         row.player_email,
         row.contact_whatsapp,
         row.participant_1_whatsapp,
-                row.check_in_code,
+        row.check_in_code,
         row.participant_2_whatsapp,
       ]
         .filter(Boolean)
@@ -313,6 +314,7 @@ export default function AdminRegistrosTorneosPage() {
       branch: row.branch || '',
       age_category: row.age_category || '',
       team_name: row.team_name || '',
+      check_in_code: row.check_in_code || '',
     });
     setMsg('');
   }
@@ -337,6 +339,7 @@ export default function AdminRegistrosTorneosPage() {
       branch: edit.branch.trim(),
       age_category: edit.age_category.trim(),
       team_name: edit.team_name.trim(),
+      check_in_code: edit.check_in_code.trim() || null,
       updated_at: new Date().toISOString(),
     };
 
@@ -618,6 +621,13 @@ export default function AdminRegistrosTorneosPage() {
             <input className="input" placeholder="Nombre" value={edit.name} onChange={(event) => updateEdit('name', event.target.value)} />
             <input className="input" type="email" placeholder="Email" value={edit.email} onChange={(event) => updateEdit('email', event.target.value)} />
             <input className="input" inputMode="tel" placeholder="WhatsApp" value={edit.whatsapp} onChange={(event) => updateEdit('whatsapp', event.target.value)} />
+            <input
+              className="input"
+              inputMode="numeric"
+              placeholder="Código de check-in (2 dígitos)"
+              value={edit.check_in_code}
+              onChange={(event) => updateEdit('check_in_code', event.target.value.replace(/[^0-9]/g, '').slice(0, 2))}
+            />
             <div className="grid-2 tight">
               <input className="input" placeholder="Modalidad" value={edit.modality} onChange={(event) => updateEdit('modality', event.target.value)} />
               <input className="input" placeholder="Rama / categoría" value={edit.branch} onChange={(event) => updateEdit('branch', event.target.value)} />
