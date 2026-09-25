@@ -1109,3 +1109,64 @@ max-width:760px;
 max-width:860px;
 }
 }
+
+/* Fix 2.7 - Favicon simplificado, ancho real de escritorio y botones interactivos en .app-shell
+No toca .admin-shell. Corrige: (1) margenes muertos en desktop (se quita el borde tipo tarjeta
+y se amplia mas el max-width), (2) botones planos sin movimiento, (3) fila de acciones
+Ver resultados/galeria/videos apilada en vez de usar el ancho disponible. */
+@media(min-width:860px){
+.app-shell{
+max-width:920px;
+border-left:0;
+border-right:0;
+}
+}
+@media(min-width:1280px){
+.app-shell{
+max-width:1180px;
+}
+}
+@media(min-width:1600px){
+.app-shell{
+max-width:1320px;
+}
+}
+
+.app-shell .btn{
+border-radius:10px;
+position:relative;
+overflow:hidden;
+isolation:isolate;
+transition:transform .16s cubic-bezier(.2,.8,.2,1), box-shadow .16s ease;
+}
+.app-shell .btn:after{
+content:"";
+position:absolute;
+inset:0;
+border:0;
+background:linear-gradient(100deg, transparent 30%, rgba(255,255,255,.3) 45%, transparent 60%);
+transform:translateX(-130%);
+transition:transform .5s ease;
+z-index:1;
+pointer-events:none;
+}
+.app-shell .btn:hover{
+transform:translateY(-3px);
+box-shadow:0 14px 26px rgba(15,23,42,.18);
+}
+.app-shell .btn:hover:after{
+transform:translateX(130%);
+}
+.app-shell .btn:active{
+transform:translateY(-1px);
+box-shadow:0 6px 14px rgba(15,23,42,.16);
+}
+
+.tournament-hero .grid:not(.grid-2){
+gap:12px;
+}
+@media(min-width:860px){
+.tournament-hero .grid:not(.grid-2){
+grid-template-columns:repeat(3,1fr);
+}
+}
