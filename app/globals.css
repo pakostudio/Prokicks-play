@@ -1,28 +1,28 @@
 /* Fix 1.8 · Videos en galería (miniatura y modal) */
 .media-card video{
-  width:100%;
-  aspect-ratio:4/3;
-  border-radius:18px;
-  object-fit:cover;
-  background:#0F172A;
-  border:1px solid var(--line);
-  display:block;
+width:100%;
+aspect-ratio:4/3;
+border-radius:18px;
+object-fit:cover;
+background:#0F172A;
+border:1px solid var(--line);
+display:block;
 }
 .media-preview[src]{
-  background:#0F172A;
+background:#0F172A;
 }
 video.media-preview{
-  max-height:260px;
-  width:100%;
-  border-radius:18px;
-  object-fit:contain;
-  background:#0F172A;
+max-height:260px;
+width:100%;
+border-radius:18px;
+object-fit:contain;
+background:#0F172A;
 }
 .media-modal video{
-  width:100%;
-  max-height:62vh;
-  border-radius:18px;
-  background:#0F172A;
+width:100%;
+max-height:62vh;
+border-radius:18px;
+background:#0F172A;
 }
 
 /* Sprint 2.5 · AdminShell — topbar y menú de administración fijo */
@@ -34,7 +34,7 @@ video.media-preview{
 .admin-nav-item:hover{transform:translateY(-1px);border-color:#b9cdf2}
 .admin-nav-item.active{background:linear-gradient(135deg,var(--navy),#2a5aa8);color:#fff;border-color:var(--navy);box-shadow:0 4px 12px rgba(23,59,99,.25)}
 @media(max-width:480px){
-  .admin-nav{grid-template-columns:repeat(2,1fr)}
+.admin-nav{grid-template-columns:repeat(2,1fr)}
 }
 /* Sprint 2.1 - Foto sin recorte, jerarquia de color e info social real */
 .entry-hero-image{object-fit:contain !important;background:#F4F6F8 !important;max-height:16dvh !important}
@@ -72,7 +72,7 @@ video.media-preview{
 @keyframes entryTabPulse{0%,100%{box-shadow:0 0 0 0 rgba(37,99,235,.35)}50%{box-shadow:0 0 0 8px rgba(37,99,235,0)}}
 .entry-clear{display:block;margin:6px auto 0;text-align:center}
 @media(max-width:380px){
-  .entry-tab{font-size:10px;padding:12px 4px}
+.entry-tab{font-size:10px;padding:12px 4px}
 }
 
 /* Sprint 1.9 - Fix overflow entry-screen */
@@ -91,21 +91,21 @@ video.media-preview{
 .admin-link{margin:4px auto 0 !important}
 
 :root{
-  --bg:#f6f7f9;
-  --surface:#ffffff;
-  --text:#111318;
-  --muted:#6b7280;
-  --line:#e5e7eb;
-  --cyan:#60a0c0;
-  --blue:#6080b0;
-  --purple:#504080;
-  --yellow:#5E85A8;
+--bg:#f6f7f9;
+--surface:#ffffff;
+--text:#111318;
+--muted:#6b7280;
+--line:#e5e7eb;
+--cyan:#60a0c0;
+--blue:#6080b0;
+--purple:#504080;
+--yellow:#5E85A8;
 
-  --orange:#1B3552;
-  --success:#16a34a;
-  --danger:#dc2626;
-  --shadow:0 18px 45px rgba(17,19,24,.08);
-  --radius:24px;
+--orange:#1B3552;
+--success:#16a34a;
+--danger:#dc2626;
+--shadow:0 18px 45px rgba(17,19,24,.08);
+--radius:24px;
 }
 *{box-sizing:border-box}
 html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif}
@@ -116,18 +116,18 @@ button,input,select,textarea{font:inherit}
 
 /* ProKicks Sprint 1.1 · Access + Registration */
 :root{
-  --bg:#F4F6F8;
-  --surface:#FFFFFF;
-  --text:#1F2937;
-  --muted:#64748B;
-  --line:#E2E8F0;
-  --navy:#173B63;
-  --action:#2A4E72;
-  --success:#16A34A;
-  --warning:#F59E0B;
-  --danger:#DC2626;
-  --shadow:0 18px 45px rgba(15,23,42,.10);
-  --radius:18px;
+--bg:#F4F6F8;
+--surface:#FFFFFF;
+--text:#1F2937;
+--muted:#64748B;
+--line:#E2E8F0;
+--navy:#173B63;
+--action:#2A4E72;
+--success:#16A34A;
+--warning:#F59E0B;
+--danger:#DC2626;
+--shadow:0 18px 45px rgba(15,23,42,.10);
+--radius:18px;
 }
 html,body{background:var(--bg);color:var(--text);font-family:Arial, Helvetica, sans-serif;}
 .btn-primary{background:linear-gradient(135deg,#33608A,#1B3552);box-shadow:0 10px 22px rgba(27,53,82,.22);color:#fff;position:relative;overflow:hidden}.btn-primary:after{content:"";position:absolute;right:0;bottom:0;border-style:solid;border-width:0 0 22px 22px;border-color:transparent transparent #1B3552 transparent}.btn-primary:disabled{opacity:.45;cursor:not-allowed}.btn-soft{background:#fff;border:1px solid var(--line);color:var(--navy)}.tag-blue{color:var(--navy);background:#eef4ff}.nav-item.active{background:#eef4ff;color:var(--navy)}.scan-button{background:var(--action);color:#fff}.h1,.h2,.card-title{letter-spacing:-.035em}.kicker{color:var(--navy)}
@@ -154,369 +154,369 @@ html,body{background:var(--bg);color:var(--text);font-family:Arial, Helvetica, s
 .admin-table td{color:var(--ink)}
 
 /* Sprint 1.4 · Portada aprobada ProKicks
-   Parche visual mínimo: solo portada/login. No toca torneos, admin, Supabase ni dependencias. */
+Parche visual mínimo: solo portada/login. No toca torneos, admin, Supabase ni dependencias. */
 .approved-access-screen{
-  background:linear-gradient(180deg,#F4F6F8 0%,#EEF2F7 58%,#F8FAFC 100%);
-  box-shadow:0 24px 70px rgba(15,23,42,.08);
+background:linear-gradient(180deg,#F4F6F8 0%,#EEF2F7 58%,#F8FAFC 100%);
+box-shadow:0 24px 70px rgba(15,23,42,.08);
 }
 .approved-hero{
-  position:relative;
-  height:375px;
-  overflow:hidden;
-  border-bottom-left-radius:0;
-  border-bottom-right-radius:0;
-  background:#F4F6F8;
+position:relative;
+height:375px;
+overflow:hidden;
+border-bottom-left-radius:0;
+border-bottom-right-radius:0;
+background:#F4F6F8;
 }
 .approved-hero:after{
-  content:"";
-  position:absolute;
-  inset:auto 0 0 0;
-  height:96px;
-  background:linear-gradient(180deg,rgba(244,246,248,0) 0%,#F4F6F8 86%);
-  pointer-events:none;
-  z-index:2;
+content:"";
+position:absolute;
+inset:auto 0 0 0;
+height:96px;
+background:linear-gradient(180deg,rgba(244,246,248,0) 0%,#F4F6F8 86%);
+pointer-events:none;
+z-index:2;
 }
 .approved-hero-image{
-  object-fit:cover;
-  object-position:top center;
-  filter:saturate(.98) contrast(1.01);
+object-fit:cover;
+object-position:top center;
+filter:saturate(.98) contrast(1.01);
 }
 .approved-access-content{
-  margin-top:-6px;
-  padding:0 36px 34px;
-  position:relative;
-  z-index:3;
+margin-top:-6px;
+padding:0 36px 34px;
+position:relative;
+z-index:3;
 }
 .approved-access-title h1{
-  color:#0F172A;
-  font-size:38px;
-  line-height:.98;
-  letter-spacing:-.045em;
-  margin:0 0 14px;
-  font-weight:900;
+color:#0F172A;
+font-size:38px;
+line-height:.98;
+letter-spacing:-.045em;
+margin:0 0 14px;
+font-weight:900;
 }
 .approved-access-title p{
-  color:#5E6F8C;
-  font-size:17px;
-  line-height:1.35;
-  margin:0 0 30px;
+color:#5E6F8C;
+font-size:17px;
+line-height:1.35;
+margin:0 0 30px;
 }
 .approved-login-card{
-  border-radius:16px;
-  border:1px solid rgba(203,213,225,.92);
-  padding:34px 32px 30px;
-  box-shadow:0 18px 42px rgba(15,23,42,.12);
-  gap:18px;
+border-radius:16px;
+border:1px solid rgba(203,213,225,.92);
+padding:34px 32px 30px;
+box-shadow:0 18px 42px rgba(15,23,42,.12);
+gap:18px;
 }
 .approved-login-card h2{
-  font-size:26px;
-  letter-spacing:-.04em;
+font-size:26px;
+letter-spacing:-.04em;
 }
 .approved-login-card p{
-  font-size:16px;
-  color:#64748B;
+font-size:16px;
+color:#64748B;
 }
 .approved-field-control{
-  min-height:64px;
-  border-radius:12px;
-  grid-template-columns:34px 1fr 30px;
-  padding:0 18px;
-  color:#66789A;
-  border-color:#CBD5E1;
+min-height:64px;
+border-radius:12px;
+grid-template-columns:34px 1fr 30px;
+padding:0 18px;
+color:#66789A;
+border-color:#CBD5E1;
 }
 .approved-field-control input{
-  font-size:17px;
+font-size:17px;
 }
 .approved-field-control input::placeholder{
-  color:#74839B;
+color:#74839B;
 }
 .approved-btn-login{
-  min-height:61px;
-  border-radius:10px;
-  font-size:19px;
-  background:#2563EB;
-  box-shadow:0 16px 30px rgba(37,99,235,.22);
+min-height:61px;
+border-radius:10px;
+font-size:19px;
+background:#2563EB;
+box-shadow:0 16px 30px rgba(37,99,235,.22);
 }
 .approved-btn-login:after{
-  border-width:0 0 25px 25px;
-  border-color:transparent transparent #1B3552 transparent;
+border-width:0 0 25px 25px;
+border-color:transparent transparent #1B3552 transparent;
 }
 .approved-register-block{
-  margin:30px 0 22px;
+margin:30px 0 22px;
 }
 .approved-register-block p{
-  margin-bottom:14px;
-  color:#1F2937;
+margin-bottom:14px;
+color:#1F2937;
 }
 .approved-btn-register{
-  height:58px;
-  border-radius:10px;
-  border-width:1.5px;
-  background:rgba(255,255,255,.72);
-  font-size:20px;
+height:58px;
+border-radius:10px;
+border-width:1.5px;
+background:rgba(255,255,255,.72);
+font-size:20px;
 }
 .approved-or-divider{
-  margin:22px 0;
+margin:22px 0;
 }
 .approved-guest-card{
-  min-height:80px;
-  border-radius:12px;
-  background:rgba(255,255,255,.82);
-  box-shadow:0 10px 24px rgba(15,23,42,.05);
+min-height:80px;
+border-radius:12px;
+background:rgba(255,255,255,.82);
+box-shadow:0 10px 24px rgba(15,23,42,.05);
 }
 .approved-guest-card strong{
-  font-size:18px;
+font-size:18px;
 }
 .approved-guest-card p{
-  font-size:14px;
+font-size:14px;
 }
 @media(max-width:430px){
-  .approved-hero{height:350px;}
-  .approved-access-content{padding-left:28px;padding-right:28px;}
-  .approved-access-title h1{font-size:34px;}
-  .approved-login-card{padding:26px 20px;gap:14px;}
-  .approved-field-control{min-height:58px;}
-  .approved-btn-login{min-height:56px;}
+.approved-hero{height:350px;}
+.approved-access-content{padding-left:28px;padding-right:28px;}
+.approved-access-title h1{font-size:34px;}
+.approved-login-card{padding:26px 20px;gap:14px;}
+.approved-field-control{min-height:58px;}
+.approved-btn-login{min-height:56px;}
 }
 @media(max-width:380px){
-  .approved-hero{height:315px;}
-  .approved-access-content{padding-left:22px;padding-right:22px;}
-  .approved-access-title h1{font-size:31px;}
-  .approved-login-card h2{font-size:22px;}
+.approved-hero{height:315px;}
+.approved-access-content{padding-left:22px;padding-right:22px;}
+.approved-access-title h1{font-size:31px;}
+.approved-login-card h2{font-size:22px;}
 }
 
 /* Sprint 1.5 · PWA + ajuste móvil seguro
-   No toca Supabase, torneos, admin ni dependencias. */
+No toca Supabase, torneos, admin ni dependencias. */
 html{
-  width:100%;
-  min-height:100%;
-  background:#F4F6F8;
-  -webkit-text-size-adjust:100%;
+width:100%;
+min-height:100%;
+background:#F4F6F8;
+-webkit-text-size-adjust:100%;
 }
 body{
-  width:100%;
-  min-height:100dvh;
-  overflow-x:hidden;
-  background:#F4F6F8;
+width:100%;
+min-height:100dvh;
+overflow-x:hidden;
+background:#F4F6F8;
 }
 .access-screen,
 .register-screen,
 .guest-screen{
-  width:100%;
-  max-width:480px;
-  min-height:100dvh;
+width:100%;
+max-width:480px;
+min-height:100dvh;
 }
 .approved-access-screen{
-  width:100%;
-  max-width:480px;
-  margin:0 auto;
+width:100%;
+max-width:480px;
+margin:0 auto;
 }
 @media(max-width:520px){
-  .approved-access-screen,
-  .access-screen,
-  .register-screen,
-  .guest-screen{
-    max-width:none;
-    width:100vw;
-    border-left:0;
-    border-right:0;
-    box-shadow:none;
-  }
-  .approved-hero{
-    height:46vh;
-    min-height:292px;
-    max-height:360px;
-  }
-  .approved-access-content{
-    padding-left:24px;
-    padding-right:24px;
-    padding-bottom:42px;
-  }
-  .approved-access-title h1{
-    font-size:34px;
-  }
-  .approved-login-card{
-    padding:24px 18px 24px;
-  }
-  .approved-register-block{
-    margin:24px 0 18px;
-  }
-  .approved-guest-card{
-    margin-bottom:22px;
-  }
+.approved-access-screen,
+.access-screen,
+.register-screen,
+.guest-screen{
+max-width:none;
+width:100vw;
+border-left:0;
+border-right:0;
+box-shadow:none;
+}
+.approved-hero{
+height:46vh;
+min-height:292px;
+max-height:360px;
+}
+.approved-access-content{
+padding-left:24px;
+padding-right:24px;
+padding-bottom:42px;
+}
+.approved-access-title h1{
+font-size:34px;
+}
+.approved-login-card{
+padding:24px 18px 24px;
+}
+.approved-register-block{
+margin:24px 0 18px;
+}
+.approved-guest-card{
+margin-bottom:22px;
+}
 }
 @media(max-width:380px){
-  .approved-hero{
-    height:42vh;
-    min-height:270px;
-  }
-  .approved-access-content{
-    padding-left:18px;
-    padding-right:18px;
-  }
-  .approved-login-card{
-    padding:22px 16px;
-  }
-  .approved-field-control{
-    min-height:56px;
-  }
-  .approved-btn-login,
-  .approved-btn-register{
-    min-height:54px;
-  }
+.approved-hero{
+height:42vh;
+min-height:270px;
+}
+.approved-access-content{
+padding-left:18px;
+padding-right:18px;
+}
+.approved-login-card{
+padding:22px 16px;
+}
+.approved-field-control{
+min-height:56px;
+}
+.approved-btn-login,
+.approved-btn-register{
+min-height:54px;
+}
 }
 @media(display-mode: standalone){
-  body{
-    overscroll-behavior-y:none;
-  }
-  .approved-access-screen,
-  .app-shell{
-    padding-top:max(0px, env(safe-area-inset-top));
-    padding-bottom:max(24px, env(safe-area-inset-bottom));
-  }
+body{
+overscroll-behavior-y:none;
+}
+.approved-access-screen,
+.app-shell{
+padding-top:max(0px, env(safe-area-inset-top));
+padding-bottom:max(24px, env(safe-area-inset-bottom));
+}
 }
 
 /* Sprint 1.6 · Registro a Torneos */
 .field-label {
-  display: block;
-  margin: 4px 0 -6px;
-  font-size: 13px;
-  font-weight: 800;
-  color: #173b63;
+display: block;
+margin: 4px 0 -6px;
+font-size: 13px;
+font-weight: 800;
+color: #173b63;
 }
 
 .check-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #e2e8f0;
-  border-radius: 16px;
-  background: #f8fafc;
-  color: #1f2937;
-  font-size: 14px;
-  line-height: 1.35;
+display: flex;
+align-items: flex-start;
+gap: 10px;
+width: 100%;
+padding: 12px;
+border: 1px solid #e2e8f0;
+border-radius: 16px;
+background: #f8fafc;
+color: #1f2937;
+font-size: 14px;
+line-height: 1.35;
 }
 
 .check-row input {
-  width: 18px;
-  height: 18px;
-  margin-top: 1px;
-  flex: 0 0 auto;
+width: 18px;
+height: 18px;
+margin-top: 1px;
+flex: 0 0 auto;
 }
 
 .mini-stack {
-  display: grid;
-  gap: 12px;
-  width: 100%;
+display: grid;
+gap: 12px;
+width: 100%;
 }
 
 .alert.warn {
-  border-color: rgba(245, 158, 11, 0.28);
-  background: rgba(245, 158, 11, 0.12);
-  color: #92400e;
+border-color: rgba(245, 158, 11, 0.28);
+background: rgba(245, 158, 11, 0.12);
+color: #92400e;
 }
 
 .admin-table small {
-  color: #64748b;
-  font-size: 12px;
+color: #64748b;
+font-size: 12px;
 }
 
 .admin-stat-link{
-  color:inherit;
-  text-decoration:none;
-  transition:transform .16s ease, border-color .16s ease;
+color:inherit;
+text-decoration:none;
+transition:transform .16s ease, border-color .16s ease;
 }
 .admin-stat-link:hover{
-  transform:translateY(-1px);
-  border-color:#cfe0f7;
+transform:translateY(-1px);
+border-color:#cfe0f7;
 }
 .admin-actions{
-  display:grid;
-  gap:8px;
-  min-width:126px;
+display:grid;
+gap:8px;
+min-width:126px;
 }
 .admin-table-actions-col{
-  position:sticky;
-  right:0;
-  background:#fff;
-  box-shadow:-6px 0 8px -6px rgba(15,23,42,.15);
+position:sticky;
+right:0;
+background:#fff;
+box-shadow:-6px 0 8px -6px rgba(15,23,42,.15);
 }
 .admin-table th.admin-table-actions-col{
-  background:#F8FAFC;
+background:#F8FAFC;
 }
 .admin-actions .btn{
-  min-height:38px;
-  padding:9px 10px;
-  border-radius:12px;
-  font-size:12px;
+min-height:38px;
+padding:9px 10px;
+border-radius:12px;
+font-size:12px;
 }
 .admin-edit-box{
-  display:grid;
-  gap:12px;
-  border:1px solid #cfe0f7;
-  border-radius:18px;
-  padding:14px;
-  background:#f8fbff;
+display:grid;
+gap:12px;
+border:1px solid #cfe0f7;
+border-radius:18px;
+padding:14px;
+background:#f8fbff;
 }
 
 /* Sprint 1.6.1 · Validaciones, links legales y base de pago */
 .input-error{
-  border-color:#fca5a5 !important;
-  background:#fff7f7 !important;
+border-color:#fca5a5 !important;
+background:#fff7f7 !important;
 }
 .field-error{
-  margin:-6px 0 2px;
-  color:#b42318;
-  font-size:12px;
-  font-weight:800;
+margin:-6px 0 2px;
+color:#b42318;
+font-size:12px;
+font-weight:800;
 }
 .check-error{
-  border-color:#fca5a5 !important;
-  background:#fff7f7 !important;
+border-color:#fca5a5 !important;
+background:#fff7f7 !important;
 }
 .inline-link{
-  display:inline-flex;
-  margin-left:6px;
-  color:#2563EB;
-  font-weight:900;
-  text-decoration:underline;
-  text-underline-offset:3px;
+display:inline-flex;
+margin-left:6px;
+color:#2563EB;
+font-weight:900;
+text-decoration:underline;
+text-underline-offset:3px;
 }
 .helper-text{
-  margin:0;
-  color:#64748B;
-  font-size:12px;
-  line-height:1.35;
-  text-align:center;
+margin:0;
+color:#64748B;
+font-size:12px;
+line-height:1.35;
+text-align:center;
 }
 .payment-box{
-  display:grid;
-  gap:12px;
-  border:1px solid #e2e8f0;
-  border-radius:18px;
-  padding:12px;
-  background:#f8fafc;
+display:grid;
+gap:12px;
+border:1px solid #e2e8f0;
+border-radius:18px;
+padding:12px;
+background:#f8fafc;
 }
 .registro-section-final,
 .tournaments-list-safe,
 .detail-grid-safe,
 .detail-bottom-safe{
-  margin-bottom:110px;
+margin-bottom:110px;
 }
 @media(min-width:860px){
-  .app-shell{
-    max-width:560px;
-  }
+.app-shell{
+max-width:560px;
+}
 }
 
 /* Sprint 1.6.2 · Corrección Registro, confirmación y favicon balón */
 .confirmation-hero{
-  display:grid;
-  gap:16px;
-  margin-top:20px;
-  margin-bottom:130px;
+display:grid;
+gap:16px;
+margin-top:20px;
+margin-bottom:130px;
 }
 
 /* Sprint 1.7 · Perfil demo-ready */
@@ -568,165 +568,165 @@ body{
 .modal-flyer{max-width:min(92vw,720px);max-height:84vh;object-fit:contain;border-radius:16px;background:#fff}
 .modal-close{position:fixed;top:18px;right:18px;border:0;border-radius:999px;background:#fff;color:#111827;font-weight:900;padding:10px 14px;z-index:61}
 .confirmation-actions{
-  display:grid;
-  gap:12px;
-  margin-top:8px;
+display:grid;
+gap:12px;
+margin-top:8px;
 }
 .btn-secondary{
-  border:1px solid #dbeafe;
-  background:#eff6ff;
-  color:#173B63;
-  border-radius:16px;
-  padding:14px 18px;
-  font-weight:900;
-  text-align:center;
+border:1px solid #dbeafe;
+background:#eff6ff;
+color:#173B63;
+border-radius:16px;
+padding:14px 18px;
+font-weight:900;
+text-align:center;
 }
 .helper-left{
-  text-align:left;
-  margin:-4px 0 0;
+text-align:left;
+margin:-4px 0 0;
 }
 .app-shell{
-  padding-bottom:150px;
+padding-bottom:150px;
 }
 .registro-section-final{
-  padding-bottom:20px;
-  margin-bottom:145px;
+padding-bottom:20px;
+margin-bottom:145px;
 }
 
 /* Sprint 1.3 · Galeria, videos, resultados y QR */
 .media-filters{
-  display:flex;
-  gap:8px;
-  overflow-x:auto;
-  padding-bottom:4px;
+display:flex;
+gap:8px;
+overflow-x:auto;
+padding-bottom:4px;
 }
 .media-filters .btn{
-  white-space:nowrap;
-  min-width:max-content;
+white-space:nowrap;
+min-width:max-content;
 }
 .media-grid{
-  display:grid;
-  grid-template-columns:1fr;
-  gap:14px;
+display:grid;
+grid-template-columns:1fr;
+gap:14px;
 }
 .media-card{
-  border:1px solid var(--line);
-  border-radius:22px;
-  background:#fff;
-  padding:12px;
-  display:grid;
-  gap:10px;
-  text-align:left;
-  color:inherit;
-  box-shadow:0 16px 34px rgba(17,19,24,.08);
-  overflow:hidden;
+border:1px solid var(--line);
+border-radius:22px;
+background:#fff;
+padding:12px;
+display:grid;
+gap:10px;
+text-align:left;
+color:inherit;
+box-shadow:0 16px 34px rgba(17,19,24,.08);
+overflow:hidden;
 }
 button.media-card{
-  width:100%;
-  cursor:pointer;
-  font:inherit;
+width:100%;
+cursor:pointer;
+font:inherit;
 }
 .media-card img,
 .media-preview{
-  width:100%;
-  aspect-ratio:4/3;
-  border-radius:18px;
-  object-fit:cover;
-  background:#eef3fa;
-  border:1px solid var(--line);
+width:100%;
+aspect-ratio:4/3;
+border-radius:18px;
+object-fit:cover;
+background:#eef3fa;
+border:1px solid var(--line);
 }
 .media-preview{
-  max-height:260px;
+max-height:260px;
 }
 .media-modal,
 .qr-modal{
-  width:min(94vw,520px);
-  max-height:88vh;
-  overflow:auto;
-  border-radius:24px;
-  background:#fff;
-  padding:16px;
-  display:grid;
-  gap:12px;
-  box-shadow:0 24px 60px rgba(0,0,0,.28);
+width:min(94vw,520px);
+max-height:88vh;
+overflow:auto;
+border-radius:24px;
+background:#fff;
+padding:16px;
+display:grid;
+gap:12px;
+box-shadow:0 24px 60px rgba(0,0,0,.28);
 }
 .media-modal img{
-  width:100%;
-  max-height:62vh;
-  object-fit:contain;
-  border-radius:18px;
-  background:#f8fafc;
+width:100%;
+max-height:62vh;
+object-fit:contain;
+border-radius:18px;
+background:#f8fafc;
 }
 .video-card iframe{
-  width:100%;
-  aspect-ratio:16/9;
-  border:0;
-  border-radius:18px;
-  background:#111827;
+width:100%;
+aspect-ratio:16/9;
+border:0;
+border-radius:18px;
+background:#111827;
 }
 .video-preview{
-  width:100%;
-  aspect-ratio:16/9;
-  border-radius:18px;
-  object-fit:cover;
-  background:#eef3fa;
-  border:1px solid var(--line);
+width:100%;
+aspect-ratio:16/9;
+border-radius:18px;
+object-fit:cover;
+background:#eef3fa;
+border:1px solid var(--line);
 }
 .qr-modal{
-  place-items:center;
-  text-align:center;
+place-items:center;
+text-align:center;
 }
 .qr-modal img{
-  width:min(72vw,280px);
-  height:min(72vw,280px);
-  object-fit:contain;
-  border-radius:20px;
-  border:1px solid var(--line);
-  background:#fff;
-  padding:10px;
+width:min(72vw,280px);
+height:min(72vw,280px);
+object-fit:contain;
+border-radius:20px;
+border:1px solid var(--line);
+background:#fff;
+padding:10px;
 }
 .admin-row-panel{
-  display:grid;
-  gap:10px;
+display:grid;
+gap:10px;
 }
 .admin-row-main{
-  border:0;
-  background:transparent;
-  padding:0;
-  text-align:left;
-  color:inherit;
-  display:grid;
-  gap:4px;
-  cursor:pointer;
+border:0;
+background:transparent;
+padding:0;
+text-align:left;
+color:inherit;
+display:grid;
+gap:4px;
+cursor:pointer;
 }
 .podium-grid{
-  display:grid;
-  grid-template-columns:1fr;
-  gap:12px;
+display:grid;
+grid-template-columns:1fr;
+gap:12px;
 }
 .podium-card{
-  text-align:center;
-  border:1px solid #dbeafe;
-  background:linear-gradient(180deg,#fff,#f8fbff);
+text-align:center;
+border:1px solid #dbeafe;
+background:linear-gradient(180deg,#fff,#f8fbff);
 }
 .podium-card strong{
-  font-size:38px;
-  line-height:1;
+font-size:38px;
+line-height:1;
 }
 @media(min-width:720px){
-  .media-grid{
-    grid-template-columns:repeat(2,minmax(0,1fr));
-  }
-  .podium-grid{
-    grid-template-columns:repeat(3,minmax(0,1fr));
-  }
+.media-grid{
+grid-template-columns:repeat(2,minmax(0,1fr));
+}
+.podium-grid{
+grid-template-columns:repeat(3,minmax(0,1fr));
+}
 }
 
 /* ============================================================
-   PROKICKS VISION — bloque adicional, no modifica reglas previas.
-   Mantiene identidad visual: fondos claros, #F4F6F8, azul #173B63,
-   azul de acción #2563EB, texto #1F2937, sans-serif, tarjetas limpias.
-   ============================================================ */
+PROKICKS VISION — bloque adicional, no modifica reglas previas.
+Mantiene identidad visual: fondos claros, #F4F6F8, azul #173B63,
+azul de acción #2563EB, texto #1F2937, sans-serif, tarjetas limpias.
+============================================================ */
 .vision-entry-card{background:#fff;border:1px solid #E5E9EF}
 .vision-error{color:#B91C1C}
 .vision-camera-selector .vision-camera-slot{display:flex;flex-direction:column;gap:8px;margin-top:8px}
@@ -747,7 +747,7 @@ button.media-card{
 .vision-evolution-chart{width:100%;height:90px}
 
 /* Sprint 1.8 · Preloader balon + jerarquia de acceso ProKicks
-   No modifica reglas previas. Solo agrega clases nuevas. */
+No modifica reglas previas. Solo agrega clases nuevas. */
 .entry-actions{margin-top:4px}
 .btn-outline{background:transparent;border:1.5px solid #173B63;color:#173B63}
 .entry-divider{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12px;margin:4px 0}
@@ -805,7 +805,7 @@ button.media-card{
 .admin-nav-item{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:9px 14px;color:#5e6675;font-size:13px;font-weight:800;white-space:nowrap;text-decoration:none}
 .admin-nav-item.active{background:#eef4ff;color:var(--navy);border-color:#cfe0f7}
 @media(max-width:480px){
-  .admin-nav{overflow-x:auto;flex-wrap:nowrap;padding-bottom:4px}
+.admin-nav{overflow-x:auto;flex-wrap:nowrap;padding-bottom:4px}
 }
 /* Sprint 2.6 · Próximo torneo — rediseño con countdown */
 .next-tournament-card{display:flex;flex-direction:column;gap:12px;background:linear-gradient(135deg,#173B63 0%,#0F2846 100%);border:1px solid #2A5AA8;border-radius:18px;padding:18px 20px;text-decoration:none;margin:0 0 18px;box-shadow:0 14px 32px rgba(15,38,70,.28)}
@@ -820,301 +820,292 @@ button.media-card{
 .next-tournament-live{display:inline-block;font-size:13px;font-weight:800;color:#173B63;background:#fff;border-radius:999px;padding:6px 12px;width:fit-content}
 .next-tournament-cta{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:800;color:#8FC7FF}
 @media(max-width:380px){
-  .next-tournament-countdown .countdown-unit strong{font-size:16px}
+.next-tournament-countdown .countdown-unit strong{font-size:16px}
 }
 
 /* Check-in code display (registration confirmation) */
 .checkin-code-box {
-  margin-top: 16px;
-  padding: 20px;
-  border-radius: 16px;
-  background: linear-gradient(135deg, #173B63 0%, #0f2846 100%);
-  text-align: center;
-  color: #fff;
+margin-top: 16px;
+padding: 20px;
+border-radius: 16px;
+background: linear-gradient(135deg, #173B63 0%, #0f2846 100%);
+text-align: center;
+color: #fff;
 }
 
 .checkin-code-box .field-label {
-  color: rgba(255, 255, 255, 0.75);
-  font-size: 13px;
-  margin: 0 0 8px;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+color: rgba(255, 255, 255, 0.75);
+font-size: 13px;
+margin: 0 0 8px;
+text-transform: uppercase;
+letter-spacing: 0.06em;
 }
 
 .checkin-code-big {
-  font-size: 40px;
-  font-weight: 800;
-  letter-spacing: 0.15em;
-  margin: 0 0 8px;
-  color: #fff;
+font-size: 40px;
+font-weight: 800;
+letter-spacing: 0.15em;
+margin: 0 0 8px;
+color: #fff;
 }
 
 .checkin-code-box .helper-text {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 13px;
-  margin: 0;
-  line-height: 1.4;
+color: rgba(255, 255, 255, 0.7);
+font-size: 13px;
+margin: 0;
+line-height: 1.4;
 }
 
 .checkin-candidate {
-  text-align: left;
-  margin-bottom: 8px;
+text-align: left;
+margin-bottom: 8px;
 }
 
 .checkin-candidate:last-child {
-  margin-bottom: 0;
+margin-bottom: 0;
 }
 
 /* Botón de compartir en galería */
 .media-card-wrap {
-  position: relative;
+position: relative;
 }
 
 .media-share-btn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  width: 34px;
-  height: 34px;
-  border-radius: 999px;
-  background: rgba(23, 59, 99, 0.85);
-  color: #fff;
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 2;
+position: absolute;
+top: 10px;
+right: 10px;
+width: 34px;
+height: 34px;
+border-radius: 999px;
+background: rgba(23, 59, 99, 0.85);
+color: #fff;
+border: none;
+display: flex;
+align-items: center;
+justify-content: center;
+cursor: pointer;
+z-index: 2;
 }
 
 .media-share-btn:hover {
-  background: #173B63;
+background: #173B63;
 }
 
 /* Fix 1.9 - Video thumbnail link (evita error de embed en Shorts) */
 .video-thumb-link{
-  position:relative;
-  display:block;
-  border-radius:18px;
-  overflow:hidden;
-  background:#0F172A;
+position:relative;
+display:block;
+border-radius:18px;
+overflow:hidden;
+background:#0F172A;
 }
 .video-thumb{
-  width:100%;
-  aspect-ratio:16/9;
-  object-fit:cover;
-  background:#0F172A;
-  display:block;
+width:100%;
+aspect-ratio:16/9;
+object-fit:cover;
+background:#0F172A;
+display:block;
 }
 .video-thumb-empty{
-  aspect-ratio:16/9;
-  background:#0F172A;
+aspect-ratio:16/9;
+background:#0F172A;
 }
 .video-play-btn{
-  position:absolute;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
-  width:56px;
-  height:56px;
-  border-radius:50%;
-  background:rgba(23,59,99,.85);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:#fff;
-  box-shadow:0 8px 20px rgba(0,0,0,.3);
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+width:56px;
+height:56px;
+border-radius:50%;
+background:rgba(23,59,99,.85);
+display:flex;
+align-items:center;
+justify-content:center;
+color:#fff;
+box-shadow:0 8px 20px rgba(0,0,0,.3);
 }
 
 /* Transmision en vivo del torneo */
 .live-stream-card .row {
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 14px;
+align-items: center;
+gap: 10px;
+margin-bottom: 14px;
 }
 
 .live-dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 999px;
-  background: #DC2626;
-  box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.6);
-  animation: live-pulse 1.6s infinite;
-  flex-shrink: 0;
+width: 12px;
+height: 12px;
+border-radius: 999px;
+background: #DC2626;
+box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.6);
+animation: live-pulse 1.6s infinite;
+flex-shrink: 0;
 }
 
 @keyframes live-pulse {
-  0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.55); }
-  70% { box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.55); }
+70% { box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); }
+100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
 }
 
 .live-stream-embed {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  border-radius: 16px;
-  overflow: hidden;
-  background: #0F172A;
+position: relative;
+width: 100%;
+aspect-ratio: 16 / 9;
+border-radius: 16px;
+overflow: hidden;
+background: #0F172A;
 }
 
 .live-stream-embed iframe {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  border: 0;
+position: absolute;
+inset: 0;
+width: 100%;
+height: 100%;
+border: 0;
 }
 
 /* Admin desktop — panel mas ancho para que no se vea apretado en pantallas grandes.
-   No toca .app-shell fuera de .admin-shell, asi que la app movil de jugadores no cambia. */
+No toca .app-shell fuera de .admin-shell, asi que la app movil de jugadores no cambia. */
 @media(min-width:860px){
-  .admin-shell{
-    max-width:1180px;
-    padding-left:32px;
-    padding-right:32px;
-  }
-  .admin-shell .grid-2{
-    grid-template-columns:1fr 1fr;
-  }
-  .admin-shell .admin-edit-box{
-    max-width:680px;
-  }
-  .admin-shell .table-wrap{
-    overflow-x:auto;
-  }
-  .admin-shell .admin-table{
-    font-size:14px;
-  }
+.admin-shell{
+max-width:1180px;
+padding-left:32px;
+padding-right:32px;
+}
+.admin-shell .grid-2{
+grid-template-columns:1fr 1fr;
+}
+.admin-shell .admin-edit-box{
+max-width:680px;
+}
+.admin-shell .table-wrap{
+overflow-x:auto;
+}
+.admin-shell .admin-table{
+font-size:14px;
+}
 }
 @media(min-width:1280px){
-  .admin-shell{
-    max-width:1320px;
-  }
+.admin-shell{
+max-width:1320px;
+}
 }
 
 /* Admin — rediseno de tarjetas y botones: menos generico, mas angular, con movimiento en hover.
-   Solo afecta .admin-shell, no toca la app movil de jugadores. */
+Solo afecta .admin-shell, no toca la app movil de jugadores. */
 .admin-shell .stat{
-  border-radius:4px;
-  position:relative;
-  overflow:hidden;
-  border:1px solid var(--line);
-  background:#fff;
-  transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+border-radius:4px;
+position:relative;
+overflow:hidden;
+border:1px solid var(--line);
+background:#fff;
+transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
 }
 .admin-shell .stat:before{
-  content:"";
-  position:absolute;
-  left:0;
-  top:0;
-  bottom:0;
-  width:3px;
-  background:var(--navy);
-  transform:scaleY(.3);
-  transform-origin:top;
-  transition:transform .22s cubic-bezier(.2,.8,.2,1);
+content:"";
+position:absolute;
+left:0;
+top:0;
+bottom:0;
+width:3px;
+background:var(--navy);
+transform:scaleY(.3);
+transform-origin:top;
+transition:transform .22s cubic-bezier(.2,.8,.2,1);
 }
 .admin-shell .stat:hover{
-  transform:translateX(4px);
-  border-color:#cfd8e6;
-  box-shadow:0 10px 22px rgba(15,23,42,.08);
+transform:translateX(4px);
+border-color:#cfd8e6;
+box-shadow:0 10px 22px rgba(15,23,42,.08);
 }
 .admin-shell .stat:hover:before{
-  transform:scaleY(1);
+transform:scaleY(1);
 }
 .admin-shell .stat .muted{
-  font-size:11px;
-  font-weight:800;
-  text-transform:uppercase;
-  letter-spacing:.09em;
-  color:#8592a8;
+font-size:11px;
+font-weight:800;
+text-transform:uppercase;
+letter-spacing:.09em;
+color:#8592a8;
 }
 .admin-shell .stat strong{
-  font-size:18px;
-  letter-spacing:-.01em;
+font-size:18px;
+letter-spacing:-.01em;
 }
 
 .admin-shell .btn{
-  border-radius:4px;
-  position:relative;
-  overflow:hidden;
-  isolation:isolate;
-  font-size:14px;
-  transition:transform .16s cubic-bezier(.2,.8,.2,1), box-shadow .16s ease;
+border-radius:4px;
+position:relative;
+overflow:hidden;
+isolation:isolate;
+font-size:14px;
+transition:transform .16s cubic-bezier(.2,.8,.2,1), box-shadow .16s ease;
 }
 .admin-shell .btn:after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:linear-gradient(100deg, transparent 30%, rgba(255,255,255,.18) 45%, transparent 60%);
-  transform:translateX(-130%);
-  transition:transform .5s ease;
-  z-index:1;
-  pointer-events:none;
+content:"";
+position:absolute;
+inset:0;
+background:linear-gradient(100deg, transparent 30%, rgba(255,255,255,.18) 45%, transparent 60%);
+transform:translateX(-130%);
+transition:transform .5s ease;
+z-index:1;
+pointer-events:none;
 }
 .admin-shell .btn:hover{
-  transform:translateY(-2px);
-  box-shadow:0 10px 20px rgba(15,23,42,.14);
+transform:translateY(-2px);
+box-shadow:0 10px 20px rgba(15,23,42,.14);
 }
 .admin-shell .btn:hover:after{
-  transform:translateX(130%);
+transform:translateX(130%);
 }
 .admin-shell .btn.btn-soft{
-  border-radius:4px;
-  border:1px solid var(--line);
-  padding-left:18px;
+border-radius:4px;
+border:1px solid var(--line);
+padding-left:18px;
 }
 .admin-shell .btn.btn-soft:before{
-  content:"";
-  position:absolute;
-  left:0;
-  top:0;
-  bottom:0;
-  width:0;
-  background:var(--navy);
-  transition:width .2s ease;
+content:"";
+position:absolute;
+left:0;
+top:0;
+bottom:0;
+width:0;
+background:var(--navy);
+transition:width .2s ease;
 }
 .admin-shell .btn.btn-soft:hover{
-  border-color:var(--navy);
-  color:var(--navy);
+border-color:var(--navy);
+color:var(--navy);
 }
 .admin-shell .btn.btn-soft:hover:before{
-  width:3px;
+width:3px;
 }
-.admin-shell .btn.btn-primary,
-.admin-shell .btn.btn-warm{
-  border-radius:4px;
-}
-
+.admin-shell .btn.btn-primary, .admin-shell .btn.btn-warm{ border-radius:4px; }
 .admin-shell .admin-nav-item{
-  border-radius:4px;
-  position:relative;
-  transition:transform .16s ease, color .16s ease, border-color .16s ease, background .16s ease;
+border-radius:4px; position:relative;
+transition:transform .16s ease, color .16s ease, border-color .16s ease, background .16s ease;
 }
-.admin-shell .admin-nav-item:hover{
-  transform:translateY(-2px);
-}
-.admin-shell .admin-nav-item.active{
-  border-radius:4px;
-}
+.admin-shell .admin-nav-item:hover{ transform:translateY(-2px); }
+.admin-shell .admin-nav-item.active{ border-radius:4px; }
 .admin-shell .admin-nav-item.active:after{
-  content:"";
-  position:absolute;
-  left:12px;
-  right:12px;
-  bottom:-6px;
-  height:3px;
-  border-radius:2px;
-  background:var(--navy);
+content:""; position:absolute; left:12px; right:12px; bottom:-6px; height:3px;
+border-radius:2px; background:var(--navy);
 }
+.admin-shell .admin-edit-box, .admin-shell .table-wrap, .admin-shell .card{ border-radius:6px; }
+.admin-shell .input, .admin-shell select.input{ border-radius:4px; }
 
-.admin-shell .admin-edit-box,
-.admin-shell .table-wrap,
-.admin-shell .card{
-  border-radius:6px;
+/* Fix pantalla completa en desktop — amplia .app-shell (toda la app de jugador)
+en pantallas grandes. Sobreescribe el max-width:560px definido arriba.
+No toca .admin-shell ni el layout movil (menor a 860px sigue igual). */
+@media(min-width:860px){
+.app-shell{
+max-width:760px;
 }
-.admin-shell .input,
-.admin-shell select.input{
-  border-radius:4px;
+}
+@media(min-width:1280px){
+.app-shell{
+max-width:860px;
+}
 }
