@@ -16,6 +16,7 @@ type Registration = {
   id: string;
   tournament_id: string;
   participant_1_name: string | null;
+  participant_2_name: string | null;
   contact_email: string | null;
   check_in_status: string | null;
   check_in_code: string | null;
