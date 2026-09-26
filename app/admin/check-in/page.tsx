@@ -10,8 +10,8 @@ import { formatDateTimeEs } from '@/lib/format';
 
 type Registration = {
   id: string;
-  participant1_name: string | null;
-  participant2_name: string | null;
+  participant_1_name: string | null;
+  participant_2_name: string | null;
   contact_email: string | null;
   contact_whatsapp: string | null;
   modality: string | null;
@@ -23,7 +23,7 @@ type Registration = {
   tournament?: { title: string | null } | null;
 };
 
-const SELECT_FIELDS = 'id,participant1_name,participant2_name,contact_email,contact_whatsapp,modality,branch,registration_status,check_in_code,check_in_status,check_in_at,tournament:prokicks_tournaments(title)';
+const SELECT_FIELDS = 'id,participant_1_name,participant_2_name,contact_email,contact_whatsapp,modality,branch,registration_status,check_in_code,check_in_status,check_in_at,tournament:prokicks_tournaments(title)';
 
 function CheckInTool() {
   const searchParams = useSearchParams();
@@ -32,6 +32,9 @@ function CheckInTool() {
   const [item, setItem] = useState<Registration | null>(null);
   const [msg, setMsg] = useState('');
   const [loading, setLoading] = useState(false);
+  const [allRegs, setAllRegs] = useState<Registration[]>([]);
+  const [showAll, setShowAll] = useState(false);
+  const [loadingAll, setLoadingAll] = useState(false);
 
   async function lookup(nextTerm = term) {
     const cleanTerm = nextTerm.trim();
@@ -60,8 +63,8 @@ function CheckInTool() {
     const { data, error } = await supabase
       .from('prokicks_tournament_registrations')
       .select(SELECT_FIELDS)
-      .or(`participant1_name.ilike.%${cleanTerm}%,participant2_name.ilike.%${cleanTerm}%`)
-      .limit(10);
+        .or(`participant_1_name.ilike.%${cleanTerm}%,participant_2_name.ilike.%${cleanTerm}%`)  
+        .limit(10);
 
     setLoading(false);
     if (error) {
@@ -88,6 +91,24 @@ function CheckInTool() {
     setItem(candidate);
     setMsg('Registro encontrado.');
   }
+
+    async function loadAll() {
+        setLoadingAll(true);
+        setShowAll(true);
+        setMsg('');
+        const { data, error } = await supabase
+        .from('prokicks_tournament_registrations')
+        .select(SELECT_FIELDS)
+        .order('participant_1_name', { ascending: true })
+        .limit(500);
+        setLoadingAll(false);
+        if (error) {
+            captureError(error, { area: 'admin-check-in-load-all' });
+            setMsg(error.message);
+            return;
+        }
+        setAllRegs((data || []) as unknown as Registration[]);
+    }
 
   async function markCheckedIn() {
     if (!item?.id) return;
@@ -123,13 +144,21 @@ function CheckInTool() {
         <input className="input" value={term} onChange={(event) => setTerm(event.target.value)} placeholder="Nombre y apellido" onKeyDown={(e) => e.key === 'Enter' && lookup()} />
         <button className="btn btn-primary btn-full" disabled={loading} onClick={() => lookup()}><Search size={16} /> Buscar participante</button>
         {msg && <div className={item ? 'alert ok' : 'alert warn'}>{msg}</div>}
+        <button className="btn btn-soft btn-full" disabled={loadingAll} onClick={loadAll}>{loadingAll ? 'Cargando...' : 'Ver toda la base de registrados'}</button>
+        {showAll && (
+      <div className="checkin-candidates-scroll">
+      {allRegs.map((reg) => (
+      <button key={reg.id} className="btn btn-soft btn-full checkin-candidate" onClick={() => pickCandidate(reg)}>{reg.participant_1_name || 'Participante'}{reg.participant_2_name ? ` / ${reg.participant_2_name}` : ''} · {reg.check_in_status === 'checked_in' ? '✅' : '⏳'}</button>
+      ))}
+      </div>
+      )}
       </section>
       {candidates.length > 0 && (
         <section className="card form section detail-bottom-safe">
           {candidates.map((candidate) => (
             <button key={candidate.id} className="btn btn-soft btn-full checkin-candidate" onClick={() => pickCandidate(candidate)}>
-              <strong>{candidate.participant1_name || 'Participante'}</strong>
-              {candidate.participant2_name ? ` · ${candidate.participant2_name}` : ''}
+              <strong>{candidate.participant_1_name || 'Participante'}</strong>
+              {candidate.participant_2_name ? ` · ${candidate.participant_2_name}` : ''}
               <span className="helper-text"> — {candidate.tournament?.title || 'Torneo'} · {candidate.modality || 'modalidad'} · {candidate.branch || ''}</span>
             </button>
           ))}
@@ -138,7 +167,7 @@ function CheckInTool() {
       {item && (
         <section className="card form section detail-bottom-safe">
           <span className="tag tag-blue">{item.tournament?.title || 'Torneo'}</span>
-          <h2 className="card-title">{item.participant1_name || 'Participante'}{item.participant2_name ? ` / ${item.participant2_name}` : ''}</h2>
+          <h2 className="card-title">{item.participant_1_name || 'Participante'}{item.participant_2_name ? ` / ${item.participant_2_name}` : ''}</h2>
           <p className="p">{item.modality || 'modalidad'} · {item.branch || ''} · {item.registration_status || 'registro'}</p>
           <p className="p">{item.contact_email || 'sin email'} · {item.contact_whatsapp || 'sin WhatsApp'}</p>
           <p className="field-label">Estado check-in</p>
