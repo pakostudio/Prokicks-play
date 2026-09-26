@@ -132,7 +132,7 @@ export default function AdminResultadosPage() {
       .from('prokicks_tournament_matches')
       .select('id,tournament_id,team_a_name,team_b_name,score_a,score_b,created_at')
       .eq('tournament_id', id)
-      .order('created_at', { ascending: true });
+      .order('created_at', { ascending: false });
     if (error) {
       captureError(error, { area: 'admin-resultados-matches' });
       setMsg('No pudimos cargar los partidos.');
