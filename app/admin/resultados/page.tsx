@@ -190,6 +190,26 @@ export default function AdminResultadosPage() {
     }
   }
 
+  async function moveMatch(matchId: string, newTournamentId: string) {
+    if (!newTournamentId) return;
+    try {
+      await supabase.from('prokicks_tournament_matches').update({ tournament_id: newTournamentId }).eq('id', matchId);
+      setMatches((prev) => prev.filter((m) => m.id !== matchId));
+    } catch (error) {
+      captureError(error, { area: 'admin-resultados-move-match', matchId });
+      setMsg('No pudimos mover el partido de torneo.');
+    }
+  }
+
+  function promptMoveMatch(matchId: string) {
+    const options = tournaments.map((t) => t.title).join('\n');
+    const chosen = window.prompt(`Escribe el nombre exacto del torneo correcto:\n${options}`);
+    if (!chosen) return;
+    const target = tournaments.find((t) => t.title.trim().toLowerCase() === chosen.trim().toLowerCase());
+    if (!target) { setMsg('No encontramos ese torneo. Verifica el nombre exacto.'); return; }
+    moveMatch(matchId, target.id);
+  }
+
   const standings = useMemo(() => computeStandings(matches), [matches]);
 
   const selectedTournamentTitle = useMemo(
@@ -345,9 +365,7 @@ export default function AdminResultadosPage() {
           </button>
         </div>
         <table className="admin-table">
-          <thead>
-            <tr><th>Equipo A</th><th>Pts A</th><th>Equipo B</th><th>Pts B</th><th>Fecha</th><th></th></tr>
-          </thead>
+          <thead><tr><th>Equipo A</th><th>Pts A</th><th>Equipo B</th><th>Pts B</th><th>Fecha</th><th>Torneo</th><th></th></tr></thead>
           <tbody>
             {matches.map((m) => (
               <tr key={m.id}>
@@ -360,13 +378,14 @@ export default function AdminResultadosPage() {
                   <input className="input" type="number" value={m.score_b ?? ''} onChange={(e) => updateScore(m.id, 'score_b', e.target.value)} />
                 </td>
                 <td>{m.created_at ? formatDateTimeEs(m.created_at) : '-'}</td>
+                <td><button className="tag" onClick={() => promptMoveMatch(m.id)}>Mover</button></td>
                 <td>
                   <button className="tag tag-warm" onClick={() => removeMatch(m.id)}><Trash2 size={14} /></button>
                 </td>
               </tr>
             ))}
             {!matches.length && (
-              <tr><td colSpan={6}>Sin partidos capturados todavía.</td></tr>
+              <tr><td colSpan={7}>Sin partidos capturados todavía.</td></tr>
             )}
           </tbody>
         </table>
