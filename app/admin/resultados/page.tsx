@@ -5,8 +5,9 @@ import { AdminShell } from '@/components/AdminShell';
 import { supabase } from '@/lib/supabase';
 import { captureError } from '@/lib/monitoring';
 import { FileSpreadsheet, FileText, Plus, Trash2, Upload } from 'lucide-react';
+import { formatDateTimeEs } from '@/lib/format';
 
-type TournamentOption = { id: string; title: string };
+  type TournamentOption = { id: string; title: string };
 
 type Match = {
   id: string;
@@ -344,7 +345,7 @@ export default function AdminResultadosPage() {
         </div>
         <table className="admin-table">
           <thead>
-            <tr><th>Equipo A</th><th>Pts A</th><th>Equipo B</th><th>Pts B</th><th></th></tr>
+            <tr><th>Equipo A</th><th>Pts A</th><th>Equipo B</th><th>Pts B</th><th>Fecha</th><th></th></tr>
           </thead>
           <tbody>
             {matches.map((m) => (
@@ -357,13 +358,14 @@ export default function AdminResultadosPage() {
                 <td>
                   <input className="input" type="number" value={m.score_b ?? ''} onChange={(e) => updateScore(m.id, 'score_b', e.target.value)} />
                 </td>
+                <td>{m.created_at ? formatDateTimeEs(m.created_at) : '-'}</td>
                 <td>
                   <button className="tag tag-warm" onClick={() => removeMatch(m.id)}><Trash2 size={14} /></button>
                 </td>
               </tr>
             ))}
             {!matches.length && (
-              <tr><td colSpan={5}>Sin partidos capturados todavía.</td></tr>
+              <tr><td colSpan={6}>Sin partidos capturados todavía.</td></tr>
             )}
           </tbody>
         </table>
