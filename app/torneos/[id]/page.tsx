@@ -130,6 +130,7 @@ export default function TournamentDetail() {
           <Link className="btn btn-warm" href={`/torneos/${item.id}/checkin`}><ClipboardCheck size={16} /> Check-in</Link>
           <Link className="btn btn-warm" href={`/torneos/${item.id}/firma`}><FileSignature size={16} /> Firmar responsiva</Link>
         </div>
+        <Link className="btn btn-soft btn-full section" href={`/torneos/${item.id}/checkin`}>Descargar mi certificado</Link>
         <div className="grid section">
           <Link className="btn btn-soft btn-full" href={`/torneos/${item.id}/resultados`}>Ver resultados</Link>
           <Link className="btn btn-soft btn-full" href="/galeria">Ver galería</Link>
