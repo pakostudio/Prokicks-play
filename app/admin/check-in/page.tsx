@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useEffect, useState } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { CheckCircle2, Search } from 'lucide-react';
 import { AdminShell } from '@/components/AdminShell';
@@ -25,6 +25,7 @@ type Registration = {
 
 const SELECT_FIELDS = 'id,participant_1_name,participant_2_name,contact_email,contact_whatsapp,modality,branch,registration_status,check_in_code,check_in_status,check_in_at,tournament:prokicks_tournaments(title)';
 
+const CURRENT_TOURNAMENT_ID = '96bdd09d-21e5-4c6c-9ee6-3ba99d04f570';
 function CheckInTool() {
   const searchParams = useSearchParams();
   const [term, setTerm] = useState(searchParams.get('code') || '');
@@ -35,6 +36,7 @@ function CheckInTool() {
   const [allRegs, setAllRegs] = useState<Registration[]>([]);
   const [showAll, setShowAll] = useState(false);
   const [loadingAll, setLoadingAll] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   async function lookup(nextTerm = term) {
     const cleanTerm = nextTerm.trim();
@@ -51,6 +53,7 @@ function CheckInTool() {
       .from('prokicks_tournament_registrations')
       .select(SELECT_FIELDS)
       .eq('check_in_code', cleanTerm)
+      .eq('tournament_id', CURRENT_TOURNAMENT_ID)
       .maybeSingle();
 
     if (byCode.data) {
@@ -64,6 +67,7 @@ function CheckInTool() {
       .from('prokicks_tournament_registrations')
       .select(SELECT_FIELDS)
         .or(`participant_1_name.ilike.%${cleanTerm}%,participant_2_name.ilike.%${cleanTerm}%`)  
+      .eq('tournament_id', CURRENT_TOURNAMENT_ID)
         .limit(10);
 
     setLoading(false);
@@ -99,6 +103,7 @@ function CheckInTool() {
         const { data, error } = await supabase
         .from('prokicks_tournament_registrations')
         .select(SELECT_FIELDS)
+          .eq('tournament_id', CURRENT_TOURNAMENT_ID)
         .order('participant_1_name', { ascending: true })
         .limit(500);
         setLoadingAll(false);
@@ -124,8 +129,11 @@ function CheckInTool() {
       setMsg(error.message);
       return;
     }
-    setItem({ ...item, check_in_status: 'checked_in', check_in_at: new Date().toISOString() });
-    setMsg('Check-in confirmado.');
+setItem(null);
+    setTerm('');
+    setCandidates([]);
+    setMsg('Check-in confirmado. Listo para el siguiente.');
+    setTimeout(() => inputRef.current?.focus(), 50);
   }
 
   useEffect(() => {
@@ -141,8 +149,7 @@ function CheckInTool() {
         <p className="p">Busca al participante por nombre y apellido y marca asistencia el día del torneo.</p>
       </section>
       <section className="card form section">
-        <input className="input" value={term} onChange={(event) => setTerm(event.target.value)} placeholder="Nombre y apellido" onKeyDown={(e) => e.key === 'Enter' && lookup()} />
-        <button className="btn btn-primary btn-full" disabled={loading} onClick={() => lookup()}><Search size={16} /> Buscar participante</button>
+<input ref={inputRef} className="input" value={term} onChange={(event) => setTerm(event.target.value)} placeholder="Nombre y apellido" onKeyDown={(e) => { if (e.key !== 'Enter') return; if (item && item.check_in_status !== 'checked_in') { markCheckedIn(); } else { lookup(); } }} />        <button className="btn btn-primary btn-full" disabled={loading} onClick={() => lookup()}><Search size={16} /> Buscar participante</button>
         {msg && <div className={item ? 'alert ok' : 'alert warn'}>{msg}</div>}
         <button className="btn btn-soft btn-full" disabled={loadingAll} onClick={loadAll}>{loadingAll ? 'Cargando...' : 'Ver toda la base de registrados'}</button>
         {showAll && (
