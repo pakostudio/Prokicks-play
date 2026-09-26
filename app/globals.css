@@ -1170,3 +1170,39 @@ gap:12px;
 grid-template-columns:repeat(3,1fr);
 }
 }
+
+
+/* Sprint 0 - Paleta unificada: fondo claro + navy + naranja. Unifica los tonos que se usaban como arcoiris (cyan/purple/blue/yellow) y agrega un acento naranja real para la accion principal. No toca .admin-shell (ya tiene su propio ajuste de layout). */
+:root{
+  --bg:#F6F6FB;
+  --cyan:#7C93B3;
+  --blue:#3D5A80;
+  --purple:#3D5A80;
+  --yellow:#3D5A80;
+  --orange:#FF6B1A;
+  --accent:#FF6B1A;
+}
+.btn-primary{
+  background:var(--accent);
+  box-shadow:0 10px 22px rgba(255,107,26,.22);
+}
+.btn-primary:after{
+  border-color:transparent transparent #C6501A transparent;
+}
+.btn-login{
+  background:var(--accent);
+}
+.btn-login:after{
+  border-color:transparent transparent #C6501A transparent;
+}
+.approved-btn-login{
+  background:var(--accent);
+  box-shadow:0 16px 30px rgba(255,107,26,.22);
+}
+.approved-btn-login:after{
+  border-color:transparent transparent #C6501A transparent;
+}
+.scan-button{
+  background:linear-gradient(135deg,var(--navy),var(--accent));
+  color:#fff;
+}
