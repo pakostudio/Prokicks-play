@@ -49,6 +49,8 @@ export default function TournamentCheckIn() {
   const [saving, setSaving] = useState(false);
   const [checkingIn, setCheckingIn] = useState(false);
   const [checkedIn, setCheckedIn] = useState(false);
+  const [nameTerm, setNameTerm] = useState('');
+  const [candidates, setCandidates] = useState<Registration[]>([]);
 
   useEffect(() => {
     trackEvent('Tournament CheckIn Viewed', { tournament_id: tournamentId });
@@ -126,6 +128,55 @@ export default function TournamentCheckIn() {
       setLoading(false);
     }
   }
+
+    async function findByName() {
+        setLookupError('');
+        setCandidates([]);
+        setRegistration(null);
+        setCheckedIn(false);
+        setIgConfirmed(false);
+        setSigned(false);
+        setHasSignature(false);
+        const term = nameTerm.trim();
+        if (!term) {
+            setLookupError('Escribe tu nombre y apellido.');
+            return;
+        }
+        setLoading(true);
+        try {
+            const { data, error } = await supabase
+            .from('prokicks_tournament_registrations')
+            .select('id, tournament_id, participant_1_name, participant_2_name, contact_email, check_in_status, check_in_code, ig_followed, signed_at')
+            .eq('tournament_id', tournamentId)
+            .or(`participant_1_name.ilike.%${term}%,participant_2_name.ilike.%${term}%`)
+            .limit(8);
+            if (error) throw error;
+            const rows = (data || []) as Registration[];
+            if (rows.length === 0) {
+                setLookupError('No encontramos un registro con ese nombre para este torneo.');
+                return;
+            }
+            if (rows.length === 1) {
+                pickCandidate(rows[0]);
+                return;
+            }
+            setCandidates(rows);
+        } catch (error) {
+            captureError(error, { area: 'tournament-checkin-lookup-name', tournamentId });
+            setLookupError('No pudimos buscar tu registro. Intenta de nuevo.');
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    function pickCandidate(reg: Registration) {
+        setCandidates([]);
+        setLookupError('');
+        setRegistration(reg);
+        setIgConfirmed(Boolean(reg.ig_followed));
+        setSigned(Boolean(reg.signed_at));
+        setCheckedIn(reg.check_in_status === 'checked_in');
+    }
 
   async function confirmIgFollow() {
     if (!registration) return;
@@ -267,6 +318,12 @@ export default function TournamentCheckIn() {
             {loading ? 'Buscando...' : 'Buscar mi registro'}
           </button>
           <Link href={`/torneos/${tournamentId}/registro`} className="inline-link">¿Aún no te registras? Inscríbete aquí</Link>
+          <p className="p checkin-or">O busca por tu nombre y apellido</p>
+          <input className="input" type="text" placeholder="Nombre y apellido" value={nameTerm} onChange={(e) => setNameTerm(e.target.value)} />
+          <button className="btn btn-soft btn-full" disabled={loading} onClick={findByName}>Buscar por nombre</button>
+          {candidates.map((c) => (
+          <button key={c.id} className="checkin-candidate" onClick={() => pickCandidate(c)}>{c.participant_1_name || 'Jugador'}{c.participant_2_name ? ` / ${c.participant_2_name}` : ''}</button>
+          ))}
         </section>
       )}
 
