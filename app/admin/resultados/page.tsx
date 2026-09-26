@@ -323,6 +323,7 @@ export default function AdminResultadosPage() {
           <div>
             <h2>Partidos capturados</h2>
             <p>Edita el marcador directamente en la tabla.</p>
+            <p style={{ fontWeight: 600 }}>Torneo: {selectedTournamentTitle}</p>
           </div>
         </div>
         <div className="grid-2 tight">
