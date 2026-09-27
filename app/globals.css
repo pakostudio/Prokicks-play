@@ -2526,6 +2526,1294 @@ grid-template-columns:repeat(3,1fr);
 
 
 /* Login 2.0 unificado: Google/Apple + Face ID + admin, una sola pagina */
+.login2-wrap{width:100%;margin:0;padding:28px 20px 40px}
+.login2-mobile-brand{display:flex;flex-direction:column;align-items:center;gap:6px;margin-bottom:14px}
+.login2-mobile-brand h1{font-size:19px;font-weight:800;color:#173B63;margin:0}
+.login2-mobile-brand p{font-size:12px;color:#64748B;font-weight:500;margin:0}
+.login2-ball{width:42px;height:42px;border-radius:50%;background:radial-gradient(circle at 32% 30%,#fff,#e2e8f0 60%,#173B63 61%,#0e2743 100%);box-shadow:0 6px 14px rgba(23,59,99,.35)}
+.login2-shell{display:flex;flex-direction:column;gap:14px}
+.login2-brand-panel{display:none}
+.login2-forms-col{display:flex;flex-direction:column;gap:14px}
+.login2-cards-row{display:flex;flex-direction:column;gap:14px}
+.login2-card{background:#fff;border-radius:20px;padding:18px 18px 20px;box-shadow:0 10px 24px -8px rgba(23,59,99,.14),0 1px 2px rgba(23,59,99,.06);border:1px solid #EBEFF3;flex:1}
+.login2-card-head{display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.login2-dot{width:8px;height:8px;border-radius:50%}
+.login2-card-head h2{font-size:15px;font-weight:700;color:#0F172A;margin:0}
+.login2-tag{margin-left:auto;font-size:10px;font-weight:700;color:#EA580C;background:#FFF1E6;padding:3px 8px;border-radius:20px;letter-spacing:.02em}
+.login2-oauth-row{display:flex;gap:8px;margin-bottom:10px}
+.login2-oauth-btn{flex:1;height:44px;border-radius:12px;border:1px solid #E2E8F0;background:#fff;display:flex;align-items:center;justify-content:center;gap:7px;font-size:12.5px;font-weight:600;color:#334155;box-shadow:0 2px 5px rgba(15,23,42,.04);cursor:pointer}
+.login2-oauth-btn.apple{background:#0B0B0C;color:#fff;border-color:#0B0B0C}
+.login2-divider{display:flex;align-items:center;gap:10px;margin:10px 0}
+.login2-divider:before,.login2-divider:after{content:"";flex:1;height:1px;background:#E7EBF0}
+.login2-divider span{font-size:10.5px;color:#94A3B8;font-weight:600}
+.login2-field{margin-bottom:8px}
+.login2-field input{width:100%;height:42px;border-radius:11px;border:1px solid #E2E8F0;padding:0 13px;font-size:13px;color:#0F172A;background:#F8FAFC}
+.login2-field input::placeholder{color:#94A3B8}
+.login2-row-between{display:flex;justify-content:space-between;align-items:center;margin:6px 0 12px;flex-wrap:wrap;gap:8px}
+.login2-biometric-chip{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:#173B63;background:none;border:none;cursor:pointer;padding:0}
+.login2-biometric-chip:disabled{opacity:.5;cursor:not-allowed}
+.login2-biometric-chip svg{width:14px;height:14px}
+.login2-forgot{font-size:11px;color:#EA580C;font-weight:600}
+.login2-btn{width:100%;height:46px;border-radius:12px;border:none;display:flex;align-items:center;justify-content:center;font-size:13.5px;font-weight:700;color:#fff;letter-spacing:.01em;cursor:pointer}
+.login2-btn:disabled{opacity:.6;cursor:not-allowed}
+.login2-btn-signin{background:linear-gradient(135deg,#173B63,#0F2A49);box-shadow:0 10px 18px -6px rgba(23,59,99,.5)}
+.login2-btn-signup{background:linear-gradient(135deg,#F59E0B,#EA580C);box-shadow:0 10px 18px -6px rgba(234,88,12,.45)}
+.login2-admin-card{background:linear-gradient(135deg,#173B63,#101F33);border-radius:20px;padding:16px 18px;display:flex;align-items:center;gap:12px;box-shadow:0 10px 24px -8px rgba(15,23,42,.35);text-decoration:none}
+.login2-admin-icon{width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.login2-admin-card h3{color:#fff;font-size:14px;font-weight:700;margin:0}
+.login2-admin-card p{color:#B9C6D6;font-size:11px;margin-top:2px}
+.login2-msg{font-size:12px;padding:8px 10px;border-radius:10px;background:#FEF2F2;color:#B91C1C;margin-bottom:8px}
+@media (min-width:960px){
+  .login2-wrap{max-width:none;min-height:100dvh;padding:0;display:flex}
+  .login2-mobile-brand{display:none}
+  .login2-shell{flex:1;flex-direction:row;min-height:100dvh;border-radius:0;overflow:hidden;box-shadow:none;border:0;background:#fff}
+  .login2-brand-panel{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;flex:1;background:linear-gradient(160deg,#173B63,#0D2038);padding:40px 24px}
+  .login2-brand-panel .login2-ball{width:56px;height:56px}
+  .login2-brand-panel h1{color:#fff;font-size:24px;font-weight:800;margin:0}
+  .login2-brand-panel p{color:#AEC0D6;font-size:13px;text-align:center;max-width:220px;margin:0}
+  .login2-forms-col{flex:1.3;padding:32px 34px;justify-content:center;overflow-y:auto}
+  .login2-cards-row{flex-direction:row}
+}
+/* Fix 1.8 · Videos en galería (miniatura y modal) */
+.media-card video{
+width:100%;
+aspect-ratio:4/3;
+border-radius:18px;
+object-fit:cover;
+background:#0F172A;
+border:1px solid var(--line);
+display:block;
+}
+.media-preview[src]{
+background:#0F172A;
+}
+video.media-preview{
+max-height:260px;
+width:100%;
+border-radius:18px;
+object-fit:contain;
+background:#0F172A;
+}
+.media-modal video{
+width:100%;
+max-height:62vh;
+border-radius:18px;
+background:#0F172A;
+}
+
+/* Sprint 2.5 · AdminShell — topbar y menú de administración fijo */
+.admin-shell .top-actions{display:flex;align-items:center;gap:8px}
+.admin-shell .top-actions .tag{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.admin-logout{border:0;cursor:pointer;font:inherit}
+.admin-nav{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 20px;padding:0}
+.admin-nav-item{display:flex;align-items:center;justify-content:center;gap:7px;background:linear-gradient(135deg,#f4f7fd,#eaf0fb);border:1px solid #dbe6fa;border-radius:14px;padding:12px 10px;color:#3d4a63;font-size:13px;font-weight:800;white-space:nowrap;text-decoration:none;text-align:center;transition:background .15s ease,color .15s ease,border-color .15s ease,transform .1s ease}
+.admin-nav-item:hover{transform:translateY(-1px);border-color:#b9cdf2}
+.admin-nav-item.active{background:linear-gradient(135deg,var(--navy),#2a5aa8);color:#fff;border-color:var(--navy);box-shadow:0 4px 12px rgba(23,59,99,.25)}
+@media(max-width:480px){
+.admin-nav{grid-template-columns:repeat(2,1fr)}
+}
+/* Sprint 2.1 - Foto sin recorte, jerarquia de color e info social real */
+.entry-hero-image{object-fit:contain !important;background:#F4F6F8 !important;max-height:16dvh !important}
+.entry-hero .h1{color:#111318 !important}
+.btn-outline{border-color:#CBD5E1 !important;color:#111318 !important}
+.entry-stat-card{display:flex;align-items:center;gap:10px;background:#FAEEDA;color:#633806;border-radius:12px;padding:10px 14px;text-decoration:none;margin:2px 0}
+.entry-stat-card strong{display:block;font-size:14px;color:#412402}
+.entry-stat-card span{display:block;font-size:11px;color:#854F0B}
+/* Sprint 2.2 · Hero full-bleed, logo medalla, balon grande */
+.entry-screen{padding-left:0 !important;padding-right:0 !important;max-width:520px !important}
+.entry-hero-full{padding:0 !important;border:0 !important;box-shadow:none !important;border-radius:0 !important;background:transparent !important;overflow:visible !important}
+.entry-hero-media{position:relative;width:100%;height:34dvh;min-height:190px;max-height:280px;overflow:visible;background:#EEF2F7}
+.entry-hero-image-full{width:100% !important;height:100% !important;object-fit:cover !important;object-position:center 0% !important;display:block}
+.entry-logo-badge{position:absolute;left:50%;bottom:-20px;transform:translateX(-50%);width:52px;height:52px;border-radius:50%;background:#fff;border:0.5px solid #E2E8F0;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(17,19,24,.1)}
+.entry-hero-copy{padding:34px 20px 6px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
+.entry-hero-copy .kicker{color:#173B63;font-size:12px;letter-spacing:.14em;font-weight:900;margin:0}
+.entry-hero-copy .h1{color:#111318 !important;font-size:clamp(22px,4.6dvh,30px);margin:0}
+.entry-hero-copy .p{font-size:13px;color:var(--muted);margin:0;max-width:340px}
+.entry-actions,.entry-stat-card{margin-left:20px;margin-right:20px}
+.preloader-ball{width:90px !important;height:90px !important;display:block}
+
+/* Sprint 2.0 - Centrar contenido y arreglar recorte de imagen */
+.entry-screen{justify-content:center !important}
+.entry-hero-image{object-position:center 22% !important;max-height:14dvh !important}
+/* Sprint check-in code: entry tabs (4 CTAs unificados, animados, colores dinamicos) */
+.entry-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:18px 0 10px}
+.entry-tab{position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:14px 6px;border-radius:14px;color:#fff;font-size:11px;font-weight:800;text-align:center;text-decoration:none;border:1px solid transparent;background-size:220% 220%;animation:entryTabGlow 6s ease-in-out infinite;transition:transform .18s ease,box-shadow .18s ease}
+.entry-tab:nth-child(1){background-image:linear-gradient(135deg,#0F2846,#173B63)}
+.entry-tab:nth-child(2){background-image:linear-gradient(135deg,#173B63,#2A4E72)}
+.entry-tab:nth-child(3){background-image:linear-gradient(135deg,#2A4E72,#5B7FA6)}
+.entry-tab:nth-child(4){background-image:linear-gradient(135deg,#5B7FA6,#8FA8C2)}
+.entry-tab:hover,.entry-tab:active{transform:translateY(-4px) scale(1.05);box-shadow:0 12px 26px rgba(23,59,99,.28)}
+.entry-tab-primary{animation:entryTabGlow 6s ease-in-out infinite,entryTabPulse 2.6s ease-in-out infinite}
+@keyframes entryTabGlow{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes entryTabPulse{0%,100%{box-shadow:0 0 0 0 rgba(37,99,235,.35)}50%{box-shadow:0 0 0 8px rgba(37,99,235,0)}}
+.entry-clear{display:block;margin:6px auto 0;text-align:center}
+@media(max-width:380px){
+.entry-tab{font-size:10px;padding:12px 4px}
+}
+
+/* Sprint 1.9 - Fix overflow entry-screen */
+.entry-screen{padding:6px 16px 14px !important;gap:6px !important}
+.entry-hero{padding:8px 16px !important;gap:4px !important}
+.entry-logo{width:90px !important}
+.entry-hero .kicker{font-size:11px !important;letter-spacing:.12em !important}
+.entry-hero .h1{font-size:clamp(18px,4dvh,26px) !important;margin:0 !important}
+.entry-hero .p{font-size:12px !important;margin:0 auto !important}
+.entry-hero-image{max-height:12dvh !important;margin-top:0 !important}
+.entry-profile{padding:8px !important}
+.entry-screen .btn{min-height:40px !important;padding:8px 14px !important}
+.entry-actions{gap:6px !important}
+.entry-divider{margin:0 !important}
+.link-muted{padding:2px !important}
+.admin-link{margin:4px auto 0 !important}
+
+:root{
+--bg:#f6f7f9;
+--surface:#ffffff;
+--text:#111318;
+--muted:#6b7280;
+--line:#e5e7eb;
+--cyan:#60a0c0;
+--blue:#6080b0;
+--purple:#504080;
+--yellow:#5E85A8;
+
+--orange:#1B3552;
+--success:#16a34a;
+--danger:#dc2626;
+--shadow:0 18px 45px rgba(17,19,24,.08);
+--radius:24px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font:inherit}
+.app-shell{min-height:100vh;max-width:480px;margin:0 auto;background:linear-gradient(180deg,#fff 0%,#f7f8fb 100%);position:relative;padding:18px 18px 92px;border-left:1px solid #eef0f4;border-right:1px solid #eef0f4}
+.logo{height:42px;width:auto;object-fit:contain}.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}.brand-pill{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:8px 12px;box-shadow:0 8px 20px rgba(17,19,24,.04)}.avatar{width:38px;height:38px;border-radius:999px;background:linear-gradient(135deg,var(--cyan),var(--purple));display:grid;place-items:center;color:#fff;font-weight:800}.hero{background:#fff;border:1px solid var(--line);border-radius:32px;padding:24px;box-shadow:var(--shadow);overflow:hidden;position:relative}.hero:after{content:"";position:absolute;right:-80px;top:-90px;width:210px;height:210px;border-radius:50%;background:conic-gradient(from 220deg,var(--cyan),var(--blue),var(--purple),var(--yellow),var(--orange),var(--cyan));opacity:.14}.kicker{color:var(--purple);font-size:12px;text-transform:uppercase;letter-spacing:.14em;font-weight:900}.h1{font-size:38px;line-height:.95;margin:10px 0 12px;font-weight:950;letter-spacing:-.055em}.h2{font-size:26px;line-height:1.02;margin:8px 0 10px;font-weight:950;letter-spacing:-.04em}.p{color:var(--muted);font-size:15px;line-height:1.45;margin:0}.grid{display:grid;gap:14px}.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px;box-shadow:0 10px 26px rgba(17,19,24,.05)}.card-title{font-weight:900;margin:0 0 4px}.muted{color:var(--muted)}.btn{border:0;border-radius:18px;padding:14px 16px;font-weight:900;display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;min-height:50px}.btn-primary{color:#fff;background:linear-gradient(135deg,var(--blue),var(--purple));box-shadow:0 14px 28px rgba(80,64,128,.23)}.btn-warm{color:#fff;background:linear-gradient(135deg,var(--yellow),var(--orange));box-shadow:0 10px 22px rgba(27,53,82,.22)}.btn-soft{background:#fff;border:1px solid var(--line);color:var(--text)}.btn-full{width:100%}.input{width:100%;border:1px solid var(--line);background:#fff;border-radius:18px;padding:14px 15px;outline:none}.input:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(96,128,176,.14)}.form{display:grid;gap:12px}.stat{background:#fff;border:1px solid var(--line);border-radius:20px;padding:14px}.stat strong{display:block;font-size:24px;letter-spacing:-.04em}.tag{display:inline-flex;align-items:center;border-radius:999px;padding:7px 10px;font-size:12px;font-weight:800;border:1px solid var(--line);background:#fff}.tag-blue{color:var(--purple);background:#f2f4ff}.tag-warm{color:#1B3552;background:#EAF3FB}.bottom-nav{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);max-width:448px;width:calc(100% - 36px);background:rgba(255,255,255,.92);backdrop-filter:blur(16px);border:1px solid var(--line);border-radius:26px;padding:9px;box-shadow:0 18px 40px rgba(17,19,24,.13);display:grid;grid-template-columns:repeat(5,1fr);gap:6px;z-index:20}.nav-item{display:grid;place-items:center;gap:3px;border-radius:18px;padding:9px 5px;color:#5e6675;font-size:11px;font-weight:800}.nav-item.active{background:#f2f4ff;color:var(--purple)}.scan-button{background:linear-gradient(135deg,var(--yellow),var(--orange));color:#111}.list{display:grid;gap:12px}.row{display:flex;align-items:center;justify-content:space-between;gap:12px}.qr-box{height:260px;border:2px dashed #cbd5e1;border-radius:30px;background:repeating-linear-gradient(45deg,#fff,#fff 10px,#f7f8fb 10px,#f7f8fb 20px);display:grid;place-items:center;text-align:center;padding:20px}.rank-row{display:grid;grid-template-columns:42px 1fr auto;gap:12px;align-items:center}.rank-pos{width:38px;height:38px;border-radius:14px;background:#f2f4ff;color:var(--purple);display:grid;place-items:center;font-weight:950}.alert{padding:12px 14px;border-radius:18px;border:1px solid var(--line);background:#fff}.alert.error{border-color:#fecaca;color:#991b1b;background:#fff7f7}.alert.ok{border-color:#bbf7d0;color:#166534;background:#f7fff9}.section{margin:18px 0}.mini-map{height:290px;border-radius:30px;background:radial-gradient(circle at 20% 35%, rgba(96,160,192,.28) 0 4%, transparent 5%),radial-gradient(circle at 70% 65%, rgba(224,176,80,.35) 0 4%, transparent 5%),radial-gradient(circle at 55% 28%, rgba(80,64,128,.23) 0 4%, transparent 5%),linear-gradient(135deg,#fff,#eef3fa);border:1px solid var(--line);position:relative;overflow:hidden}.pin{position:absolute;width:42px;height:42px;border-radius:50% 50% 50% 8px;transform:rotate(-45deg);background:linear-gradient(135deg,var(--blue),var(--purple));box-shadow:0 10px 20px rgba(80,64,128,.25)}.pin:after{content:"";position:absolute;inset:12px;background:#fff;border-radius:50%}.pin.p1{left:26%;top:34%}.pin.p2{left:62%;top:58%;background:linear-gradient(135deg,var(--yellow),var(--orange))}.pin.p3{left:52%;top:21%;background:linear-gradient(135deg,var(--cyan),var(--blue))}
+
+/* ProKicks Sprint 1.1 · Access + Registration */
+:root{
+--bg:#F4F6F8;
+--surface:#FFFFFF;
+--text:#1F2937;
+--muted:#64748B;
+--line:#E2E8F0;
+--navy:#173B63;
+--action:#2A4E72;
+--success:#16A34A;
+--warning:#F59E0B;
+--danger:#DC2626;
+--shadow:0 18px 45px rgba(15,23,42,.10);
+--radius:18px;
+}
+html,body{background:var(--bg);color:var(--text);font-family:Arial, Helvetica, sans-serif;}
+.btn-primary{background:linear-gradient(135deg,#33608A,#1B3552);box-shadow:0 10px 22px rgba(27,53,82,.22);color:#fff;position:relative;overflow:hidden}.btn-primary:after{content:"";position:absolute;right:0;bottom:0;border-style:solid;border-width:0 0 22px 22px;border-color:transparent transparent #1B3552 transparent}.btn-primary:disabled{opacity:.45;cursor:not-allowed}.btn-soft{background:#fff;border:1px solid var(--line);color:var(--navy)}.tag-blue{color:var(--navy);background:#eef4ff}.nav-item.active{background:#eef4ff;color:var(--navy)}.scan-button{background:var(--action);color:#fff}.h1,.h2,.card-title{letter-spacing:-.035em}.kicker{color:var(--navy)}
+.access-screen,.register-screen,.guest-screen{min-height:100vh;max-width:480px;margin:0 auto;background:var(--bg);color:var(--text);position:relative;overflow:hidden;font-family:Arial, Helvetica, sans-serif}.access-hero{height:300px;position:relative;background:linear-gradient(180deg,#f8fafc 0%,#eef2f7 100%);overflow:hidden}.product-hero-img{position:absolute;right:-22px;top:32px;width:340px;height:auto;object-fit:contain;filter:drop-shadow(0 18px 22px rgba(15,23,42,.14));z-index:3}.hero-line{position:absolute;right:-80px;top:-62px;width:360px;height:210px;border:5px solid var(--navy);border-left-color:transparent;border-bottom-color:transparent;border-radius:50%;opacity:.9;z-index:2}.hero-copyline{position:absolute;left:42px;bottom:54px;color:var(--navy);font-size:18px;line-height:1.18;font-weight:700;z-index:4}.hero-copyline:before{content:"";display:block;width:24px;height:3px;background:var(--action);border-radius:6px;margin-bottom:15px}.hero-bg-players{position:absolute;inset:0;z-index:1;opacity:.16;filter:grayscale(1) blur(.5px)}.player{position:absolute;top:24px;width:118px;height:184px;border-radius:58px 58px 26px 26px;background:linear-gradient(180deg,rgba(23,59,99,.20),rgba(23,59,99,.04));border:1px solid rgba(23,59,99,.06)}.player:after{content:"";position:absolute;width:36px;height:36px;border-radius:50%;bottom:18px;background:radial-gradient(circle,#fff 0 28%,#cbd5e1 29% 31%,#fff 32% 44%,#64748b 45% 47%,#fff 48%);box-shadow:0 4px 16px rgba(15,23,42,.08)}.player-left{left:16px;transform:rotate(-8deg)}.player-left:after{right:-10px}.player-right{right:20px;transform:rotate(8deg)}.player-right:after{left:-8px}.access-content{padding:0 36px 28px;position:relative;margin-top:-4px}.access-title h1{font-size:34px;line-height:1;margin:0 0 12px;font-weight:900;color:#0f172a}.access-title p{font-size:16px;line-height:1.35;color:var(--muted);margin:0 0 28px}.login-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:26px 24px;box-shadow:var(--shadow);display:grid;gap:14px}.login-card h2{font-size:24px;margin:0;color:#0f172a;letter-spacing:-.035em}.login-card p{margin:0;color:var(--muted);font-size:15px}.field-control{min-height:58px;border:1px solid #cfd8e3;background:#fff;border-radius:12px;display:grid;grid-template-columns:30px 1fr 28px;align-items:center;gap:10px;padding:0 16px;color:#667085}.field-control input{border:0;outline:0;background:transparent;color:var(--text);font-size:16px;min-width:0}.field-control input::placeholder{color:#7a8497}.field-extra{justify-self:end}.forgot-link{color:var(--action);font-size:15px;font-weight:500}.btn-login{min-height:58px;border:0;border-radius:10px;background:var(--action);color:#fff;font-size:18px;font-weight:800;position:relative;overflow:hidden;cursor:pointer}.btn-login:after{content:"";position:absolute;right:0;bottom:0;border-style:solid;border-width:0 0 22px 22px;border-color:transparent transparent #1B3552 transparent}.register-block{text-align:center;margin:25px 0 20px}.register-block p{margin:0 0 12px;color:var(--text);font-weight:700}.btn-register{height:54px;border:1.5px solid var(--action);border-radius:10px;color:var(--action);font-weight:800;font-size:18px;display:flex;align-items:center;justify-content:center;background:#fff}.or-divider{display:grid;grid-template-columns:1fr auto 1fr;gap:20px;align-items:center;color:var(--muted);margin:20px 0}.or-divider span{height:1px;background:var(--line)}.guest-card{min-height:72px;border:1px solid var(--line);background:#fff;border-radius:12px;display:grid;grid-template-columns:44px 1fr 22px;align-items:center;gap:14px;padding:14px 18px;box-shadow:0 8px 22px rgba(15,23,42,.04)}.guest-card svg{background:#f1f5f9;border-radius:50%;padding:9px;width:44px;height:44px;color:#0f172a}.guest-card strong{font-size:18px;color:#0f172a}.guest-card p{margin:5px 0 0;color:var(--muted);font-size:14px}.guest-arrow{font-size:34px;color:#64748b}.register-header{height:70px;display:flex;align-items:center;justify-content:space-between;padding:0 22px}.back-link{display:flex;align-items:center;gap:6px;color:var(--navy);font-weight:700}.register-title{padding:4px 26px 16px}.register-title span{color:var(--navy);font-size:12px;text-transform:uppercase;letter-spacing:.12em;font-weight:900}.register-title h1{margin:8px 0 6px;font-size:32px;line-height:1;font-weight:900}.register-title p{margin:0;color:var(--muted);line-height:1.35}.stepper{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;padding:0 26px 18px}.stepper span{height:5px;background:var(--line);border-radius:999px}.stepper span.active{background:var(--action)}.register-card{margin:0 22px 28px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:var(--shadow);display:grid;gap:14px}.card-head{display:flex;gap:12px;align-items:flex-start;margin-bottom:2px}.card-head svg{color:var(--navy);flex:0 0 auto}.card-head h2{margin:0 0 4px;font-size:23px;letter-spacing:-.035em}.card-head p{margin:0;color:var(--muted);font-size:14px;line-height:1.35}.register-card input,.register-card select{width:100%;height:54px;border:1px solid #cfd8e3;border-radius:12px;background:#fff;padding:0 14px;color:var(--text);outline:0}.register-card input:focus,.register-card select:focus{border-color:var(--action);box-shadow:0 0 0 4px rgba(37,99,235,.10)}.date-grid{display:grid;grid-template-columns:1fr 1fr 1.25fr;gap:10px}.age-note{border:1px solid #bbf7d0;color:#166534;background:#f7fff9;padding:12px 14px;border-radius:12px;font-weight:700}.age-note.minor{border-color:#fed7aa;color:#9a3412;background:#fff8ed}.guardian-box{border:1px solid #fed7aa;background:#fff8ed;border-radius:14px;padding:14px;display:grid;gap:10px}.check{display:flex;align-items:flex-start;gap:10px;color:var(--text);line-height:1.35;font-size:14px}.check input{width:18px;height:18px;margin-top:1px;accent-color:var(--action)}.legal-note{margin:0;color:var(--muted);font-size:12px;line-height:1.35;border-top:1px solid var(--line);padding-top:12px}.register-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:6px}.register-actions .btn{min-width:118px;border-radius:12px}.pending-screen{display:grid;place-items:center;padding:24px}.guest-screen{padding:28px 24px}.guest-hero{background:#fff;border:1px solid var(--line);border-radius:18px;padding:26px;box-shadow:var(--shadow);margin-bottom:16px}.guest-hero span{color:var(--navy);font-size:12px;text-transform:uppercase;letter-spacing:.12em;font-weight:900}.guest-hero h1{font-size:34px;line-height:1;margin:10px 0 10px}.guest-hero p{margin:0;color:var(--muted);line-height:1.4}.guest-list{display:grid;gap:12px}.guest-item{display:flex;gap:14px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px}.guest-item svg{color:var(--action);flex:0 0 auto}.guest-item h2{font-size:18px;margin:0 0 4px}.guest-item p{margin:0;color:var(--muted);font-size:14px;line-height:1.35}.guest-actions{display:grid;gap:10px;margin-top:16px}@media(max-width:390px){.access-content{padding-left:24px;padding-right:24px}.access-hero{height:276px}.product-hero-img{width:310px;right:-30px}.hero-copyline{left:28px}.login-card{padding:22px 18px}.access-title h1{font-size:31px}.date-grid{grid-template-columns:1fr}}
+
+/* Sprint 1.2 · Fix visual, torneos, legales y export */
+.access-hero{height:252px;background:radial-gradient(circle at 82% 30%, #ffffff 0 25%, transparent 26%),linear-gradient(180deg,#F4F6F8 0%,#EEF2F7 100%)}
+.product-hero-img{right:18px;top:34px;width:268px;border-radius:20px;box-shadow:0 18px 44px rgba(23,59,99,.12);filter:none;z-index:3}
+.hero-line{right:-120px;top:-90px;width:360px;height:220px;border-width:4px;opacity:.55}
+.hero-copyline{left:34px;bottom:42px;font-size:17px}
+.access-content{margin-top:0;padding:0 32px 28px}.access-title h1{font-size:32px}.access-title p{font-size:15px;margin-bottom:20px}.login-card{padding:22px 20px;gap:12px}.login-card h2{font-size:22px}.field-control{min-height:52px}.btn-login{min-height:54px}.register-block{margin:18px 0 16px}.btn-register{height:50px}.or-divider{margin:14px 0}.guest-card{min-height:66px}.guest-card strong{font-size:16px}.guest-card p{font-size:13px}.consent-link{color:var(--action);font-weight:800;margin-left:4px;white-space:nowrap}.legal-page{min-height:100vh;max-width:780px;margin:0 auto;background:var(--bg);padding:28px 20px}.legal-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:26px;box-shadow:var(--shadow)}.legal-card h1{margin:8px 0 16px;color:#0f172a;font-size:32px;letter-spacing:-.035em}.legal-card p{color:var(--muted);line-height:1.55}.auth-card{margin-top:22vh}.tournament-card{display:grid;gap:12px}.tournament-icon{width:44px;height:44px;border-radius:14px;background:#eef4ff;color:var(--navy);display:grid;place-items:center}.tournament-meta{display:grid;gap:7px;color:var(--muted);font-size:14px}.tournament-meta span{display:flex;align-items:center;gap:8px}.tournament-hero .btn{margin-bottom:0}.app-shell textarea.input{min-height:94px;padding-top:14px;resize:vertical}.grid .btn-soft,.grid .btn-primary{position:relative;z-index:1}@media(max-width:390px){.product-hero-img{width:240px;right:4px}.access-hero{height:236px}.login-card{gap:10px}.register-block{margin-top:14px}.guest-card{grid-template-columns:38px 1fr 18px}}
+
+/* Sprint 1.3 admin tournament management */
+.tight{gap:10px}
+.textarea{min-height:96px;resize:vertical}
+.compact-list{gap:10px}
+.admin-row{width:100%;text-align:left;border:1px solid var(--line);background:#fff;border-radius:14px;padding:14px;display:grid;gap:5px;color:var(--ink);cursor:pointer}
+.admin-row strong{font-size:15px}
+.admin-row span,.admin-row small{color:var(--muted);font-size:12px;display:flex;align-items:center;gap:6px}
+.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:14px;background:#fff}
+.admin-table{width:100%;border-collapse:collapse;font-size:13px;min-width:720px}
+.admin-table th,.admin-table td{padding:12px;border-bottom:1px solid var(--line);text-align:left}
+.admin-table th{color:var(--navy);background:#F8FAFC}
+.admin-table td{color:var(--ink)}
+
+/* Sprint 1.4 · Portada aprobada ProKicks
+Parche visual mínimo: solo portada/login. No toca torneos, admin, Supabase ni dependencias. */
+.approved-access-screen{
+background:linear-gradient(180deg,#F4F6F8 0%,#EEF2F7 58%,#F8FAFC 100%);
+box-shadow:0 24px 70px rgba(15,23,42,.08);
+}
+.approved-hero{
+position:relative;
+height:375px;
+overflow:hidden;
+border-bottom-left-radius:0;
+border-bottom-right-radius:0;
+background:#F4F6F8;
+}
+.approved-hero:after{
+content:"";
+position:absolute;
+inset:auto 0 0 0;
+height:96px;
+background:linear-gradient(180deg,rgba(244,246,248,0) 0%,#F4F6F8 86%);
+pointer-events:none;
+z-index:2;
+}
+.approved-hero-image{
+object-fit:cover;
+object-position:top center;
+filter:saturate(.98) contrast(1.01);
+}
+.approved-access-content{
+margin-top:-6px;
+padding:0 36px 34px;
+position:relative;
+z-index:3;
+}
+.approved-access-title h1{
+color:#0F172A;
+font-size:38px;
+line-height:.98;
+letter-spacing:-.045em;
+margin:0 0 14px;
+font-weight:900;
+}
+.approved-access-title p{
+color:#5E6F8C;
+font-size:17px;
+line-height:1.35;
+margin:0 0 30px;
+}
+.approved-login-card{
+border-radius:16px;
+border:1px solid rgba(203,213,225,.92);
+padding:34px 32px 30px;
+box-shadow:0 18px 42px rgba(15,23,42,.12);
+gap:18px;
+}
+.approved-login-card h2{
+font-size:26px;
+letter-spacing:-.04em;
+}
+.approved-login-card p{
+font-size:16px;
+color:#64748B;
+}
+.approved-field-control{
+min-height:64px;
+border-radius:12px;
+grid-template-columns:34px 1fr 30px;
+padding:0 18px;
+color:#66789A;
+border-color:#CBD5E1;
+}
+.approved-field-control input{
+font-size:17px;
+}
+.approved-field-control input::placeholder{
+color:#74839B;
+}
+.approved-btn-login{
+min-height:61px;
+border-radius:10px;
+font-size:19px;
+background:#2563EB;
+box-shadow:0 16px 30px rgba(37,99,235,.22);
+}
+.approved-btn-login:after{
+border-width:0 0 25px 25px;
+border-color:transparent transparent #1B3552 transparent;
+}
+.approved-register-block{
+margin:30px 0 22px;
+}
+.approved-register-block p{
+margin-bottom:14px;
+color:#1F2937;
+}
+.approved-btn-register{
+height:58px;
+border-radius:10px;
+border-width:1.5px;
+background:rgba(255,255,255,.72);
+font-size:20px;
+}
+.approved-or-divider{
+margin:22px 0;
+}
+.approved-guest-card{
+min-height:80px;
+border-radius:12px;
+background:rgba(255,255,255,.82);
+box-shadow:0 10px 24px rgba(15,23,42,.05);
+}
+.approved-guest-card strong{
+font-size:18px;
+}
+.approved-guest-card p{
+font-size:14px;
+}
+@media(max-width:430px){
+.approved-hero{height:350px;}
+.approved-access-content{padding-left:28px;padding-right:28px;}
+.approved-access-title h1{font-size:34px;}
+.approved-login-card{padding:26px 20px;gap:14px;}
+.approved-field-control{min-height:58px;}
+.approved-btn-login{min-height:56px;}
+}
+@media(max-width:380px){
+.approved-hero{height:315px;}
+.approved-access-content{padding-left:22px;padding-right:22px;}
+.approved-access-title h1{font-size:31px;}
+.approved-login-card h2{font-size:22px;}
+}
+
+/* Sprint 1.5 · PWA + ajuste móvil seguro
+No toca Supabase, torneos, admin ni dependencias. */
+html{
+width:100%;
+min-height:100%;
+background:#F4F6F8;
+-webkit-text-size-adjust:100%;
+}
+body{
+width:100%;
+min-height:100dvh;
+overflow-x:hidden;
+background:#F4F6F8;
+}
+.access-screen,
+.register-screen,
+.guest-screen{
+width:100%;
+max-width:480px;
+min-height:100dvh;
+}
+.approved-access-screen{
+width:100%;
+max-width:480px;
+margin:0 auto;
+}
+@media(max-width:520px){
+.approved-access-screen,
+.access-screen,
+.register-screen,
+.guest-screen{
+max-width:none;
+width:100vw;
+border-left:0;
+border-right:0;
+box-shadow:none;
+}
+.approved-hero{
+height:46vh;
+min-height:292px;
+max-height:360px;
+}
+.approved-access-content{
+padding-left:24px;
+padding-right:24px;
+padding-bottom:42px;
+}
+.approved-access-title h1{
+font-size:34px;
+}
+.approved-login-card{
+padding:24px 18px 24px;
+}
+.approved-register-block{
+margin:24px 0 18px;
+}
+.approved-guest-card{
+margin-bottom:22px;
+}
+}
+@media(max-width:380px){
+.approved-hero{
+height:42vh;
+min-height:270px;
+}
+.approved-access-content{
+padding-left:18px;
+padding-right:18px;
+}
+.approved-login-card{
+padding:22px 16px;
+}
+.approved-field-control{
+min-height:56px;
+}
+.approved-btn-login,
+.approved-btn-register{
+min-height:54px;
+}
+}
+@media(display-mode: standalone){
+body{
+overscroll-behavior-y:none;
+}
+.approved-access-screen,
+.app-shell{
+padding-top:max(0px, env(safe-area-inset-top));
+padding-bottom:max(24px, env(safe-area-inset-bottom));
+}
+}
+
+/* Sprint 1.6 · Registro a Torneos */
+.field-label {
+display: block;
+margin: 4px 0 -6px;
+font-size: 13px;
+font-weight: 800;
+color: #173b63;
+}
+
+.check-row {
+display: flex;
+align-items: flex-start;
+gap: 10px;
+width: 100%;
+padding: 12px;
+border: 1px solid #e2e8f0;
+border-radius: 16px;
+background: #f8fafc;
+color: #1f2937;
+font-size: 14px;
+line-height: 1.35;
+}
+
+.check-row input {
+width: 18px;
+height: 18px;
+margin-top: 1px;
+flex: 0 0 auto;
+}
+
+.mini-stack {
+display: grid;
+gap: 12px;
+width: 100%;
+}
+
+.alert.warn {
+border-color: rgba(245, 158, 11, 0.28);
+background: rgba(245, 158, 11, 0.12);
+color: #92400e;
+}
+
+.admin-table small {
+color: #64748b;
+font-size: 12px;
+}
+
+.admin-stat-link{
+color:inherit;
+text-decoration:none;
+transition:transform .16s ease, border-color .16s ease;
+}
+.admin-stat-link:hover{
+transform:translateY(-1px);
+border-color:#cfe0f7;
+}
+.admin-actions{
+display:grid;
+gap:8px;
+min-width:126px;
+}
+.admin-table-actions-col{
+position:sticky;
+right:0;
+background:#fff;
+box-shadow:-6px 0 8px -6px rgba(15,23,42,.15);
+}
+.admin-table th.admin-table-actions-col{
+background:#F8FAFC;
+}
+.admin-actions .btn{
+min-height:38px;
+padding:9px 10px;
+border-radius:12px;
+font-size:12px;
+}
+.admin-edit-box{
+display:grid;
+gap:12px;
+border:1px solid #cfe0f7;
+border-radius:18px;
+padding:14px;
+background:#f8fbff;
+}
+
+/* Sprint 1.6.1 · Validaciones, links legales y base de pago */
+.input-error{
+border-color:#fca5a5 !important;
+background:#fff7f7 !important;
+}
+.field-error{
+margin:-6px 0 2px;
+color:#b42318;
+font-size:12px;
+font-weight:800;
+}
+.check-error{
+border-color:#fca5a5 !important;
+background:#fff7f7 !important;
+}
+.inline-link{
+display:inline-flex;
+margin-left:6px;
+color:#2563EB;
+font-weight:900;
+text-decoration:underline;
+text-underline-offset:3px;
+}
+.helper-text{
+margin:0;
+color:#64748B;
+font-size:12px;
+line-height:1.35;
+text-align:center;
+}
+.payment-box{
+display:grid;
+gap:12px;
+border:1px solid #e2e8f0;
+border-radius:18px;
+padding:12px;
+background:#f8fafc;
+}
+.registro-section-final,
+.tournaments-list-safe,
+.detail-grid-safe,
+.detail-bottom-safe{
+margin-bottom:110px;
+}
+@media(min-width:860px){
+.app-shell{
+max-width:560px;
+}
+}
+
+/* Sprint 1.6.2 · Corrección Registro, confirmación y favicon balón */
+.confirmation-hero{
+display:grid;
+gap:16px;
+margin-top:20px;
+margin-bottom:130px;
+}
+
+/* Sprint 1.7 · Perfil demo-ready */
+.avatar-section{display:grid;gap:12px}
+.avatar-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.avatar-choice{border:1px solid var(--line);border-radius:18px;background:#fff;padding:10px;display:grid;gap:8px;text-align:left;cursor:pointer;min-height:148px;overflow:hidden}
+.avatar-choice img,.avatar-preview{width:100%;aspect-ratio:1/1;border-radius:16px;object-fit:cover;display:block;box-shadow:0 12px 26px rgba(17,19,24,.14);background:#f8fafc}
+.avatar-choice strong{font-size:13px;line-height:1.1}
+.avatar-choice.selected{outline:3px solid rgba(80,64,128,.2);border-color:var(--purple)}
+.avatar-preview{width:112px;height:112px;border-radius:28px;margin-bottom:12px}
+.admin-avatar-img{width:42px;height:42px;border-radius:14px;object-fit:cover;display:block;margin-bottom:6px}
+.avatar-red span,.avatar-red{background:linear-gradient(135deg,#e23d3d,#173b63)}
+.avatar-blue span,.avatar-blue{background:linear-gradient(135deg,#2563eb,#60a0c0)}
+.avatar-ink span,.avatar-ink{background:linear-gradient(135deg,#111827,#504080)}
+.avatar-gold span,.avatar-gold{background:linear-gradient(135deg,#1B3552,#5E85A8)}
+.avatar-coral span,.avatar-coral{background:linear-gradient(135deg,#f97316,#ef4444)}
+.avatar-violet span,.avatar-violet{background:linear-gradient(135deg,#504080,#8b5cf6)}
+.avatar-lime span,.avatar-lime{background:linear-gradient(135deg,#65a30d,#173b63)}
+.avatar-sky span,.avatar-sky{background:linear-gradient(135deg,#0ea5e9,#173b63)}
+
+/* Hotfix 1.7.1 · Home + avatares reales */
+.home-hero{background:linear-gradient(135deg,#ffffff 0%,#f4f8ff 58%,#fff4df 100%);border-radius:34px;padding-top:28px}
+.home-hero:before{content:"";position:absolute;right:18px;bottom:18px;width:92px;height:92px;border-radius:30px;background:linear-gradient(135deg,var(--blue),var(--orange));opacity:.16;transform:rotate(-8deg)}
+.home-mark{width:54px;height:54px;border-radius:20px;display:grid;place-items:center;background:#111827;color:#fff;font-weight:950;box-shadow:0 16px 32px rgba(17,19,24,.18);margin-bottom:12px}
+.home-stats .stat{background:linear-gradient(180deg,#fff,#f8fafc)}
+.challenge-card{display:grid;gap:12px;border-left:5px solid var(--orange)}
+.spot-card{display:grid;gap:12px}
+.map-preview{height:130px;border-radius:22px;background:linear-gradient(135deg,#eef6ff,#fff7e8);border:1px solid var(--line);position:relative;overflow:hidden}
+.map-preview:before,.map-preview:after{content:"";position:absolute;background:rgba(23,59,99,.12);height:18px;width:150%;left:-20%;transform:rotate(-18deg);top:36px;border-radius:999px}
+.map-preview:after{transform:rotate(24deg);top:82px;background:rgba(208,128,48,.16)}
+.map-preview .pin{left:50%;top:42%;transform:translate(-50%,-50%) rotate(-45deg);z-index:2}
+.map-embed{width:100%;height:180px;border:0;border-radius:22px;background:#eef3fa}
+.entry-screen{min-height:100dvh;max-width:560px;margin:0 auto;padding:clamp(6px,1.4dvh,14px) 18px;background:#fff;display:flex;flex-direction:column;justify-content:flex-start;gap:clamp(8px,1.4dvh,12px)}
+.entry-screen .section{margin:0;gap:9px;flex:0 0 auto}
+.entry-screen .btn{min-height:44px;padding:11px 16px}
+.entry-profile{padding:12px;flex:0 0 auto}
+.entry-hero{position:relative;overflow:hidden;background:#fff;border:1.5px solid #cfe0f7;border-radius:26px;padding:clamp(10px,1.8dvh,16px) 20px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:clamp(4px,1dvh,8px);flex:0 0 auto}
+.entry-hero:after{display:none}
+.entry-logo{width:clamp(130px,30vw,190px);height:auto;object-fit:contain;margin:0 auto;display:block;flex:0 0 auto}
+.entry-hero .kicker{margin-top:0;text-align:center;color:#1B3552;font-size:clamp(13px,3vw,16px);letter-spacing:.16em;font-weight:900;flex:0 0 auto}
+.entry-hero .h1{font-size:clamp(24px,5.2dvh,38px);line-height:1;margin:0;text-align:center;font-weight:650;letter-spacing:-.025em;color:#173B63;flex:0 0 auto}
+.entry-hero .p{text-align:center;max-width:390px;margin:0 auto;flex:0 0 auto}
+.entry-hero-image{width:100%;height:auto;aspect-ratio:729/570;max-height:28dvh;object-fit:cover;object-position:center;border-radius:20px;box-shadow:0 12px 28px rgba(17,19,24,.07);margin-top:2px;flex:0 0 auto}
+.entry-profile{display:flex;align-items:center;gap:12px}
+.tournament-thumb{width:100%;max-height:128px;object-fit:cover;border-radius:14px;border:1px solid var(--line);background:#f8fafc}
+.flyer-button{border:0;background:transparent;padding:0;margin:14px 0 0;cursor:pointer;width:100%}
+.tournament-flyer{width:100%;max-height:420px;object-fit:contain;border-radius:18px;border:1px solid var(--line);background:#fff}
+.modal-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.78);z-index:60;display:grid;place-items:center;padding:18px}
+.modal-flyer{max-width:min(92vw,720px);max-height:84vh;object-fit:contain;border-radius:16px;background:#fff}
+.modal-close{position:fixed;top:18px;right:18px;border:0;border-radius:999px;background:#fff;color:#111827;font-weight:900;padding:10px 14px;z-index:61}
+.confirmation-actions{
+display:grid;
+gap:12px;
+margin-top:8px;
+}
+.btn-secondary{
+border:1px solid #dbeafe;
+background:#eff6ff;
+color:#173B63;
+border-radius:16px;
+padding:14px 18px;
+font-weight:900;
+text-align:center;
+}
+.helper-left{
+text-align:left;
+margin:-4px 0 0;
+}
+.app-shell{
+padding-bottom:150px;
+}
+.registro-section-final{
+padding-bottom:20px;
+margin-bottom:145px;
+}
+
+/* Sprint 1.3 · Galeria, videos, resultados y QR */
+.media-filters{
+display:flex;
+gap:8px;
+overflow-x:auto;
+padding-bottom:4px;
+}
+.media-filters .btn{
+white-space:nowrap;
+min-width:max-content;
+}
+.media-grid{
+display:grid;
+grid-template-columns:1fr;
+gap:14px;
+}
+.media-card{
+border:1px solid var(--line);
+border-radius:22px;
+background:#fff;
+padding:12px;
+display:grid;
+gap:10px;
+text-align:left;
+color:inherit;
+box-shadow:0 16px 34px rgba(17,19,24,.08);
+overflow:hidden;
+}
+button.media-card{
+width:100%;
+cursor:pointer;
+font:inherit;
+}
+.media-card img,
+.media-preview{
+width:100%;
+aspect-ratio:4/3;
+border-radius:18px;
+object-fit:cover;
+background:#eef3fa;
+border:1px solid var(--line);
+}
+.media-preview{
+max-height:260px;
+}
+.media-modal,
+.qr-modal{
+width:min(94vw,520px);
+max-height:88vh;
+overflow:auto;
+border-radius:24px;
+background:#fff;
+padding:16px;
+display:grid;
+gap:12px;
+box-shadow:0 24px 60px rgba(0,0,0,.28);
+}
+.media-modal img{
+width:100%;
+max-height:62vh;
+object-fit:contain;
+border-radius:18px;
+background:#f8fafc;
+}
+.video-card iframe{
+width:100%;
+aspect-ratio:16/9;
+border:0;
+border-radius:18px;
+background:#111827;
+}
+.video-preview{
+width:100%;
+aspect-ratio:16/9;
+border-radius:18px;
+object-fit:cover;
+background:#eef3fa;
+border:1px solid var(--line);
+}
+.qr-modal{
+place-items:center;
+text-align:center;
+}
+.qr-modal img{
+width:min(72vw,280px);
+height:min(72vw,280px);
+object-fit:contain;
+border-radius:20px;
+border:1px solid var(--line);
+background:#fff;
+padding:10px;
+}
+.admin-row-panel{
+display:grid;
+gap:10px;
+}
+.admin-row-main{
+border:0;
+background:transparent;
+padding:0;
+text-align:left;
+color:inherit;
+display:grid;
+gap:4px;
+cursor:pointer;
+}
+.podium-grid{
+display:grid;
+grid-template-columns:1fr;
+gap:12px;
+}
+.podium-card{
+text-align:center;
+border:1px solid #dbeafe;
+background:linear-gradient(180deg,#fff,#f8fbff);
+}
+.podium-card strong{
+font-size:38px;
+line-height:1;
+}
+@media(min-width:720px){
+.media-grid{
+grid-template-columns:repeat(2,minmax(0,1fr));
+}
+.podium-grid{
+grid-template-columns:repeat(3,minmax(0,1fr));
+}
+}
+
+/* ============================================================
+PROKICKS VISION — bloque adicional, no modifica reglas previas.
+Mantiene identidad visual: fondos claros, #F4F6F8, azul #173B63,
+azul de acción #2563EB, texto #1F2937, sans-serif, tarjetas limpias.
+============================================================ */
+.vision-entry-card{background:#fff;border:1px solid #E5E9EF}
+.vision-error{color:#B91C1C}
+.vision-camera-selector .vision-camera-slot{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.vision-select{padding:10px 12px;border-radius:10px;border:1px solid #D7DEE7;background:#F4F6F8;color:#1F2937;font-family:inherit}
+.vision-preview{width:100%;border-radius:12px;background:#0F172A;aspect-ratio:4/3;object-fit:cover}
+.vision-player-picker{gap:8px}
+.vision-detection-canvas{position:relative;width:100%;aspect-ratio:16/9;background:#F4F6F8;border:1px dashed #D7DEE7;border-radius:12px;margin-top:12px;overflow:hidden}
+.vision-person-box{position:absolute;border:2px solid #2563EB;background:rgba(37,99,235,.12);color:#173B63;font-size:11px;font-weight:700;border-radius:6px;padding:2px}
+.vision-session-timer{text-align:center}
+.vision-timer-display{font-size:clamp(40px,10vw,64px);font-weight:800;color:#173B63;letter-spacing:.02em;padding:16px 0}
+.vision-player-mini-card{display:flex;flex-direction:column;gap:2px;padding:12px;border-radius:12px;background:#F4F6F8}
+.vision-metrics-panel{position:fixed;top:0;right:0;bottom:0;width:min(360px,92vw);background:#fff;box-shadow:-8px 0 24px rgba(15,23,42,.18);padding:20px;overflow-y:auto;z-index:60}
+.vision-panel-close{padding:6px 10px}
+.vision-metrics-player{margin-top:12px}
+.vision-metrics-table{width:100%;border-collapse:collapse;font-size:13px}
+.vision-metrics-table td{padding:6px 4px;border-bottom:1px solid #EEF1F5;color:#1F2937}
+.vision-metrics-table td:last-child{text-align:right;font-weight:600;color:#173B63}
+.vision-evolution-chart{width:100%;height:90px}
+
+/* Sprint 1.8 · Preloader balon + jerarquia de acceso ProKicks
+No modifica reglas previas. Solo agrega clases nuevas. */
+.entry-actions{margin-top:4px}
+.btn-outline{background:transparent;border:1.5px solid #173B63;color:#173B63}
+.entry-divider{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12px;margin:4px 0}
+.entry-divider span{flex:1;height:1px;background:var(--line)}
+.link-muted{display:flex;align-items:center;justify-content:center;gap:6px;background:none;border:none;color:var(--muted);font-size:13px;text-decoration:underline;cursor:pointer;padding:6px;width:100%}
+.admin-link{display:flex;align-items:center;justify-content:center;gap:4px;color:var(--muted);font-size:11px;text-decoration:none;margin:18px auto 0;opacity:.7}
+.preloader{min-height:100dvh;display:grid;place-items:center;gap:6px;background:#fff}
+.preloader-ball{animation:pk-spin .9s linear infinite}
+.preloader-text{color:#173B63;font-size:14px;font-weight:700;margin:0}
+@keyframes pk-spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+/* Sprint 2.2 - Header logo grande + avatar balon premium, signature pad */
+.logo{height:52px !important}
+.brand-pill{padding:10px 16px !important}
+.avatar{width:46px !important;height:46px !important;background:#fff !important;border:2px solid var(--line) !important;box-shadow:0 8px 18px rgba(17,19,24,.08) !important}
+.avatar svg{width:26px;height:26px}
+.signature-canvas{width:100%;height:220px;border-radius:18px;border:1px solid var(--line);touch-action:none;background:#fff;display:block;cursor:crosshair}
+
+.entry-stat-cta{display:flex;align-items:center;gap:4px;font-weight:700;text-decoration:underline;margin-top:4px !important}
+.welcome-badge{margin-top:8px;padding:6px 14px;background:#E6F1FB;color:#0C447C;font-size:12px;font-weight:700;letter-spacing:.02em;border-radius:999px}
+
+.preloader{display:flex !important;flex-direction:column !important;align-items:center !important;justify-content:center !important}
+
+/* Sprint 2.3 - ProX: modulo de mediciones individuales (celular + tripie) */
+.tag-amber{color:#854F0B;background:#FAEEDA}
+.prox-req-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.prox-req{display:inline-flex;align-items:center;gap:6px;background:#F2F4FF;color:#173B63;font-size:12px;font-weight:700;padding:8px 12px;border-radius:999px}
+.prox-locked{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:28px 20px;color:#173B63}
+.prox-locked svg{color:#854F0B}
+.prox-stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.prox-stat-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:4px}
+.prox-stat-label{font-size:12px;font-weight:800;color:#5e6675;text-transform:uppercase;letter-spacing:.04em}
+.prox-stat-value{font-size:20px;font-weight:900;color:#173B63}
+.prox-stat-hint{font-size:11px;color:var(--muted)}
+
+/* Sprint 2.4 - ProX: medicion demo (camara), resultados y ajustes de perfil */
+.mt-10{margin-top:10px}
+.scan-frame{border:2px dashed #cbd5e1;border-radius:24px;padding:32px 20px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px;color:#173B63;margin-bottom:14px}
+.scan-frame strong{font-size:15px}
+.scan-pulse{width:54px;height:54px;border-radius:50%;background:radial-gradient(circle,#60A0B0 0%,transparent 70%);animation:pk-pulse 1.2s ease-in-out infinite}
+@keyframes pk-pulse{0%{transform:scale(.7);opacity:.5}50%{transform:scale(1.15);opacity:1}100%{transform:scale(.7);opacity:.5}}
+.prox-result-list{display:grid;gap:14px}
+.prox-result-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px}
+.prox-result-value{font-size:16px;font-weight:900;color:#173B63}
+.prox-result-value.up{color:#166534}
+.prox-bar-track{position:relative;height:10px;background:#F2F4FF;border-radius:999px;margin:8px 0 6px}
+.prox-bar-fill{position:absolute;left:0;top:0;height:100%;border-radius:999px;background:linear-gradient(135deg,var(--blue),var(--purple))}
+.prox-bar-avg-marker{position:absolute;top:-3px;width:2px;height:16px;background:#854F0B}
+
+/* Sprint 2.5 · AdminShell — topbar y menú de administración fijo */
+.admin-shell .top-actions{display:flex;align-items:center;gap:8px}
+.admin-shell .top-actions .tag{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.admin-logout{border:0;cursor:pointer;font:inherit}
+.admin-nav{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 18px;padding:0}
+.admin-nav-item{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:9px 14px;color:#5e6675;font-size:13px;font-weight:800;white-space:nowrap;text-decoration:none}
+.admin-nav-item.active{background:#eef4ff;color:var(--navy);border-color:#cfe0f7}
+@media(max-width:480px){
+.admin-nav{overflow-x:auto;flex-wrap:nowrap;padding-bottom:4px}
+}
+/* Sprint 2.6 · Próximo torneo — rediseño con countdown */
+.next-tournament-card{display:flex;flex-direction:column;gap:12px;background:linear-gradient(135deg,#173B63 0%,#0F2846 100%);border:1px solid #2A5AA8;border-radius:18px;padding:18px 20px;text-decoration:none;margin:0 0 18px;box-shadow:0 14px 32px rgba(15,38,70,.28)}
+.next-tournament-top{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.next-tournament-badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:800;color:#8FC7FF;text-transform:uppercase;letter-spacing:.04em}
+.next-tournament-date{font-size:12px;font-weight:700;color:#173B63;background:#fff;border-radius:999px;padding:4px 10px}
+.next-tournament-title{margin:0;font-size:18px;font-weight:900;color:#fff;line-height:1.25}
+.next-tournament-countdown{display:flex;gap:8px}
+.next-tournament-countdown .countdown-unit{flex:1;display:flex;flex-direction:column;align-items:center;background:#F59E0B;border-radius:10px;padding:8px 4px;color:#1B3552}
+.next-tournament-countdown .countdown-unit strong{font-size:18px;font-weight:900;line-height:1}
+.next-tournament-countdown .countdown-unit span{font-size:10px;text-transform:uppercase;letter-spacing:.05em;opacity:.85;margin-top:2px}
+.next-tournament-live{display:inline-block;font-size:13px;font-weight:800;color:#173B63;background:#fff;border-radius:999px;padding:6px 12px;width:fit-content}
+.next-tournament-cta{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:800;color:#8FC7FF}
+@media(max-width:380px){
+.next-tournament-countdown .countdown-unit strong{font-size:16px}
+}
+
+/* Check-in code display (registration confirmation) */
+.checkin-code-box {
+margin-top: 16px;
+padding: 20px;
+border-radius: 16px;
+background: linear-gradient(135deg, #173B63 0%, #0f2846 100%);
+text-align: center;
+color: #fff;
+}
+
+.checkin-code-box .field-label {
+color: rgba(255, 255, 255, 0.75);
+font-size: 13px;
+margin: 0 0 8px;
+text-transform: uppercase;
+letter-spacing: 0.06em;
+}
+
+.checkin-code-big {
+font-size: 40px;
+font-weight: 800;
+letter-spacing: 0.15em;
+margin: 0 0 8px;
+color: #fff;
+}
+
+.checkin-code-box .helper-text {
+color: rgba(255, 255, 255, 0.7);
+font-size: 13px;
+margin: 0;
+line-height: 1.4;
+}
+
+.checkin-candidate {
+text-align: left;
+margin-bottom: 8px;
+}
+
+.checkin-candidate:last-child {
+margin-bottom: 0;
+}
+
+/* Botón de compartir en galería */
+.media-card-wrap {
+position: relative;
+}
+
+.media-share-btn {
+position: absolute;
+top: 10px;
+right: 10px;
+width: 34px;
+height: 34px;
+border-radius: 999px;
+background: rgba(23, 59, 99, 0.85);
+color: #fff;
+border: none;
+display: flex;
+align-items: center;
+justify-content: center;
+cursor: pointer;
+z-index: 2;
+}
+
+.media-share-btn:hover {
+background: #173B63;
+}
+
+/* Fix 1.9 - Video thumbnail link (evita error de embed en Shorts) */
+.video-thumb-link{
+position:relative;
+display:block;
+border-radius:18px;
+overflow:hidden;
+background:#0F172A;
+}
+.video-thumb{
+width:100%;
+aspect-ratio:16/9;
+object-fit:cover;
+background:#0F172A;
+display:block;
+}
+.video-thumb-empty{
+aspect-ratio:16/9;
+background:#0F172A;
+}
+.video-play-btn{
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+width:56px;
+height:56px;
+border-radius:50%;
+background:rgba(23,59,99,.85);
+display:flex;
+align-items:center;
+justify-content:center;
+color:#fff;
+box-shadow:0 8px 20px rgba(0,0,0,.3);
+}
+
+/* Transmision en vivo del torneo */
+.live-stream-card .row {
+align-items: center;
+gap: 10px;
+margin-bottom: 14px;
+}
+
+.live-dot {
+width: 12px;
+height: 12px;
+border-radius: 999px;
+background: #DC2626;
+box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.6);
+animation: live-pulse 1.6s infinite;
+flex-shrink: 0;
+}
+
+@keyframes live-pulse {
+0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.55); }
+70% { box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); }
+100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+}
+
+.live-stream-embed {
+position: relative;
+width: 100%;
+aspect-ratio: 16 / 9;
+border-radius: 16px;
+overflow: hidden;
+background: #0F172A;
+}
+
+.live-stream-embed iframe {
+position: absolute;
+inset: 0;
+width: 100%;
+height: 100%;
+border: 0;
+}
+
+/* Admin desktop — panel mas ancho para que no se vea apretado en pantallas grandes.
+No toca .app-shell fuera de .admin-shell, asi que la app movil de jugadores no cambia. */
+@media(min-width:860px){
+.admin-shell{
+max-width:1180px;
+padding-left:32px;
+padding-right:32px;
+}
+.admin-shell .grid-2{
+grid-template-columns:1fr 1fr;
+}
+.admin-shell .admin-edit-box{
+max-width:680px;
+}
+.admin-shell .table-wrap{
+overflow-x:auto;
+}
+.admin-shell .admin-table{
+font-size:14px;
+}
+}
+@media(min-width:1280px){
+.admin-shell{
+max-width:1320px;
+}
+}
+
+/* Admin — rediseno de tarjetas y botones: menos generico, mas angular, con movimiento en hover.
+Solo afecta .admin-shell, no toca la app movil de jugadores. */
+.admin-shell .stat{
+border-radius:4px;
+position:relative;
+overflow:hidden;
+border:1px solid var(--line);
+background:#fff;
+transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+.admin-shell .stat:before{
+content:"";
+position:absolute;
+left:0;
+top:0;
+bottom:0;
+width:3px;
+background:var(--navy);
+transform:scaleY(.3);
+transform-origin:top;
+transition:transform .22s cubic-bezier(.2,.8,.2,1);
+}
+.admin-shell .stat:hover{
+transform:translateX(4px);
+border-color:#cfd8e6;
+box-shadow:0 10px 22px rgba(15,23,42,.08);
+}
+.admin-shell .stat:hover:before{
+transform:scaleY(1);
+}
+.admin-shell .stat .muted{
+font-size:11px;
+font-weight:800;
+text-transform:uppercase;
+letter-spacing:.09em;
+color:#8592a8;
+}
+.admin-shell .stat strong{
+font-size:18px;
+letter-spacing:-.01em;
+}
+
+.admin-shell .btn{
+border-radius:4px;
+position:relative;
+overflow:hidden;
+isolation:isolate;
+font-size:14px;
+transition:transform .16s cubic-bezier(.2,.8,.2,1), box-shadow .16s ease;
+}
+.admin-shell .btn:after{
+content:"";
+position:absolute;
+inset:0;
+background:linear-gradient(100deg, transparent 30%, rgba(255,255,255,.18) 45%, transparent 60%);
+transform:translateX(-130%);
+transition:transform .5s ease;
+z-index:1;
+pointer-events:none;
+}
+.admin-shell .btn:hover{
+transform:translateY(-2px);
+box-shadow:0 10px 20px rgba(15,23,42,.14);
+}
+.admin-shell .btn:hover:after{
+transform:translateX(130%);
+}
+.admin-shell .btn.btn-soft{
+border-radius:4px;
+border:1px solid var(--line);
+padding-left:18px;
+}
+.admin-shell .btn.btn-soft:before{
+content:"";
+position:absolute;
+left:0;
+top:0;
+bottom:0;
+width:0;
+background:var(--navy);
+transition:width .2s ease;
+}
+.admin-shell .btn.btn-soft:hover{
+border-color:var(--navy);
+color:var(--navy);
+}
+.admin-shell .btn.btn-soft:hover:before{
+width:3px;
+}
+.admin-shell .btn.btn-primary, .admin-shell .btn.btn-warm{ border-radius:4px; }
+.admin-shell .admin-nav-item{
+border-radius:4px; position:relative;
+transition:transform .16s ease, color .16s ease, border-color .16s ease, background .16s ease;
+}
+.admin-shell .admin-nav-item:hover{ transform:translateY(-2px); }
+.admin-shell .admin-nav-item.active{ border-radius:4px; }
+.admin-shell .admin-nav-item.active:after{
+content:""; position:absolute; left:12px; right:12px; bottom:-6px; height:3px;
+border-radius:2px; background:var(--navy);
+}
+.admin-shell .admin-edit-box, .admin-shell .table-wrap, .admin-shell .card{ border-radius:6px; }
+.admin-shell .input, .admin-shell select.input{ border-radius:4px; }
+
+/* Fix pantalla completa en desktop — amplia .app-shell (toda la app de jugador)
+en pantallas grandes. Sobreescribe el max-width:560px definido arriba.
+No toca .admin-shell ni el layout movil (menor a 860px sigue igual). */
+@media(min-width:860px){
+.app-shell{
+max-width:760px;
+}
+}
+@media(min-width:1280px){
+.app-shell{
+max-width:860px;
+}
+}
+
+/* Fix 2.7 - Favicon simplificado, ancho real de escritorio y botones interactivos en .app-shell
+No toca .admin-shell. Corrige: (1) margenes muertos en desktop (se quita el borde tipo tarjeta
+y se amplia mas el max-width), (2) botones planos sin movimiento, (3) fila de acciones
+Ver resultados/galeria/videos apilada en vez de usar el ancho disponible. */
+@media(min-width:860px){
+.app-shell{
+max-width:920px;
+border-left:0;
+border-right:0;
+}
+}
+@media(min-width:1280px){
+.app-shell{
+max-width:1180px;
+}
+}
+@media(min-width:1600px){
+.app-shell{
+max-width:1320px;
+}
+}
+
+.app-shell .btn{
+border-radius:10px;
+position:relative;
+overflow:hidden;
+isolation:isolate;
+transition:transform .16s cubic-bezier(.2,.8,.2,1), box-shadow .16s ease;
+}
+.app-shell .btn:after{
+content:"";
+position:absolute;
+inset:0;
+border:0;
+background:linear-gradient(100deg, transparent 30%, rgba(255,255,255,.3) 45%, transparent 60%);
+transform:translateX(-130%);
+transition:transform .5s ease;
+z-index:1;
+pointer-events:none;
+}
+.app-shell .btn:hover{
+transform:translateY(-3px);
+box-shadow:0 14px 26px rgba(15,23,42,.18);
+}
+.app-shell .btn:hover:after{
+transform:translateX(130%);
+}
+.app-shell .btn:active{
+transform:translateY(-1px);
+box-shadow:0 6px 14px rgba(15,23,42,.16);
+}
+
+.tournament-hero .grid:not(.grid-2){
+gap:12px;
+}
+@media(min-width:860px){
+.tournament-hero .grid:not(.grid-2){
+grid-template-columns:repeat(3,1fr);
+}
+}
+
+
+/* Sprint 0 - Paleta unificada: fondo claro + navy + naranja. Unifica los tonos que se usaban como arcoiris (cyan/purple/blue/yellow) y agrega un acento naranja real para la accion principal. No toca .admin-shell (ya tiene su propio ajuste de layout). */
+:root{
+  --bg:#F6F6FB;
+  --cyan:#7C93B3;
+  --blue:#3D5A80;
+  --purple:#3D5A80;
+  --yellow:#3D5A80;
+  --orange:#FF6B1A;
+  --accent:#FF6B1A;
+}
+.btn-primary{
+  background:var(--accent);
+  box-shadow:0 10px 22px rgba(255,107,26,.22);
+}
+.btn-primary:after{
+  border-color:transparent transparent #C6501A transparent;
+}
+.btn-login{
+  background:var(--accent);
+}
+.btn-login:after{
+  border-color:transparent transparent #C6501A transparent;
+}
+.approved-btn-login{
+  background:var(--accent);
+  box-shadow:0 16px 30px rgba(255,107,26,.22);
+}
+.approved-btn-login:after{
+  border-color:transparent transparent #C6501A transparent;
+}
+.scan-button{
+  background:linear-gradient(135deg,var(--navy),var(--accent));
+  color:#fff;
+}
+
+/* Sprint Login 2.0 · Acceso real con cuenta + passkey biométrico */
+.auth-screen{min-height:100dvh;max-width:480px;margin:0 auto;background:#F4F6F8;padding:clamp(28px,6dvh,52px) 24px 40px;display:flex;flex-direction:column;justify-content:center;gap:22px}
+.auth-logo-wrap{display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:2px}
+.auth-logo-wrap img{width:clamp(120px,34vw,160px);height:auto;object-fit:contain}
+.auth-logo-wrap span{color:#64748B;font-size:14px;font-weight:700;letter-spacing:.01em}
+.auth-card{background:#fff;border:1px solid #E2E8F0;border-radius:24px;padding:28px 24px;box-shadow:0 18px 45px rgba(15,23,42,.10);display:grid;gap:16px}
+.auth-card h1{margin:0;font-size:24px;font-weight:900;letter-spacing:-.03em;color:#0F172A;text-align:center}
+.auth-oauth-row{display:flex;justify-content:center;gap:14px;margin:2px 0}
+.auth-oauth-circle{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;border:1px solid #E2E8F0;background:#fff;cursor:pointer;box-shadow:0 8px 18px rgba(15,23,42,.06);transition:transform .15s ease}
+.auth-oauth-circle:hover{transform:translateY(-2px)}
+.auth-oauth-circle.disabled{opacity:.4;cursor:not-allowed}
+.auth-oauth-circle img{width:24px;height:24px;object-fit:contain}
+.auth-divider{display:flex;align-items:center;gap:12px;color:#94A3B8;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
+.auth-divider:before,.auth-divider:after{content:"";flex:1;height:1px;background:#E2E8F0}
+.auth-field{display:grid;gap:6px}
+.auth-field label{font-size:13px;font-weight:800;color:#173B63}
+.auth-field input{height:54px;border:1px solid #CBD5E1;border-radius:14px;padding:0 16px;font-size:16px;outline:0;background:#fff}
+.auth-field input:focus{border-color:#2563EB;box-shadow:0 0 0 4px rgba(37,99,235,.12)}
+.auth-forgot{text-align:right;font-size:13px;color:#2563EB;font-weight:700}
+.btn-orange{background:linear-gradient(135deg,#F59E0B,#EA580C);color:#fff;box-shadow:0 14px 28px rgba(234,88,12,.24)}
+.btn-passkey{background:#fff;border:1.5px solid #173B63;color:#173B63}
+.btn-passkey:disabled{opacity:.4;cursor:not-allowed}
+.auth-register-hint{text-align:center;font-size:14px;color:#475569}
+.auth-register-hint a{color:#2563EB;font-weight:800}
+.auth-turnstile-note{display:flex;align-items:center;gap:8px;justify-content:center;font-size:11px;color:#94A3B8}
+.auth-passkey-offer{border:1px solid #DBEAFE;background:#EFF6FF;border-radius:16px;padding:14px;display:grid;gap:8px;text-align:center}
+.auth-passkey-offer strong{color:#173B63;font-size:15px}
+.auth-passkey-offer p{margin:0;color:#475569;font-size:13px}
+
+
+/* Login 2.0 unificado: Google/Apple + Face ID + admin, una sola pagina */
 .login2-wrap{max-width:900px;margin:0 auto;padding:28px 20px 40px}
 .login2-mobile-brand{display:flex;flex-direction:column;align-items:center;gap:6px;margin-bottom:14px}
 .login2-mobile-brand h1{font-size:19px;font-weight:800;color:#173B63;margin:0}
