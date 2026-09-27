@@ -1206,3 +1206,32 @@ grid-template-columns:repeat(3,1fr);
   background:linear-gradient(135deg,var(--navy),var(--accent));
   color:#fff;
 }
+
+/* Sprint Login 2.0 · Acceso real con cuenta + passkey biométrico */
+.auth-screen{min-height:100dvh;max-width:480px;margin:0 auto;background:#F4F6F8;padding:clamp(28px,6dvh,52px) 24px 40px;display:flex;flex-direction:column;justify-content:center;gap:22px}
+.auth-logo-wrap{display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:2px}
+.auth-logo-wrap img{width:clamp(120px,34vw,160px);height:auto;object-fit:contain}
+.auth-logo-wrap span{color:#64748B;font-size:14px;font-weight:700;letter-spacing:.01em}
+.auth-card{background:#fff;border:1px solid #E2E8F0;border-radius:24px;padding:28px 24px;box-shadow:0 18px 45px rgba(15,23,42,.10);display:grid;gap:16px}
+.auth-card h1{margin:0;font-size:24px;font-weight:900;letter-spacing:-.03em;color:#0F172A;text-align:center}
+.auth-oauth-row{display:flex;justify-content:center;gap:14px;margin:2px 0}
+.auth-oauth-circle{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;border:1px solid #E2E8F0;background:#fff;cursor:pointer;box-shadow:0 8px 18px rgba(15,23,42,.06);transition:transform .15s ease}
+.auth-oauth-circle:hover{transform:translateY(-2px)}
+.auth-oauth-circle.disabled{opacity:.4;cursor:not-allowed}
+.auth-oauth-circle img{width:24px;height:24px;object-fit:contain}
+.auth-divider{display:flex;align-items:center;gap:12px;color:#94A3B8;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
+.auth-divider:before,.auth-divider:after{content:"";flex:1;height:1px;background:#E2E8F0}
+.auth-field{display:grid;gap:6px}
+.auth-field label{font-size:13px;font-weight:800;color:#173B63}
+.auth-field input{height:54px;border:1px solid #CBD5E1;border-radius:14px;padding:0 16px;font-size:16px;outline:0;background:#fff}
+.auth-field input:focus{border-color:#2563EB;box-shadow:0 0 0 4px rgba(37,99,235,.12)}
+.auth-forgot{text-align:right;font-size:13px;color:#2563EB;font-weight:700}
+.btn-orange{background:linear-gradient(135deg,#F59E0B,#EA580C);color:#fff;box-shadow:0 14px 28px rgba(234,88,12,.24)}
+.btn-passkey{background:#fff;border:1.5px solid #173B63;color:#173B63}
+.btn-passkey:disabled{opacity:.4;cursor:not-allowed}
+.auth-register-hint{text-align:center;font-size:14px;color:#475569}
+.auth-register-hint a{color:#2563EB;font-weight:800}
+.auth-turnstile-note{display:flex;align-items:center;gap:8px;justify-content:center;font-size:11px;color:#94A3B8}
+.auth-passkey-offer{border:1px solid #DBEAFE;background:#EFF6FF;border-radius:16px;padding:14px;display:grid;gap:8px;text-align:center}
+.auth-passkey-offer strong{color:#173B63;font-size:15px}
+.auth-passkey-offer p{margin:0;color:#475569;font-size:13px}
