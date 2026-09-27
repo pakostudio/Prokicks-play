@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { ArrowRight, ShieldCheck, UserRound, Users, CalendarDays } from 'lucide-react';
+import { ArrowRight, ShieldCheck, UserRound, CalendarDays } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { formatDateShortEs } from '@/lib/format';
 
@@ -154,25 +154,21 @@ export default function EntryPage() {
         </Link>
       )}
 
-<section className="entry-tabs">
-          <Link className="entry-tab entry-tab-primary" href={profile ? '/play' : '/registro'}>
-                      <UserRound size={20} />
-                      <span>{profile ? 'Continuar' : 'Crear perfil'}</span>
-          </Link>
-          <Link className="entry-tab" href={profile ? '/registro' : '/login'}>
-                      <ShieldCheck size={20} />
-                      <span>{profile ? 'Crear otro' : 'Ya tengo cuenta'}</span>
-          </Link>
-          <Link className="entry-tab" href="/play?mode=guest">
-                      <Users size={20} />
-                      <span>Invitado</span>
-          </Link>
-          <Link className="entry-tab" href="/admin/login">
-                      <ShieldCheck size={20} />
-                      <span>Admin</span>
-          </Link>
-</section>
-    
+      <section className="entry-tabs">
+        <Link className="entry-tab entry-tab-primary" href={profile ? '/play' : '/registro'}>
+          <UserRound size={20} />
+          <span>{profile ? 'Continuar' : 'Crear cuenta'}</span>
+        </Link>
+        <Link className="entry-tab" href={profile ? '/registro' : '/login'}>
+          <ShieldCheck size={20} />
+          <span>{profile ? 'Otra cuenta' : 'Ya tengo cuenta'}</span>
+        </Link>
+        <Link className="entry-tab" href="/admin/login">
+          <ShieldCheck size={20} />
+          <span>Admin</span>
+        </Link>
+      </section>
+
       {profile && <button className="link-muted entry-clear" onClick={clearProfile}>Cambiar usuario / borrar perfil local</button>}
     </main>
   );
