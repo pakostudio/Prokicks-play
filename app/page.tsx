@@ -2,183 +2,288 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import { ArrowRight, ShieldCheck, UserRound, CalendarDays } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
-import { formatDateShortEs } from '@/lib/format';
+import { useState } from 'react';
+import { supabase, passkeySupported } from '@/lib/supabase';
+import { avatarOptions } from '@/lib/demo';
 
-type LocalProfile = {
-  nickname?: string;
-  avatar_image?: string;
-  avatar_name?: string;
-};
+const supabaseAuth: any = supabase.auth;
 
-type NextTournament = {
-  id: string;
-  title: string;
-  starts_at: string | null;
-};
-
-function SoccerBallLoader() {
+function GoogleIcon() {
   return (
-    <div className="preloader">
-      <img className="preloader-ball" src="/ball-loader.svg" alt="Cargando" width={90} height={90} />
-      <p className="preloader-text">Cargando ProKicks…</p>
-    </div>
+    <svg width="17" height="17" viewBox="0 0 48 48">
+      <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 8 3l6-6C34.1 6 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.2-.1-2.4-.4-3.5z" />
+      <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 15.5 18.9 12 24 12c3.1 0 5.8 1.1 8 3l6-6C34.1 6 29.3 4 24 4 16.3 4 9.6 8.3 6.3 14.7z" />
+      <path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2c-2.1 1.5-4.7 2.4-7.2 2.4-5.3 0-9.7-3.1-11.3-7.5l-6.6 5.1C9.5 39.6 16.2 44 24 44z" />
+      <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.3-4.1 5.6l6.2 5.2C40.3 36 44 30.7 44 24c0-1.2-.1-2.4-.4-3.5z" />
+    </svg>
   );
 }
 
-function getTimeLeft(target: string) {
-  const total = new Date(target).getTime() - Date.now();
-  if (total <= 0) return { total: 0, days: 0, hours: 0, minutes: 0, seconds: 0 };
-  const days = Math.floor(total / (1000 * 60 * 60 * 24));
-  const hours = Math.floor((total / (1000 * 60 * 60)) % 24);
-  const minutes = Math.floor((total / (1000 * 60)) % 60);
-  const seconds = Math.floor((total / 1000) % 60);
-  return { total, days, hours, minutes, seconds };
-}
-
-function pad(value: number) {
-  return String(value).padStart(2, '0');
-}
-
-function TournamentCountdown({ target }: { target: string }) {
-  const [timeLeft, setTimeLeft] = useState(() => getTimeLeft(target));
-
-  useEffect(() => {
-    const id = setInterval(() => setTimeLeft(getTimeLeft(target)), 1000);
-    return () => clearInterval(id);
-  }, [target]);
-
-  if (timeLeft.total <= 0) {
-    return <span className="next-tournament-live">¡El torneo ya comenzó!</span>;
-  }
-
+function AppleIcon() {
   return (
-    <div className="next-tournament-countdown">
-      <div className="countdown-unit">
-        <strong>{timeLeft.days}</strong>
-        <span>días</span>
-      </div>
-      <div className="countdown-unit">
-        <strong>{pad(timeLeft.hours)}</strong>
-        <span>hrs</span>
-      </div>
-      <div className="countdown-unit">
-        <strong>{pad(timeLeft.minutes)}</strong>
-        <span>min</span>
-      </div>
-      <div className="countdown-unit">
-        <strong>{pad(timeLeft.seconds)}</strong>
-        <span>seg</span>
-      </div>
-    </div>
+    <svg width="15" height="15" viewBox="0 0 384 512" fill="#fff">
+      <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zM256.8 88.7c27-32.1 24.6-61.4 23.8-71.9-23.9 1.4-51.6 16.4-67.3 34.9-17.3 19.8-27.5 44.3-25.3 71.9 26.3 2 50.3-11.2 68.8-34.9z" />
+    </svg>
   );
 }
 
-export default function EntryPage() {
-  const [profile, setProfile] = useState<LocalProfile | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [nextTournament, setNextTournament] = useState<NextTournament | null>(null);
+function FaceIdIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round">
+      <path d="M7 3H5a2 2 0 0 0-2 2v2" />
+      <path d="M17 3h2a2 2 0 0 1 2 2v2" />
+      <path d="M7 21H5a2 2 0 0 1-2-2v-2" />
+      <path d="M17 21h2a2 2 0 0 0 2-2v-2" />
+      <circle cx="8.5" cy="10" r="1" fill="currentColor" stroke="none" />
+      <circle cx="15.5" cy="10" r="1" fill="currentColor" stroke="none" />
+      <path d="M9 15c1 1 5 1 6 0" />
+    </svg>
+  );
+}
 
-  useEffect(() => {
-    const raw = window.localStorage.getItem('prokicks_profile');
-    if (raw) setProfile(JSON.parse(raw));
-    const timer = setTimeout(() => setLoading(false), 900);
+export default function LoginPage() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);
 
-    supabase
-      .from('prokicks_tournaments')
-      .select('id, title, starts_at')
-      .eq('status', 'open')
-      .gte('starts_at', new Date().toISOString())
-      .order('starts_at', { ascending: true })
-      .limit(1)
-      .then(({ data }) => {
-        if (data && data.length) setNextTournament(data[0] as NextTournament);
-      });
+  const [suNickname, setSuNickname] = useState('');
+  const [suEmail, setSuEmail] = useState('');
+  const [suPassword, setSuPassword] = useState('');
+  const [suMessage, setSuMessage] = useState('');
+  const [suLoading, setSuLoading] = useState(false);
 
-    return () => clearTimeout(timer);
-  }, []);
+  const [passkeyLoading, setPasskeyLoading] = useState(false);
+  const [passkeyOffer, setPasskeyOffer] = useState(false);
+  const [passkeyOfferBusy, setPasskeyOfferBusy] = useState(false);
 
-  function clearProfile() {
-    window.localStorage.removeItem('prokicks_profile');
-    window.localStorage.removeItem('prokicks_last_challenge');
-    setProfile(null);
+  function oauthRedirect() {
+    return typeof window !== 'undefined' ? `${window.location.origin}/play` : undefined;
   }
 
-  if (loading) return <SoccerBallLoader />;
+  async function withGoogle() {
+    await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: oauthRedirect() } });
+  }
+
+  async function withApple() {
+    await supabase.auth.signInWithOAuth({ provider: 'apple', options: { redirectTo: oauthRedirect() } });
+  }
+
+  async function afterSignIn() {
+    if (passkeySupported()) {
+      try {
+        const { data: passkeys } = await supabaseAuth.passkey.list();
+        if (!passkeys || passkeys.length === 0) {
+          setPasskeyOffer(true);
+          return;
+        }
+      } catch {
+        // si falla la consulta, seguimos sin ofrecer passkey
+      }
+    }
+    window.location.href = '/play';
+  }
+
+  async function submitLogin() {
+    setLoading(true);
+    setMessage('');
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    setLoading(false);
+    if (error) {
+      setMessage(error.message === 'Invalid login credentials'
+        ? 'Correo o contraseña incorrectos.'
+        : error.message);
+      return;
+    }
+    await afterSignIn();
+  }
+
+  async function submitSignup() {
+    setSuMessage('');
+    if (suNickname.trim().length < 3 || !suEmail.trim() || suPassword.length < 6) {
+      setSuMessage('Completa nickname, correo y una contraseña de al menos 6 caracteres.');
+      return;
+    }
+    setSuLoading(true);
+    const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+      email: suEmail.trim().toLowerCase(),
+      password: suPassword,
+    });
+
+    if (signUpError || !signUpData.user) {
+      setSuLoading(false);
+      setSuMessage(
+        signUpError?.message.includes('already registered') || signUpError?.message.includes('already been registered')
+          ? 'Ese correo ya tiene una cuenta ProKicks. Usa "Ya tienes cuenta".'
+          : signUpError?.message || 'No se pudo crear la cuenta. Intenta de nuevo.'
+      );
+      return;
+    }
+
+    const avatar = avatarOptions[0];
+    const profile = {
+      id: signUpData.user.id,
+      name: suNickname.trim(),
+      email: suEmail.trim().toLowerCase(),
+      whatsapp: '',
+      nickname: suNickname.trim(),
+      avatar_id: avatar.id,
+      avatar_name: avatar.name,
+      avatar_image: avatar.image,
+    };
+
+    let { error } = await supabase.from('prokicks_profiles').insert(profile);
+    if (error && String(error.message || '').includes('avatar_image')) {
+      const { avatar_image, ...profileWithoutImage } = profile;
+      const retry = await supabase.from('prokicks_profiles').insert(profileWithoutImage);
+      error = retry.error;
+    }
+    setSuLoading(false);
+
+    if (signUpData.session) {
+      await afterSignIn();
+      return;
+    }
+    setSuMessage('Cuenta creada. Revisa tu correo para confirmar y luego entra con tu contraseña.');
+  }
+
+  async function loginWithPasskey() {
+    setPasskeyLoading(true);
+    setMessage('');
+    const { error } = await supabaseAuth.signInWithPasskey();
+    setPasskeyLoading(false);
+    if (error) {
+      setMessage('No se pudo entrar con biométrico. Usa tu correo y contraseña, o actívalo primero desde ahí.');
+      return;
+    }
+    window.location.href = '/play';
+  }
+
+  async function activatePasskeyNow() {
+    setPasskeyOfferBusy(true);
+    const { error } = await supabaseAuth.registerPasskey();
+    setPasskeyOfferBusy(false);
+    if (error) {
+      setMessage('No se pudo activar el biométrico en este dispositivo. Puedes intentarlo después desde tu perfil.');
+    }
+    window.location.href = '/play';
+  }
+
+  if (passkeyOffer) {
+    return (
+      <main className="login2-wrap">
+        <div className="login2-mobile-brand">
+          <Image src="/logo-negro.png" alt="ProKicks" width={140} height={48} priority />
+        </div>
+        <div className="login2-card">
+          <div className="login2-card-head"><h2>¡Ya entraste!</h2></div>
+          <p style={{ fontSize: 13, color: '#475569', marginBottom: 12 }}>
+            Activa acceso con huella o rostro para entrar en 1 segundo la próxima vez, sin escribir tu contraseña.
+          </p>
+          {message && <div className="login2-msg">{message}</div>}
+          <button className="login2-btn login2-btn-signin" onClick={activatePasskeyNow} disabled={passkeyOfferBusy} style={{ marginBottom: 8 }}>
+            {passkeyOfferBusy ? 'Activando...' : 'Activar ahora'}
+          </button>
+          <button className="login2-btn" style={{ background: '#E2E8F0', color: '#334155' }} onClick={() => { window.location.href = '/play'; }}>
+            Ahora no
+          </button>
+        </div>
+      </main>
+    );
+  }
 
   return (
-    <main className="entry-screen">
-      <section className="entry-hero-full">
-        <div className="entry-hero-media">
-          <Image
-            src="/prokicks-approved-hero.jpeg"
-            alt="ProKicks Play"
-            width={900}
-            height={580}
-            className="entry-hero-image-full"
-            priority
-          />
-          <div className="entry-logo-badge">
-            <Image src="/logo-negro.png" alt="ProKicks" width={34} height={34} priority />
-          </div>
+    <main className="login2-wrap">
+      <div className="login2-mobile-brand">
+        <Image src="/logo-negro.png" alt="ProKicks" width={56} height={56} style={{ objectFit: 'contain' }} priority />
+        <h1>ProKicks Play</h1>
+        <p>Entrena. Compite. Domina.</p>
+      </div>
+
+      <div className="login2-shell">
+        <div className="login2-brand-panel">
+          <Image src="/logo-blanco.png" alt="ProKicks" width={72} height={72} style={{ objectFit: 'contain' }} priority />
+          <h1>ProKicks Play</h1>
+          <p>Entrena. Compite. Domina.</p>
         </div>
-        <div className="entry-hero-copy">
-          <div className="kicker">ProKicks Play</div>
-          <h1 className="h1">Entrena. Compite. Domina.</h1>
-          <p className="p">Crea tu perfil, conecta spots reales y vive la experiencia ProKicks.</p>
-          <div className="welcome-badge">Bienvenido a la comunidad ProKicks Play</div>
-        </div>
-      </section>
 
-      {profile && (
-        <section className="card entry-profile">
-          {profile.avatar_image && <img className="admin-avatar-img" src={profile.avatar_image} alt={profile.avatar_name || 'Avatar'} />}
-          <div>
-            <span className="muted">Perfil guardado</span>
-            <h2 className="card-title">Continuar como {profile.nickname || 'jugador ProKicks'}</h2>
+        <div className="login2-forms-col">
+          <div className="login2-cards-row">
+
+            <div className="login2-card">
+              <div className="login2-card-head">
+                <span className="login2-dot" style={{ background: '#173B63' }} />
+                <h2>Ya tienes cuenta</h2>
+                <span className="login2-tag">INGRESA</span>
+              </div>
+
+              <div className="login2-oauth-row">
+                <button type="button" className="login2-oauth-btn" onClick={withGoogle}><GoogleIcon /> Google</button>
+                <button type="button" className="login2-oauth-btn apple" onClick={withApple}><AppleIcon /> Apple</button>
+              </div>
+
+              <div className="login2-divider"><span>o con tu correo</span></div>
+
+              <div className="login2-field"><input type="email" placeholder="tu@email.com" value={email} onChange={(e) => setEmail(e.target.value)} /></div>
+              <div className="login2-field"><input type="password" placeholder="Contraseña" value={password} onChange={(e) => setPassword(e.target.value)} /></div>
+
+              <div className="login2-row-between">
+                <button
+                  type="button"
+                  className="login2-biometric-chip"
+                  onClick={loginWithPasskey}
+                  disabled={passkeyLoading || !passkeySupported()}
+                >
+                  <FaceIdIcon /> {passkeyLoading ? 'Verificando...' : 'Usar huella / rostro'}
+                </button>
+                <Link className="login2-forgot" href="/recuperar">¿Olvidaste tu contraseña?</Link>
+              </div>
+
+              {message && <div className="login2-msg">{message}</div>}
+
+              <button className="login2-btn login2-btn-signin" onClick={submitLogin} disabled={loading || !email || !password}>
+                {loading ? 'Entrando...' : 'Entrar a la cancha'}
+              </button>
+            </div>
+
+            <div className="login2-card">
+              <div className="login2-card-head">
+                <span className="login2-dot" style={{ background: '#EA580C' }} />
+                <h2>¿Nuevo? Crea tu cuenta</h2>
+                <span className="login2-tag">REGISTRO</span>
+              </div>
+
+              <div className="login2-oauth-row">
+                <button type="button" className="login2-oauth-btn" onClick={withGoogle}><GoogleIcon /> Google</button>
+                <button type="button" className="login2-oauth-btn apple" onClick={withApple}><AppleIcon /> Apple</button>
+              </div>
+
+              <div className="login2-divider"><span>o con tu correo</span></div>
+
+              <div className="login2-field"><input placeholder="Nickname" value={suNickname} onChange={(e) => setSuNickname(e.target.value)} /></div>
+              <div className="login2-field"><input type="email" placeholder="tu@email.com" value={suEmail} onChange={(e) => setSuEmail(e.target.value)} /></div>
+              <div className="login2-field" style={{ marginBottom: 14 }}><input type="password" placeholder="Crea una contraseña" value={suPassword} onChange={(e) => setSuPassword(e.target.value)} /></div>
+
+              {suMessage && <div className="login2-msg">{suMessage}</div>}
+
+              <button className="login2-btn login2-btn-signup" onClick={submitSignup} disabled={suLoading}>
+                {suLoading ? 'Creando...' : 'Crear mi cuenta'}
+              </button>
+            </div>
+
           </div>
-        </section>
-      )}
 
-      {nextTournament && (
-        <Link href={`/torneos/${nextTournament.id}/registro`} className="next-tournament-card">
-          <div className="next-tournament-top">
-            <span className="next-tournament-badge"><CalendarDays size={14} /> Próximo torneo</span>
-            <span className="next-tournament-date">{formatDateShortEs(nextTournament.starts_at as string)}</span>
-          </div>
-          <h3 className="next-tournament-title">{nextTournament.title}</h3>
-          {nextTournament.starts_at && <TournamentCountdown target={nextTournament.starts_at} />}
-          <span className="next-tournament-cta"><ArrowRight size={14} /> Inscríbete aquí</span>
-        </Link>
-      )}
-
-      <section className="entry-tabs">
-        {profile ? (
-          <>
-            <Link className="entry-tab entry-tab-primary" href="/play">
-              <UserRound size={20} />
-              <span>Continuar</span>
-            </Link>
-            <Link className="entry-tab" href="/login">
-              <ShieldCheck size={20} />
-              <span>Otra cuenta</span>
-            </Link>
-          </>
-        ) : (
-          <Link className="entry-tab entry-tab-primary" href="/login">
-            <UserRound size={20} />
-            <span>Entrar / crear cuenta</span>
+          <Link className="login2-admin-card" href="/admin/login">
+            <span className="login2-admin-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={2}><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z" /></svg>
+            </span>
+            <div>
+              <h3>Acceso administrador</h3>
+              <p>Panel de control ProKicks</p>
+            </div>
           </Link>
-        )}
-        <Link className="entry-tab" href="/admin/login">
-          <ShieldCheck size={20} />
-          <span>Admin</span>
-        </Link>
-      </section>
-
-      {profile && <button className="link-muted entry-clear" onClick={clearProfile}>Cambiar usuario / borrar perfil local</button>}
+        </div>
+      </div>
     </main>
   );
 }
