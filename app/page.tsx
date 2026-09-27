@@ -155,14 +155,23 @@ export default function EntryPage() {
       )}
 
       <section className="entry-tabs">
-        <Link className="entry-tab entry-tab-primary" href={profile ? '/play' : '/registro'}>
-          <UserRound size={20} />
-          <span>{profile ? 'Continuar' : 'Crear cuenta'}</span>
-        </Link>
-        <Link className="entry-tab" href={profile ? '/registro' : '/login'}>
-          <ShieldCheck size={20} />
-          <span>{profile ? 'Otra cuenta' : 'Ya tengo cuenta'}</span>
-        </Link>
+        {profile ? (
+          <>
+            <Link className="entry-tab entry-tab-primary" href="/play">
+              <UserRound size={20} />
+              <span>Continuar</span>
+            </Link>
+            <Link className="entry-tab" href="/login">
+              <ShieldCheck size={20} />
+              <span>Otra cuenta</span>
+            </Link>
+          </>
+        ) : (
+          <Link className="entry-tab entry-tab-primary" href="/login">
+            <UserRound size={20} />
+            <span>Entrar / crear cuenta</span>
+          </Link>
+        )}
         <Link className="entry-tab" href="/admin/login">
           <ShieldCheck size={20} />
           <span>Admin</span>
