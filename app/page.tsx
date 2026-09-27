@@ -202,7 +202,7 @@ export default function LoginPage() {
 
       <div className="login2-shell">
         <div className="login2-brand-panel">
-          <Image src="/logo-blanco.png" alt="ProKicks" width={72} height={72} style={{ objectFit: 'contain' }} priority />
+          <Image src="/logo-blanco.png" alt="ProKicks" width={128} height={128} style={{ objectFit: 'contain' }} priority />
           <h1>ProKicks Play</h1>
           <p>Entrena. Compite. Domina.</p>
         </div>
