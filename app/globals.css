@@ -1313,7 +1313,7 @@ grid-template-columns:repeat(3,1fr);
 /* Sprint 1 · Admin sidebar IA — sidebar fijo desktop, drawer movil, topbar con reloj/refresh/usuario. No toca .app-shell fuera de .admin-shell (app movil de jugadores intacta). */
 .admin-shell-v2{display:flex;min-height:100dvh;background:#F4F6F9;align-items:stretch}
 .admin-sidebar{width:240px;flex-shrink:0;background:var(--navy,#0F172A);display:flex;flex-direction:column;position:sticky;top:0;height:100dvh;z-index:40}
-.admin-sidebar-head{display:flex;align-items:center;justify-content:space-between;padding:18px 16px;border-bottom:1px solid rgba(255,255,255,.08)}
+.admin-sidebar-head{display:flex;align-items:center;justify-content:space-between;padding:18px 16px;border-bottom:1px solid rgba(255,255,255,.08);overflow:hidden}
 .admin-sidebar-brand .logo{filter:brightness(0) invert(1)}
 .admin-sidebar-close{display:none;background:none;border:0;color:#fff;cursor:pointer}
 .admin-sidebar-nav{flex:1;overflow-y:auto;padding:12px 10px;display:flex;flex-direction:column;gap:2px}
@@ -1362,7 +1362,7 @@ grid-template-columns:repeat(3,1fr);
 
 
 .admin-sidebar-brand{display:flex;align-items:center;gap:8px;text-decoration:none}
-.admin-sidebar-mark{border-radius:8px;flex-shrink:0}
+.admin-sidebar-mark{border-radius:8px;flex-shrink:0;height:32px;width:auto;max-width:130px;object-fit:contain;display:block}
 .admin-sidebar-name{color:#fff;font-size:14px;font-weight:600}
 .admin-quicklinks{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
 .admin-quicklink{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;background:#0F172A;color:#fff;font-size:13.5px;font-weight:600;text-decoration:none;transition:background .15s}
