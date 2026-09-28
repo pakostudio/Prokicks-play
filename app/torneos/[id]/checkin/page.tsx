@@ -51,6 +51,7 @@ export default function TournamentCheckIn() {
   const [checkingIn, setCheckingIn] = useState(false);
   const [checkedIn, setCheckedIn] = useState(false);
   const [nameTerm, setNameTerm] = useState('');
+  const [code, setCode] = useState('');
   const [candidates, setCandidates] = useState<Registration[]>([]);
 
   useEffect(() => {
@@ -170,7 +171,42 @@ export default function TournamentCheckIn() {
         }
     }
 
-    function pickCandidate(reg: Registration) {
+    async function findByCode() {
+    setLookupError('');
+    setCandidates([]);
+    setRegistration(null);
+    setCheckedIn(false);
+    setIgConfirmed(false);
+    setSigned(false);
+    setHasSignature(false);
+    const term = code.trim().toUpperCase();
+    if (!term) {
+      setLookupError('Escribe el código de check-in que te enviamos.');
+      return;
+    }
+    setLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('prokicks_tournament_registrations')
+        .select('id, tournament_id, participant_1_name, participant_2_name, contact_email, check_in_status, check_in_code, ig_followed, signed_at')
+        .eq('tournament_id', tournamentId)
+        .eq('check_in_code', term)
+        .maybeSingle();
+      if (error) throw error;
+      if (!data) {
+        setLookupError('No encontramos un registro con ese código para este torneo.');
+        return;
+      }
+      pickCandidate(data as Registration);
+    } catch (error) {
+      captureError(error, { area: 'tournament-checkin-lookup-code', tournamentId });
+      setLookupError('No pudimos buscar tu registro. Intenta de nuevo.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function pickCandidate(reg: Registration) {
         setCandidates([]);
         setLookupError('');
         setRegistration(reg);
@@ -319,6 +355,9 @@ export default function TournamentCheckIn() {
             {loading ? 'Buscando...' : 'Buscar mi registro'}
           </button>
           <Link href={`/torneos/${tournamentId}/registro`} className="inline-link">¿Aún no te registras? Inscríbete aquí</Link>
+          <p className="p checkin-or">O usa tu código de check-in</p>
+          <input className="input" type="text" placeholder="Código de check-in" value={code} onChange={(e) => setCode(e.target.value)} />
+          <button className="btn btn-soft btn-full" disabled={loading} onClick={findByCode}>Buscar con código</button>
           <p className="p checkin-or">O busca por tu nombre y apellido</p>
           <input className="input" type="text" placeholder="Nombre y apellido" value={nameTerm} onChange={(e) => setNameTerm(e.target.value)} />
           <button className="btn btn-soft btn-full" disabled={loading} onClick={findByName}>Buscar por nombre</button>
