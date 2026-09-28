@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import {
   ChevronDown, Download, FileText, GraduationCap, ImageIcon, LayoutDashboard,
-  LogOut, MapPin, Menu, RefreshCw, ShieldCheck, Trophy, Users, Video, X, Zap
+  LogOut, MapPin, Menu, RefreshCw, ShieldCheck, Trophy, Users, Video, X, Zap, Eye
 } from 'lucide-react';
 
 type NavChild = { key: string; href: string; label: string };
@@ -31,6 +31,7 @@ const NAV: NavItem[] = [
   { key: 'clinicas', href: '/admin/clinicas', label: 'Clínicas', icon: GraduationCap },
   { key: 'spots', href: '/admin/spots', label: 'Spots', icon: MapPin },
   { key: 'galeria', href: '/admin/galeria', label: 'Galería', icon: ImageIcon },
+  { key: 'vision', href: '/vision', label: 'Vision', icon: Eye },
   { key: 'export', href: '/admin/export', label: 'Reportes', icon: Download }
 ];
 
@@ -134,7 +135,6 @@ export function AdminShell({ children, active = 'dashboard' }: { children: React
 
         <div className="admin-sidebar-foot">
           <Link href="/play" className="tag tag-blue admin-sb-app-link">Ver app</Link>
-          <Link href="/vision" className="tag tag-blue admin-sb-app-link">Vision</Link>
           <button type="button" className="tag tag-warm admin-logout" onClick={logout}>
             <LogOut size={14} /> Salir
           </button>
