@@ -77,8 +77,9 @@ export function AdminShell({ children, active = 'dashboard' }: { children: React
 
       <aside className={`admin-sidebar ${mobileOpen ? 'open' : ''}`}>
         <div className="admin-sidebar-head">
-          <Link href="/admin" className="brand-pill admin-sidebar-brand" onClick={() => setMobileOpen(false)}>
-            <Image src="/logo-negro.png" alt="ProKicks" width={120} height={38} className="logo" priority />
+          <Link href="/admin" className="admin-sidebar-brand" onClick={() => setMobileOpen(false)}>
+            <Image src="/prokicks-icon.svg" alt="ProKicks" width={32} height={32} className="admin-sidebar-mark" priority />
+            <span className="admin-sidebar-name">ProKicks</span>
           </Link>
           <button type="button" className="admin-sidebar-close" onClick={() => setMobileOpen(false)} aria-label="Cerrar menú">
             <X size={20} />
