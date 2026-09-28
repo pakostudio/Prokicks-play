@@ -1374,3 +1374,7 @@ grid-template-columns:repeat(3,1fr);
 .admin-table-btn:hover{background:#F1F5F9;border-color:#94A3B8}
 .admin-table-btn-danger{border-color:#FCA5A5;color:#B91C1C}
 .admin-table-btn-danger:hover{background:#FEF2F2;border-color:#F87171}
+
+.login2-brand-panel:after{width:320px;height:320px}
+.login2-brand-panel h1.login2-brand-title{font-size:46px}
+.login2-brand-panel p.login2-brand-sub{font-size:19px;max-width:340px}
