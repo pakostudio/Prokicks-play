@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { supabase, passkeySupported } from '@/lib/supabase';
 import { avatarOptions } from '@/lib/demo';
 
@@ -56,6 +56,11 @@ export default function LoginPage() {
   const [passkeyLoading, setPasskeyLoading] = useState(false);
   const [passkeyOffer, setPasskeyOffer] = useState(false);
   const [passkeyOfferBusy, setPasskeyOfferBusy] = useState(false);
+  const [canPasskey, setCanPasskey] = useState(false);
+
+  useEffect(() => {
+    setCanPasskey(passkeySupported());
+  }, []);
 
   function oauthRedirect() {
     return typeof window !== 'undefined' ? `${window.location.origin}/play` : undefined;
@@ -70,7 +75,7 @@ export default function LoginPage() {
   }
 
   async function afterSignIn() {
-    if (passkeySupported()) {
+    if (canPasskey) {
       try {
         const { data: passkeys } = await supabaseAuth.passkey.list();
         if (!passkeys || passkeys.length === 0) {
@@ -150,22 +155,35 @@ export default function LoginPage() {
   async function loginWithPasskey() {
     setPasskeyLoading(true);
     setMessage('');
-    const { error } = await supabaseAuth.signInWithPasskey();
-    setPasskeyLoading(false);
-    if (error) {
-      setMessage('No se pudo entrar con biométrico. Usa tu correo y contraseña, o actívalo primero desde ahí.');
-      return;
+    try {
+      const { error } = await supabaseAuth.signInWithPasskey();
+      setPasskeyLoading(false);
+      if (error) {
+        setMessage(
+          error.message?.includes('disabled')
+            ? 'El acceso biométrico aún no está activado en el servidor. Usa tu correo y contraseña.'
+            : 'No se pudo entrar con biométrico. Usa tu correo y contraseña, o actívalo primero desde ahí.'
+        );
+        return;
+      }
+      window.location.href = '/play';
+    } catch (err: any) {
+      setPasskeyLoading(false);
+      setMessage('Tu navegador o dispositivo no completó el biométrico. Usa tu correo y contraseña.');
     }
-    window.location.href = '/play';
   }
 
   async function activatePasskeyNow() {
     setPasskeyOfferBusy(true);
-    const { error } = await supabaseAuth.registerPasskey();
-    setPasskeyOfferBusy(false);
-    if (error) {
+    try {
+      const { error } = await supabaseAuth.registerPasskey();
+      if (error) {
+        setMessage('No se pudo activar el biométrico en este dispositivo. Puedes intentarlo después desde tu perfil.');
+      }
+    } catch {
       setMessage('No se pudo activar el biométrico en este dispositivo. Puedes intentarlo después desde tu perfil.');
     }
+    setPasskeyOfferBusy(false);
     window.location.href = '/play';
   }
 
@@ -232,7 +250,7 @@ export default function LoginPage() {
                   type="button"
                   className="login2-biometric-chip"
                   onClick={loginWithPasskey}
-                  disabled={passkeyLoading || !passkeySupported()}
+                  disabled={passkeyLoading || !canPasskey}
                 >
                   <FaceIdIcon /> {passkeyLoading ? 'Verificando...' : 'Usar huella / rostro'}
                 </button>
