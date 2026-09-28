@@ -142,7 +142,7 @@ setItem(null);
   }, []);
 
   return (
-    <AdminShell active="dashboard">
+    <AdminShell active="checkin">
       <section className="hero section">
         <div className="kicker">Admin · Check-in</div>
         <h1 className="h1">Check-in de torneo</h1>
@@ -187,5 +187,5 @@ setItem(null);
 }
 
 export default function AdminCheckInPage() {
-  return <Suspense fallback={<AdminShell active="dashboard"><section className="card section"><p className="p">Cargando check-in...</p></section></AdminShell>}><CheckInTool /></Suspense>;
+  return <Suspense fallback={<AdminShell active="checkin"><section className="card section"><p className="p">Cargando check-in...</p></section></AdminShell>}><CheckInTool /></Suspense>;
 }
