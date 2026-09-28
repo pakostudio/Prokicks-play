@@ -1232,6 +1232,8 @@ grid-template-columns:repeat(3,1fr);
 .auth-register-hint{text-align:center;font-size:14px;color:#475569}
 .auth-register-hint a{color:#2563EB;font-weight:800}
 .auth-turnstile-note{display:flex;align-items:center;gap:8px;justify-content:center;font-size:11px;color:#94A3B8}
+.login2-turnstile{display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:6px}
+.login2-turnstile #turnstile-container{display:flex;justify-content:center}
 .auth-passkey-offer{border:1px solid #DBEAFE;background:#EFF6FF;border-radius:16px;padding:14px;display:grid;gap:8px;text-align:center}
 .auth-passkey-offer strong{color:#173B63;font-size:15px}
 .auth-passkey-offer p{margin:0;color:#475569;font-size:13px}
