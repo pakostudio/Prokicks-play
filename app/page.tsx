@@ -2,7 +2,8 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import Script from 'next/script';
+import { useEffect, useRef, useState } from 'react';
 import { supabase, passkeySupported } from '@/lib/supabase';
 import { avatarOptions } from '@/lib/demo';
 
@@ -57,6 +58,8 @@ export default function LoginPage() {
   const [passkeyOffer, setPasskeyOffer] = useState(false);
   const [passkeyOfferBusy, setPasskeyOfferBusy] = useState(false);
   const [canPasskey, setCanPasskey] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState('');
+  const turnstileWidgetId = useRef<string | null>(null);
 
   useEffect(() => {
     setCanPasskey(passkeySupported());
@@ -64,6 +67,61 @@ export default function LoginPage() {
 
   function oauthRedirect() {
     return typeof window !== 'undefined' ? `${window.location.origin}/play` : undefined;
+  }
+
+  function renderTurnstile() {
+    const w: any = window;
+    if (!w.turnstile) return;
+    const el = document.getElementById('turnstile-container');
+    if (!el || turnstileWidgetId.current) return;
+    turnstileWidgetId.current = w.turnstile.render(el, {
+      sitekey: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY,
+      callback: (token: string) => setTurnstileToken(token),
+      'error-callback': () => setTurnstileToken(''),
+      'expired-callback': () => setTurnstileToken(''),
+    });
+  }
+
+  useEffect(() => {
+    if (passkeyOffer) return;
+    let cancelled = false;
+    function tryRender() {
+      if (cancelled) return;
+      const w: any = window;
+      if (w.turnstile) {
+        renderTurnstile();
+      } else {
+        setTimeout(tryRender, 300);
+      }
+    }
+    tryRender();
+    return () => { cancelled = true; };
+  }, [passkeyOffer]);
+
+  async function verifyTurnstile(setMsg: (s: string) => void): Promise<boolean> {
+    if (!turnstileToken) {
+      setMsg('Verifica que no eres un robot antes de continuar.');
+      return false;
+    }
+    try {
+      const res = await fetch('/api/turnstile-verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: turnstileToken }),
+      });
+      const json = await res.json();
+      if (!json.success) {
+        setMsg('No se pudo verificar la seguridad. Intenta de nuevo.');
+        const w: any = window;
+        if (w.turnstile && turnstileWidgetId.current) w.turnstile.reset(turnstileWidgetId.current);
+        setTurnstileToken('');
+        return false;
+      }
+      return true;
+    } catch {
+      setMsg('No se pudo verificar la seguridad. Intenta de nuevo.');
+      return false;
+    }
   }
 
   async function withGoogle() {
@@ -90,6 +148,7 @@ export default function LoginPage() {
   }
 
   async function submitLogin() {
+    if (!(await verifyTurnstile(setMessage))) return;
     setLoading(true);
     setMessage('');
     const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -108,6 +167,7 @@ export default function LoginPage() {
     if (suNickname.trim().length < 3 || !suEmail.trim() || suPassword.length < 6) {
       setSuMessage('Completa nickname, correo y una contraseña de al menos 6 caracteres.');
       return;
+    if (!(await verifyTurnstile(setSuMessage))) return;
     }
     setSuLoading(true);
     const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
@@ -212,6 +272,7 @@ export default function LoginPage() {
 
   return (
     <main className="login2-wrap">
+      <Script src="https://challenges.cloudflare.com/turnstile/v0/api.js" strategy="afterInteractive" />
       <div className="login2-mobile-brand">
         <Image src="/logo-negro.png" alt="ProKicks" width={56} height={56} style={{ objectFit: 'contain' }} priority />
         <h1>ProKicks Play</h1>
@@ -287,6 +348,11 @@ export default function LoginPage() {
               </button>
             </div>
 
+          </div>
+
+          <div className="login2-turnstile">
+            <div id="turnstile-container" />
+            <div className="auth-turnstile-note">Protegido por Cloudflare</div>
           </div>
 
           <Link className="login2-admin-card" href="/admin/login">
