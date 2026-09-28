@@ -118,7 +118,7 @@ export default function AdminVideosPage() {
   }
 
   return (
-    <AdminShell active="dashboard">
+    <AdminShell active="videos">
       <section className="hero section"><div className="kicker">Admin · Videos</div><h1 className="h1">Videos YouTube</h1><p className="p">Pega links públicos de YouTube. Sin API.</p></section>
       <section className="grid-2 section">
         <div className="card form">
