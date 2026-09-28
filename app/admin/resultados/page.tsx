@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { AdminShell } from '@/components/AdminShell';
 import { supabase } from '@/lib/supabase';
 import { captureError } from '@/lib/monitoring';
-import { FileSpreadsheet, FileText, Plus, Trash2, Upload } from 'lucide-react';
+import { ArrowLeftRight, FileSpreadsheet, FileText, Plus, Trash2, Upload } from 'lucide-react';
 import { formatDateTimeEs } from '@/lib/format';
 
   type TournamentOption = { id: string; title: string };
@@ -378,9 +378,9 @@ export default function AdminResultadosPage() {
                   <input className="input" type="number" value={m.score_b ?? ''} onChange={(e) => updateScore(m.id, 'score_b', e.target.value)} />
                 </td>
                 <td>{m.created_at ? formatDateTimeEs(m.created_at) : '-'}</td>
-                <td><button className="tag" onClick={() => promptMoveMatch(m.id)}>Mover</button></td>
+                <td><button className="admin-table-btn" onClick={() => promptMoveMatch(m.id)}><ArrowLeftRight size={13} /> Mover</button></td>
                 <td>
-                  <button className="tag tag-warm" onClick={() => removeMatch(m.id)}><Trash2 size={14} /></button>
+                  <button className="admin-table-btn admin-table-btn-danger" onClick={() => removeMatch(m.id)}><Trash2 size={13} /> Eliminar</button>
                 </td>
               </tr>
             ))}
