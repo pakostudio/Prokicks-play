@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import {
   ChevronDown, Download, FileText, GraduationCap, ImageIcon, LayoutDashboard,
-  LogOut, MapPin, Menu, RefreshCw, ShieldCheck, Trophy, Users, X, Zap
+  LogOut, MapPin, Menu, RefreshCw, ShieldCheck, Trophy, Users, Video, X, Zap
 } from 'lucide-react';
 
 type NavChild = { key: string; href: string; label: string };
@@ -21,7 +21,8 @@ const NAV: NavItem[] = [
       { key: 'checkin', href: '/admin/check-in', label: 'Check-in' },
       { key: 'resultados', href: '/admin/resultados', label: 'Resultados' },
       { key: 'videos', href: '/admin/videos', label: 'Videos' },
-      { key: 'materiales', href: '/admin/materiales', label: 'Materiales' }
+      { key: 'materiales', href: '/admin/materiales', label: 'Materiales' },
+      { key: 'transmision', href: '/admin/torneos#transmision', label: 'Transmisión en vivo' }
     ]
   },
   { key: 'registros', href: '/admin/registros-torneos', label: 'Registros', icon: FileText },
