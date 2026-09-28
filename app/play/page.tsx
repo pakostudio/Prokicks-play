@@ -42,9 +42,6 @@ return (
 <div className="grid-2 section">
 <Link className="btn btn-primary" href="/registro"><UserRound size={18}/> Crear perfil</Link>
 <Link className="btn btn-soft" href="/">Entrar / continuar</Link>
-<Link className="btn btn-warm" href="/torneos"><Trophy size={18}/> Ver torneos</Link>
-<Link className="btn btn-soft" href="/scan"><QrCode size={18}/> Escanear QR / conectar spot para Reta</Link>
-<Link className="btn btn-primary" href="/spots"><MapPin size={18}/> Encuentra spots para echar la reta</Link>
 </div>
 </section>
 
