@@ -220,9 +220,9 @@ export default function LoginPage() {
 
       <div className="login2-shell">
         <div className="login2-brand-panel">
-          <Image src="/logo-blanco.png" alt="ProKicks" width={128} height={128} style={{ objectFit: 'contain' }} priority />
-          <h1>ProKicks Play</h1>
-          <p>Entrena. Compite. Domina.</p>
+          <Image src="/logo-blanco.png" alt="ProKicks" width={220} height={220} style={{ objectFit: 'contain' }} priority />
+          <h1 className="login2-brand-title">ProKicks Play</h1>
+          <p className="login2-brand-sub">Entrena. Compite. Domina.</p>
         </div>
 
         <div className="login2-forms-col">
@@ -237,7 +237,6 @@ export default function LoginPage() {
 
               <div className="login2-oauth-row">
                 <button type="button" className="login2-oauth-btn" onClick={withGoogle}><GoogleIcon /> Google</button>
-                <button type="button" className="login2-oauth-btn apple" onClick={withApple}><AppleIcon /> Apple</button>
               </div>
 
               <div className="login2-divider"><span>o con tu correo</span></div>
@@ -273,7 +272,6 @@ export default function LoginPage() {
 
               <div className="login2-oauth-row">
                 <button type="button" className="login2-oauth-btn" onClick={withGoogle}><GoogleIcon /> Google</button>
-                <button type="button" className="login2-oauth-btn apple" onClick={withApple}><AppleIcon /> Apple</button>
               </div>
 
               <div className="login2-divider"><span>o con tu correo</span></div>
