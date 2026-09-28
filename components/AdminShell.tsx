@@ -13,7 +13,6 @@ type NavChild = { key: string; href: string; label: string };
 type NavItem = { key: string; href: string; label: string; icon: any; children?: NavChild[] };
 
 const NAV: NavItem[] = [
-  { key: 'dashboard', href: '/admin', label: 'Panel', icon: LayoutDashboard },
   {
     key: 'torneos', href: '/admin/torneos', label: 'Torneos', icon: Trophy,
     children: [
