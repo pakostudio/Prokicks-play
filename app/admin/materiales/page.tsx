@@ -3,7 +3,7 @@ import { AdminShell } from '@/components/AdminShell';
 
 export default function AdminMaterialesPage() {
   return (
-    <AdminShell active="dashboard">
+    <AdminShell active="materiales">
       <section className="hero section">
         <div className="kicker">Admin · Materiales</div>
         <h1 className="h1">Materiales del torneo</h1>
