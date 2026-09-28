@@ -10,9 +10,9 @@ export default function AdminPage(){
       <p className="p">Panel operativo del MVP para torneos, registros y exportación.</p>
     </section>
     <section className="grid-2 section">
-      <div className="stat"><span className="muted">Torneos</span><strong>Crear / Editar</strong></div>
-      <div className="stat"><span className="muted">Registros</span><strong>Participantes</strong></div>
-      <div className="stat"><span className="muted">Perfiles</span><strong>Usuarios</strong></div>
+      <Link className="stat admin-stat-link" href="/admin/torneos"><span className="muted">Torneos</span><strong>Crear / Editar</strong></Link>
+      <Link className="stat admin-stat-link" href="/admin/registros-torneos"><span className="muted">Registros</span><strong>Participantes</strong></Link>
+      <Link className="stat admin-stat-link" href="/admin/usuarios"><span className="muted">Perfiles</span><strong>Usuarios</strong></Link>
       <Link className="stat admin-stat-link" href="/admin/spots"><span className="muted">Spots</span><strong>QR / Sedes</strong></Link>
     </section>
 
