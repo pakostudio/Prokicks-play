@@ -1362,7 +1362,7 @@ grid-template-columns:repeat(3,1fr);
 
 
 .admin-sidebar-brand{display:flex;align-items:center;gap:8px;text-decoration:none}
-.admin-sidebar-mark{border-radius:8px;flex-shrink:0;height:44px;width:auto;max-width:170px;object-fit:contain;display:block}
+.admin-sidebar-mark{border-radius:8px;flex-shrink:0;height:64px;width:auto;max-width:220px;object-fit:contain;display:block}
 .admin-sidebar-name{color:#fff;font-size:14px;font-weight:600}
 .admin-quicklinks{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
 .admin-quicklink{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;background:#0F172A;color:#fff;font-size:13.5px;font-weight:600;text-decoration:none;transition:background .15s}
