@@ -151,7 +151,7 @@ export default function AdminTorneosPage(){
         <input className="input" placeholder="/tournaments/flyer.jpeg" value={form.flyer_url} onChange={e=>update('flyer_url', e.target.value)} />
         <input className="input" placeholder="/docs/reglamento.pdf" value={form.pdf_url} onChange={e=>update('pdf_url', e.target.value)} />
         {form.flyer_url && <img className="tournament-thumb" src={form.flyer_url} alt={`Flyer ${form.title || 'torneo'}`} />}
-        <input className="input" placeholder="ID de video de YouTube en vivo (ej. dQw4w9WgXcQ)" value={form.youtube_live_id} onChange={e=>update('youtube_live_id', e.target.value)} />
+        <input id="transmision" className="input" placeholder="ID de video de YouTube en vivo (ej. dQw4w9WgXcQ)" value={form.youtube_live_id} onChange={e=>update('youtube_live_id', e.target.value)} />
         <p className="p" style={{marginTop:-8, fontSize:13, color:'#64748B'}}>Opcional. Es el código que va después de watch?v= en la URL de YouTube. Aparece como "Transmisión en vivo" en la pantalla del torneo mientras esté cargado aquí.</p>
         <div className="grid-2 tight">
           <select className="input" value={form.format} onChange={e=>update('format', e.target.value as Tournament['format'])}><option value="1v1">1v1</option><option value="2v2">2v2</option><option value="3v3">3v3 futuro</option><option value="mixto">Mixto</option></select>
