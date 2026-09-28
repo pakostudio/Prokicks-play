@@ -20,11 +20,14 @@ type?: string | null;
 status?: string | null;
 };
 
-function useCountdown(target: string) {
+type NextTournament = { id: string; title: string; starts_at: string | null };
+
+function useCountdown(target: string | null) {
 const [left, setLeft] = useState({ days: 0, hours: 0, minutes: 0, started: false });
 useEffect(() => {
+if (!target) return;
 function tick() {
-const diff = new Date(target).getTime() - Date.now();
+const diff = new Date(target as string).getTime() - Date.now();
 if (diff <= 0) { setLeft({ days: 0, hours: 0, minutes: 0, started: true }); return; }
 const days = Math.floor(diff / 86400000);
 const hours = Math.floor((diff % 86400000) / 3600000);
@@ -40,7 +43,8 @@ return left;
 
 export default function HomePage() {
 const [challenges, setChallenges] = useState<Challenge[]>([]);
-const countdown = useCountdown(indoorTournament.starts_at);
+const [nextTournament, setNextTournament] = useState<NextTournament | null>({ id: indoorTournament.id, title: indoorTournament.title, starts_at: indoorTournament.starts_at });
+const countdown = useCountdown(nextTournament?.starts_at || null);
 
 useEffect(() => {
 supabase
@@ -49,6 +53,18 @@ supabase
 .order('created_at', { ascending: false })
 .limit(6)
 .then(({ data }) => setChallenges((data || []) as Challenge[]));
+}, []);
+
+useEffect(() => {
+supabase
+.from('prokicks_tournaments')
+.select('id,title,starts_at')
+.eq('status', 'open')
+.order('starts_at', { ascending: true })
+.limit(1)
+.then(({ data }) => {
+if (data && data.length) setNextTournament(data[0] as NextTournament);
+});
 }, []);
 
 return (
@@ -65,14 +81,15 @@ return (
 </div>
 </section>
 
-<Link href={`/torneos/${indoorTournament.id}`} className="next-tournament-card">
+{nextTournament && (
+<Link href={`/torneos/${nextTournament.id}`} className="next-tournament-card">
 <div className="next-tournament-top">
 <span className="next-tournament-badge"><Trophy size={14}/> Próximo torneo</span>
-<span className="next-tournament-date">{formatDateShortEs(indoorTournament.starts_at)}</span>
+{nextTournament.starts_at && <span className="next-tournament-date">{formatDateShortEs(nextTournament.starts_at)}</span>}
 </div>
-<h3 className="next-tournament-title">{indoorTournament.title}</h3>
-{countdown.started ? (
-<span className="next-tournament-live">En curso</span>
+<h3 className="next-tournament-title">{nextTournament.title}</h3>
+{!nextTournament.starts_at || countdown.started ? (
+<span className="next-tournament-live">Registro abierto</span>
 ) : (
 <div className="next-tournament-countdown">
 <div className="countdown-unit"><strong>{countdown.days}</strong><span>Días</span></div>
@@ -82,6 +99,7 @@ return (
 )}
 <span className="next-tournament-cta">Inscríbete aquí &rarr;</span>
 </Link>
+)}
 
 <section className="grid-2 section home-stats">
 <div className="stat"><span className="muted">Spots reales</span><strong>{realSpots.length}</strong></div>
