@@ -7,7 +7,7 @@ import { captureError } from '@/lib/monitoring';
 import { ArrowLeftRight, FileSpreadsheet, FileText, Plus, Trash2, Upload } from 'lucide-react';
 import { formatDateTimeEs } from '@/lib/format';
 
-  type TournamentOption = { id: string; title: string };
+  type TournamentOption = { id: string; title: string; starts_at: string | null };
 
 type Match = {
   id: string;
@@ -107,7 +107,7 @@ export default function AdminResultadosPage() {
     async function loadTournaments() {
       const { data, error } = await supabase
         .from('prokicks_tournaments')
-        .select('id,title')
+        .select('id,title,starts_at')
         .order('starts_at', { ascending: false });
       if (error) {
         captureError(error, { area: 'admin-resultados-tournaments' });
@@ -115,7 +115,12 @@ export default function AdminResultadosPage() {
       }
       const rows = (data || []) as TournamentOption[];
       setTournaments(rows);
-      if (rows.length && !tournamentId) setTournamentId(rows[0].id);
+      if (rows.length && !tournamentId) {
+        const now = Date.now();
+        const past = rows.filter((r) => r.starts_at && new Date(r.starts_at).getTime() <= now);
+        const defaultRow = past.length ? past[0] : rows[rows.length - 1];
+        setTournamentId(defaultRow.id);
+      }
     }
     loadTournaments();
     // eslint-disable-next-line react-hooks/exhaustive-deps
