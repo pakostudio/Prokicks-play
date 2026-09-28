@@ -31,7 +31,7 @@ const NAV: NavItem[] = [
   { key: 'clinicas', href: '/admin/clinicas', label: 'Clínicas', icon: GraduationCap },
   { key: 'spots', href: '/admin/spots', label: 'Spots', icon: MapPin },
   { key: 'galeria', href: '/admin/galeria', label: 'Galería', icon: ImageIcon },
-  { key: 'export', href: '/admin/export', label: 'Exportar', icon: Download }
+  { key: 'export', href: '/admin/export', label: 'Reportes', icon: Download }
 ];
 
 function isChildActive(item: NavItem, active: string) {
@@ -79,8 +79,7 @@ export function AdminShell({ children, active = 'dashboard' }: { children: React
       <aside className={`admin-sidebar ${mobileOpen ? 'open' : ''}`}>
         <div className="admin-sidebar-head">
           <Link href="/admin" className="admin-sidebar-brand" onClick={() => setMobileOpen(false)}>
-            <Image src="/prokicks-icon.svg" alt="ProKicks" width={32} height={32} className="admin-sidebar-mark" priority />
-            <span className="admin-sidebar-name">ProKicks</span>
+            <Image src="/logo-blanco.png" alt="ProKicks" width={120} height={34} className="admin-sidebar-mark" priority />
           </Link>
           <button type="button" className="admin-sidebar-close" onClick={() => setMobileOpen(false)} aria-label="Cerrar menú">
             <X size={20} />
@@ -135,6 +134,7 @@ export function AdminShell({ children, active = 'dashboard' }: { children: React
 
         <div className="admin-sidebar-foot">
           <Link href="/play" className="tag tag-blue admin-sb-app-link">Ver app</Link>
+          <Link href="/vision" className="tag tag-blue admin-sb-app-link">Vision</Link>
           <button type="button" className="tag tag-warm admin-logout" onClick={logout}>
             <LogOut size={14} /> Salir
           </button>
