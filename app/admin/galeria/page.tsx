@@ -133,7 +133,7 @@ export default function AdminGaleriaPage() {
   const previewIsVideo = isVideoUrl(form.image_url);
 
   return (
-    <AdminShell active="dashboard">
+    <AdminShell active="galeria">
       <section className="hero section"><div className="kicker">Admin · Galería</div><h1 className="h1">Fotos y videos ProKicks</h1><p className="p">Sube fotos o videos con Cloudinary unsigned y publica solo lo aprobado.</p></section>
       <section className="grid-2 section">
         <div className="card form">
