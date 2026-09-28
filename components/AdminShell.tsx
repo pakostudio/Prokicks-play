@@ -117,6 +117,7 @@ export function AdminShell({ children, active = 'dashboard' }: { children: React
                   <ChevronDown size={15} className="admin-sb-chevron" />
                 </Link>
                 <div className="admin-sb-children">
+<div>
                   {item.children.map((child) => (
                     <Link
                       key={child.key}
@@ -127,6 +128,7 @@ export function AdminShell({ children, active = 'dashboard' }: { children: React
                       {child.label}
                     </Link>
                   ))}
+</div>
                 </div>
               </div>
             );
