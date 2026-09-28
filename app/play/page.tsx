@@ -6,9 +6,10 @@ import { AppShell } from '@/components/AppShell';
 import { SupabaseNotice } from '@/components/SupabaseNotice';
 import { VisionEntryCard } from '@/components/vision/VisionEntryCard';
 import { ProxEntryCard } from '@/components/vision/ProxEntryCard';
-import { realSpots } from '@/lib/demo';
+import { realSpots, indoorTournament } from '@/lib/demo';
 import { supabase } from '@/lib/supabase';
-import { GraduationCap, MapPin, QrCode, Star, Trophy, UserRound } from 'lucide-react';
+import { formatDateShortEs } from '@/lib/format';
+import { GraduationCap, Star, Trophy, UserRound } from 'lucide-react';
 
 type Challenge = {
 id: string;
@@ -19,8 +20,27 @@ type?: string | null;
 status?: string | null;
 };
 
+function useCountdown(target: string) {
+const [left, setLeft] = useState({ days: 0, hours: 0, minutes: 0, started: false });
+useEffect(() => {
+function tick() {
+const diff = new Date(target).getTime() - Date.now();
+if (diff <= 0) { setLeft({ days: 0, hours: 0, minutes: 0, started: true }); return; }
+const days = Math.floor(diff / 86400000);
+const hours = Math.floor((diff % 86400000) / 3600000);
+const minutes = Math.floor((diff % 3600000) / 60000);
+setLeft({ days, hours, minutes, started: false });
+}
+tick();
+const id = setInterval(tick, 30000);
+return () => clearInterval(id);
+}, [target]);
+return left;
+}
+
 export default function HomePage() {
 const [challenges, setChallenges] = useState<Challenge[]>([]);
+const countdown = useCountdown(indoorTournament.starts_at);
 
 useEffect(() => {
 supabase
@@ -44,6 +64,24 @@ return (
 <Link className="btn btn-soft" href="/">Entrar / continuar</Link>
 </div>
 </section>
+
+<Link href={`/torneos/${indoorTournament.id}`} className="next-tournament-card">
+<div className="next-tournament-top">
+<span className="next-tournament-badge"><Trophy size={14}/> Próximo torneo</span>
+<span className="next-tournament-date">{formatDateShortEs(indoorTournament.starts_at)}</span>
+</div>
+<h3 className="next-tournament-title">{indoorTournament.title}</h3>
+{countdown.started ? (
+<span className="next-tournament-live">En curso</span>
+) : (
+<div className="next-tournament-countdown">
+<div className="countdown-unit"><strong>{countdown.days}</strong><span>Días</span></div>
+<div className="countdown-unit"><strong>{countdown.hours}</strong><span>Hrs</span></div>
+<div className="countdown-unit"><strong>{countdown.minutes}</strong><span>Min</span></div>
+</div>
+)}
+<span className="next-tournament-cta">Inscríbete aquí &rarr;</span>
+</Link>
 
 <section className="grid-2 section home-stats">
 <div className="stat"><span className="muted">Spots reales</span><strong>{realSpots.length}</strong></div>
