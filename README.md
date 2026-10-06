@@ -1,29 +1,43 @@
-# ProKicks Play · Sprint 1.6.2
+# ProKicks Play
 
-Corrección Registro a Torneos + correo real + favicon balón.
+Plataforma digital para gestionar torneos deportivos recreativos de extremo a extremo: registro de jugadores, check-in en el spot, captura de resultados en vivo, panel administrativo centralizado y medición de desempeño físico con visión por computadora (módulo ProX, en etapa de validación).
 
-## Subir a GitHub
-Subir únicamente:
+## Stack tecnológico
 
-- `app/`
-- `public/`
+- **Frontend:** Next.js + React (TypeScript)
+- **Backend / Base de datos:** Supabase (Postgres, Auth, RLS)
+- **Hosting / CI-CD:** Vercel (despliegue automático desde `main`)
+- **Visión por computadora:** TensorFlow.js + pose-detection (módulo ProX)
+- **Seguridad de acceso:** Cloudflare Turnstile
 
-## Incluye
+## Estructura de carpetas
 
-- Quita WhatsApp duplicado en Registro a Torneos.
-- Usa WhatsApp del Participante 1 como contacto principal.
-- Mantiene validación de email, WhatsApp, campos obligatorios, reglamento e imagen.
-- Agrega pantalla de confirmación después del registro.
-- Evita que el mensaje verde anterior quede pegado en el formulario.
-- Corrige espacio inferior para que el menú no tape campos.
-- Envía correo al usuario y al admin usando Resend.
-- Cambia favicon / iconos PWA a balón de fútbol de alto contraste.
+- `app/` — rutas y pantallas (Next.js App Router), incluye el panel admin y el módulo `/vision`
+- `components/` — componentes de interfaz reutilizables
+- `lib/` — lógica compartida (certificados, adaptadores de WhatsApp, utilidades)
+- `play/` — lógica específica del flujo de juego/torneos
+- `public/` — assets estáticos (logo, imágenes, favicon)
+- `supabase/` — migraciones y configuración de base de datos
 
-## Variables necesarias en Vercel
+## Cómo correrlo localmente
 
-- `RESEND_API_KEY`
-- `PROKICKS_EMAIL_FROM`
-- `PROKICKS_ADMIN_EMAIL`
+```bash
+npm install
+npm run dev
+```
 
-## Nota Resend
-Si se usa `onboarding@resend.dev`, Resend puede limitar destinatarios. Para uso real verificar dominio `prokicks.shop` y cambiar `PROKICKS_EMAIL_FROM` a `ProKicks <registro@prokicks.shop>`.
+Se requiere un archivo `.env.local` con las variables de entorno de Supabase y WhatsApp — ver `VISION_ENV.md` y `WHATSAPP_ENV.md` para el detalle de cada una. Ninguna credencial vive en el repositorio.
+
+## Documentación relacionada
+
+- [`VISION_README.md`](./VISION_README.md) — alcance y rutas del módulo ProKicks Vision
+- [`VISION_ENV.md`](./VISION_ENV.md) — variables de entorno del módulo Vision
+- [`WHATSAPP_ENV.md`](./WHATSAPP_ENV.md) — variables de entorno para notificaciones por WhatsApp
+
+## Flujo de despliegue
+
+Todo cambio se sube a `main` en GitHub y Vercel lo despliega automáticamente. No hay archivos sueltos fuera del control de versiones.
+
+---
+
+Contacto: Pako — pako@sportcstudio.com
